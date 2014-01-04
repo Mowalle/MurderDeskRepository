@@ -130,12 +130,13 @@ public class GameMap {
 	 * @param y
 	 * @return
 	 */
-	public int getTileID(int layerIndex, int x, int y) {
+	public int getTileId(int layerIndex, int x, int y) {
 		
 		TiledMapTileLayer tileLayer = (TiledMapTileLayer) map.getLayers().get(
 				layerIndex);
 
-		TiledMapTileLayer.Cell cell = tileLayer.getCell(x, y);
+		// The "tileLayer.getHeight() - 1 - y" is to invert the cells, because they are read out mirrored for some reason.
+		TiledMapTileLayer.Cell cell = tileLayer.getCell(x, tileLayer.getHeight() - 1 - y);
 
 		if (cell == null) {
 			return -1;
@@ -169,7 +170,7 @@ public class GameMap {
 			// if layer is called "Collision"
 			if (map.getLayers().get(i).getName().equals("Collision")) {
 				// if tile x,y contains something else than nothing then collision
-				if (getTileID(i, x, y) != -1) {
+				if (getTileId(i, x, y) != -1) {
 					System.out.println("Collision!");
 					return true;
 				}

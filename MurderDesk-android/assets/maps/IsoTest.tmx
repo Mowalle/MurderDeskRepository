@@ -16,9 +16,14 @@
    eJxjYKAcFJOJkfVTav+ofvrot2AcWPvprR+bf+lpP60BAA6zDJQ=
   </data>
  </layer>
+ <layer name="Collision" width="16" height="16">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFwxVYMA60C0bBYAcAfgMAOg==
+  </data>
+ </layer>
  <layer name="WalkBehind" width="16" height="16">
   <data encoding="base64" compression="zlib">
-   eJzLZGBgyCQDwwAymxww2PULMFJuvxQeM4h1vwoOM0jxvx4WM9D1E/IvMfbj8y8x+kEAl3+J1Q8C2PxLin5K7R8KAABPeAwU
+   eJzLZGBgyCQDwwAymxww2PQLMOLnE2O/FCN+PiH9IKDCiJ9PSD82oIfFDEL+JwSI8T+p+kEAl3+J1Q8C2PxLin5K7R8KAAAioAxl
   </data>
  </layer>
  <objectgroup name="Objects" width="16" height="16">
