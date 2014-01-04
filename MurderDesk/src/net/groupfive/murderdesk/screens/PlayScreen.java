@@ -1,7 +1,6 @@
 package net.groupfive.murderdesk.screens;
 
-import net.groupfive.murderdesk.MurderDesk;
-import net.groupfive.murderdesk.Player;
+import net.groupfive.murderdesk.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -29,27 +28,19 @@ public class PlayScreen implements Screen {
 	private Rectangle playerBox;
 
 	// Map stuff
-	private TiledMap map;
-	private int mapWidth;
-	private int mapHeight;
-	private int tilePixelWidth;
-	private int tilePixelWidthHalf;
-	private int tilePixelHeight;
-	private int tilePixelHeightHalf;
-	private int mapPixelWidth;
-	private int mapPixelHeight;
-
-	private Vector2 mapTopCornerPixel;
-
+	private GameMap map;
 	private IsometricTiledMapRenderer renderer;
 
 	public PlayScreen(MurderDesk game) {
 		this.game = game;
 	}
 
-	// Update logic here
-	public void update(float delta) {
+	@Override
+	public void render(float delta) {
 
+		/*
+		 * Update logic here
+		 */
 		if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
 			cam.position.y += 5;
 		}
@@ -65,14 +56,14 @@ public class PlayScreen implements Screen {
 		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
 			cam.position.x += 5;
 		}
+		
+		player.update(delta, map);
 
-	}
-
-	@Override
-	public void render(float delta) {
-
-		update(Gdx.graphics.getDeltaTime());
-
+		
+		/*
+		 * Rendering stuff here
+		 */
+		
 		// Clear screen
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -113,81 +104,48 @@ public class PlayScreen implements Screen {
 		cam.setToOrtho(false, MurderDesk.width, MurderDesk.height);
 		cam.update();
 
-		map = new TmxMapLoader().load("maps/IsoTest.tmx");
-		MapProperties prop = map.getProperties();
-		mapWidth = prop.get("width", Integer.class);
-		mapHeight = prop.get("height", Integer.class);
-		tilePixelWidth = prop.get("tilewidth", Integer.class);
-		tilePixelWidthHalf = tilePixelWidth / 2;
-		tilePixelHeight = prop.get("tileheight", Integer.class);
-		tilePixelHeightHalf = tilePixelHeight / 2;
+		map = new GameMap("maps/IsoTest.tmx");
 
-		mapPixelWidth = mapWidth * tilePixelWidth;
-		mapPixelHeight = mapHeight * tilePixelHeight;
+		System.out.println("mapTopCornerPixel: " + map.getTopCorner());
 
-		mapTopCornerPixel = new Vector2((mapWidth - 1) * tilePixelWidthHalf,
-				(mapHeight - 1) * tilePixelHeightHalf);
-
-		System.out.println("mapTopCornerPixel: " + mapTopCornerPixel);
-
-		renderer = new IsometricTiledMapRenderer(map);
+		renderer = new IsometricTiledMapRenderer(map.getTiledMap());
 
 		player = new Player(new Sprite(new Texture("textures/mousemap.png")));
 
-		if (map.getLayers().get("Objects").getObjects().get("Spawn") instanceof RectangleMapObject) {
-			playerBox = ((RectangleMapObject) map.getLayers().get("Objects")
-					.getObjects().get("Spawn")).getRectangle();
+		// If map contains object "Spawn", get a rectangle from the bounding
+		// box.
+		if (map.getMapObject("Objects", "Spawn") instanceof RectangleMapObject) {
+			playerBox = ((RectangleMapObject) map.getMapObject("Objects",
+					"Spawn")).getRectangle();
 
 			System.out.println("playerBox.x: " + playerBox.x + " playerBox.y: "
 					+ playerBox.y);
 
-			float mapX = convertScreenToMapCoordinates(playerBox.getX() * 2,
-					mapPixelHeight - playerBox.getY() - tilePixelHeight,
-					tilePixelWidth, tilePixelHeight).x;
-			float mapY = convertScreenToMapCoordinates(playerBox.getX() * 2,
-					mapPixelHeight - playerBox.getY() - tilePixelHeight,
-					tilePixelWidth, tilePixelHeight).y;
+			// Get map coordinates of the player box
+			// Might be moved to GameMap.java later
+			float mapX = map.convertScreenToMapCoordinates(
+					playerBox.getX() * 2,
+					map.getMapPixelHeight() - playerBox.getY()
+							- map.getTilePixelHeight()).x;
+			float mapY = map.convertScreenToMapCoordinates(
+					playerBox.getX() * 2,
+					map.getMapPixelHeight() - playerBox.getY()
+							- map.getTilePixelHeight()).y;
 
 			System.out.println("mapX: " + mapX + " mapY: " + mapY);
 
-			playerBox.x = mapTopCornerPixel.x
-					+ convertMapToIsometricCoordinates(mapX, mapY,
-							tilePixelWidth, tilePixelHeight).x;
-			playerBox.y = mapTopCornerPixel.y
-					- convertMapToIsometricCoordinates(mapX, mapY,
-							tilePixelWidth, tilePixelHeight).y;
+			// Get isometic coordinates of the player box
+			// Might be moved to GameMap.java later
+			playerBox.x = map.getTopCorner().x
+					+ map.convertMapToIsometricCoordinates(mapX, mapY).x;
+			playerBox.y = map.getTopCorner().y
+					- map.convertMapToIsometricCoordinates(mapX, mapY).y;
 
 			player.setBoundingBox(playerBox);
 
 		}
 
-		// cam.position.set(player.getX() + player.width / 2, player.getY()
-		// + player.height / 2, 0);
-
 		System.out.println("Camera: " + cam.position.x + ", " + cam.position.y);
-	}
-
-	// Convert the parsed coordinates back to map coordinates
-	private Vector2 convertScreenToMapCoordinates(float x, float y,
-			int tileWidth, int tileHeight) {
-
-		Vector2 result = new Vector2();
-
-		result.x = x / tileWidth;
-		result.y = y / tileHeight;
-
-		return result;
-	}
-
-	// After http://clintbellanger.net/articles/isometric_math/
-	private Vector2 convertMapToIsometricCoordinates(float mapX, float mapY,
-			int tileWidth, int tileHeight) {
-		Vector2 result = new Vector2();
-
-		result.x = (mapX - mapY) * (tileWidth / 2);
-		result.y = (mapX + mapY) * (tileHeight / 2);
-
-		return result;
 	}
 
 	@Override
@@ -207,7 +165,7 @@ public class PlayScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		map.dispose();
+		map.getTiledMap().dispose();
 		renderer.dispose();
 	}
 
