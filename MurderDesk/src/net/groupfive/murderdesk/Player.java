@@ -1,9 +1,6 @@
 package net.groupfive.murderdesk;
 
-import net.groupfive.murderdesk.screens.PlayScreen;
-
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -12,10 +9,11 @@ import com.badlogic.gdx.math.Rectangle;
 public class Player extends Sprite {
 
 	public float width, height;
+	public int tileX, tileY;
 
 	private static final float MOVEMENT_COOLDOWN = 0.125f;
 	private float currentMovementCooldown = 0.0f;
-	
+
 	public Player(Sprite sprite) {
 		super(sprite);
 	}
@@ -23,31 +21,50 @@ public class Player extends Sprite {
 	public void update(float delta, GameMap map) {
 
 		if (currentMovementCooldown >= MOVEMENT_COOLDOWN) {
-			
+
 			// Collisioncheck missing
-			
+
+			int newX = tileX;
+			int newY = tileY;
+			boolean pressedButton = false;
 			// Moving with keys, should be replaced with AI
 			if (Gdx.input.isKeyPressed(Keys.W)) {
-				setX(getX() + 32);
-				setY(getY() + 16);
+				newX -= 1;
+				newY += 0;
+				pressedButton = true;
 			}
 			if (Gdx.input.isKeyPressed(Keys.S)) {
-				setX(getX() - 32);
-				setY(getY() - 16);
+				newX += 1;
+				newY += 0;
+				pressedButton = true;
 			}
 			if (Gdx.input.isKeyPressed(Keys.A)) {
-				setX(getX() - 32);
-				setY(getY() + 16);
+				newX += 0;
+				newY += 1;
+				pressedButton = true;
 			}
 			if (Gdx.input.isKeyPressed(Keys.D)) {
-				setX(getX() + 32);
-				setY(getY() - 16);
+				newX += 0;
+				newY -= 1;
+				pressedButton = true;
 			}
-			
+
+			if (pressedButton) {
+				if (!map.checkCollisionTile(newX, newY)) {
+					tileX = newX;
+					tileY = newY;
+				}
+			}
+
 			currentMovementCooldown = 0.0f;
 		}
-		
+
 		currentMovementCooldown += delta;
+
+		setX(map.getTopCorner().x
+				+ map.convertMapToIsometricCoordinates(tileX, tileY).x);
+		setY(map.getTopCorner().y
+				- map.convertMapToIsometricCoordinates(tileX, tileY).y);
 
 	}
 

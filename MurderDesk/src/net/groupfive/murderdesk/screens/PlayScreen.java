@@ -1,6 +1,8 @@
 package net.groupfive.murderdesk.screens;
 
-import net.groupfive.murderdesk.*;
+import net.groupfive.murderdesk.GameMap;
+import net.groupfive.murderdesk.MurderDesk;
+import net.groupfive.murderdesk.Player;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -9,13 +11,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 
 public class PlayScreen implements Screen {
 
@@ -74,7 +72,6 @@ public class PlayScreen implements Screen {
 		renderer.getSpriteBatch().setProjectionMatrix(cam.combined);
 
 		int[] behind = { 0 };
-
 		renderer.render(behind);
 
 		game.spriteBatch.begin();
@@ -88,7 +85,6 @@ public class PlayScreen implements Screen {
 		game.spriteBatch.end();
 
 		int[] above = { 1, 2 };
-
 		renderer.render(above);
 
 	}
@@ -105,7 +101,7 @@ public class PlayScreen implements Screen {
 		cam.update();
 
 		map = new GameMap("maps/IsoTest.tmx");
-
+		
 		System.out.println("mapTopCornerPixel: " + map.getTopCorner());
 
 		renderer = new IsometricTiledMapRenderer(map.getTiledMap());
@@ -131,15 +127,18 @@ public class PlayScreen implements Screen {
 					playerBox.getX() * 2,
 					map.getMapPixelHeight() - playerBox.getY()
 							- map.getTilePixelHeight()).y;
+			
+			player.tileX = (int) mapX;
+			player.tileY = (int) mapY;
 
 			System.out.println("mapX: " + mapX + " mapY: " + mapY);
 
 			// Get isometic coordinates of the player box
 			// Might be moved to GameMap.java later
-			playerBox.x = map.getTopCorner().x
-					+ map.convertMapToIsometricCoordinates(mapX, mapY).x;
-			playerBox.y = map.getTopCorner().y
-					- map.convertMapToIsometricCoordinates(mapX, mapY).y;
+			playerBox.setX(map.getTopCorner().x
+					+ map.convertMapToIsometricCoordinates(mapX, mapY).x);
+			playerBox.setY(map.getTopCorner().y
+					- map.convertMapToIsometricCoordinates(mapX, mapY).y);
 
 			player.setBoundingBox(playerBox);
 

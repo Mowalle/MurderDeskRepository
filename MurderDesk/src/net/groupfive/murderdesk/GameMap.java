@@ -3,6 +3,7 @@ package net.groupfive.murderdesk;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
 
@@ -91,6 +92,7 @@ public class GameMap {
 
 		topCorner = new Vector2((mapWidth - 1) * (tilePixelWidth / 2),
 				(mapHeight - 1) * (tilePixelHeight / 2));
+
 	}
 
 	public int getMapWidth() {
@@ -119,5 +121,61 @@ public class GameMap {
 
 	public Vector2 getTopCorner() {
 		return topCorner;
+	}
+
+	/**
+	 * 
+	 * @param layerIndex
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public int getTileID(int layerIndex, int x, int y) {
+		
+		TiledMapTileLayer tileLayer = (TiledMapTileLayer) map.getLayers().get(
+				layerIndex);
+
+		TiledMapTileLayer.Cell cell = tileLayer.getCell(x, y);
+
+		if (cell == null) {
+			return -1;
+		} else if (cell.getTile() == null) {
+			return -1;
+		} else {
+			return cell.getTile().getId();
+		}
+
+	}
+
+	public boolean checkCollisionTile(int x, int y) {
+
+		return checkCollisionTile("Collision", x, y);
+	}
+
+	public boolean checkCollisionTile(String collisionLayerName, int x, int y) {
+
+		if (x >= ((TiledMapTileLayer) map.getLayers().get(collisionLayerName)).getWidth() || x < 0) {
+			System.out.println("Reached edge of map!");
+			return true;
+		}
+
+		if (y >= ((TiledMapTileLayer) map.getLayers().get(collisionLayerName)).getHeight() || y < 0) {
+			System.out.println("Reached edge of map!");
+			return true;
+		}
+		
+		// Look at all layers
+		for (int i = 0; i < map.getLayers().getCount(); i++) {
+			// if layer is called "Collision"
+			if (map.getLayers().get(i).getName().equals("Collision")) {
+				// if tile x,y contains something else than nothing then collision
+				if (getTileID(i, x, y) != -1) {
+					System.out.println("Collision!");
+					return true;
+				}
+			}
+		}
+		
+		return false;
 	}
 }
