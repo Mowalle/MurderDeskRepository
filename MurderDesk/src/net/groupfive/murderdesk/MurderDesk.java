@@ -28,8 +28,6 @@ public class MurderDesk extends Game {
 		width = Gdx.graphics.getWidth();
 		height = Gdx.graphics.getHeight();
 		
-		Texture.setEnforcePotImages(false);
-
 		this.setScreen(new PlayScreen(this));
 	}
 
