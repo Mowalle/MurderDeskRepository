@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class MurderDesk extends Game {
 
 	public static final String TITLE = "The Murder Desk";
-	public static final String VERSION = "v0.0.2";
+	public static final String VERSION = "v0.0.3";
 
 	public static int width;
 	public static int height;

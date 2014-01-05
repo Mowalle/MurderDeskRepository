@@ -6,6 +6,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 public class GameMap {
 
@@ -33,6 +34,12 @@ public class GameMap {
 	/** Pixel coordinates of map's top corner. */
 	private Vector2 topCorner;
 
+	/** Array containing indices of the layers that are rendered above the player. */
+	private int[] aboveLayers;
+
+	/** Array containing indices of the layers that are rendered below the player. */
+	private int[] belowLayers;
+	
 	public GameMap(String fileName) {
 		this(new TmxMapLoader().load(fileName));
 	}
@@ -78,7 +85,12 @@ public class GameMap {
 		return map;
 	}
 
+	/**
+	 * Set the underlying TileMap of the GameMap.
+	 * @param map
+	 */
 	public void setTiledMap(TiledMap map) {
+		// set up new map
 		this.map = map;
 
 		MapProperties prop = map.getProperties();
@@ -92,7 +104,53 @@ public class GameMap {
 
 		topCorner = new Vector2((mapWidth - 1) * (tilePixelWidth / 2),
 				(mapHeight - 1) * (tilePixelHeight / 2));
+		
+		calculateLayerDepth();
 
+	}
+	
+	/**
+	 * Calculates which layers are rendered above the player (called "WalkBehind") and which are not.
+	 */
+	private void calculateLayerDepth() {		
+		Array<Integer> above = new Array<Integer>();
+		Array<Integer> below = new Array<Integer>();
+		
+		for (int i = 0; i < map.getLayers().getCount(); i++) {
+			if (map.getLayers().get(i).getName().equalsIgnoreCase("WalkBehind")) {
+				above.add(i);
+			} else {
+				below.add(i);
+			}
+		}
+		
+		aboveLayers = new int[above.size];
+		belowLayers = new int [below.size];
+		
+		for (int i = 0; i < above.size; i++) {
+			aboveLayers[i] = above.get(i);
+		}
+		
+		for (int i = 0; i < below.size; i++) {
+			belowLayers[i] = below.get(i);
+		}
+		
+	}
+	
+	/**
+	 * Returns the indices of the layers that should be rendered above the player (called "WalkBehind").
+	 * @return
+	 */
+	public int[] getAboveLayers() {
+		return aboveLayers;
+	}
+	
+	/**
+	 * Returns the indices of the layers that should be rendered below the player (NOT called "WalkBehind").
+	 * @return
+	 */
+	public int[] getBelowLayers() {
+		return belowLayers;
 	}
 
 	public int getMapWidth() {
@@ -168,7 +226,7 @@ public class GameMap {
 		// Look at all layers
 		for (int i = 0; i < map.getLayers().getCount(); i++) {
 			// if layer is called "Collision"
-			if (map.getLayers().get(i).getName().equals("Collision")) {
+			if (map.getLayers().get(i).getName().equalsIgnoreCase("Collision")) {
 				// if tile x,y contains something else than nothing then collision
 				if (getTileId(i, x, y) != -1) {
 					System.out.println("Collision!");

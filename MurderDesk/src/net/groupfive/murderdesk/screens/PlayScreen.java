@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Array;
 
 public class PlayScreen implements Screen {
 
@@ -37,8 +38,8 @@ public class PlayScreen implements Screen {
 	@Override
 	public void render(float delta) {
 
-		// Comment in to log fps in console.
-		// logger.log();
+//		 Comment in to log fps in console.
+//		 logger.log();
 
 		/*
 		 * Update logic here
@@ -58,7 +59,29 @@ public class PlayScreen implements Screen {
 		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
 			cam.position.x += 5;
 		}
+		
+		// Camera Bounds
+		// Left
+		if (cam.position.x < Gdx.graphics.getWidth() / 2) {
+			cam.position.x = Gdx.graphics.getWidth() / 2;
+		}
+		
+		// Bottom
+		if (cam.position.y < 0) {
+			cam.position.y = 0;
+		}
+		
+		// Right
+		if (cam.position.x > (Gdx.graphics.getWidth() / 2) + map.getMapPixelWidth() - cam.viewportWidth) {
+			cam.position.x = (Gdx.graphics.getWidth() / 2) + map.getMapPixelWidth() - cam.viewportWidth;
+		}
+		
+		// Top
+		if (cam.position.y > map.getMapPixelHeight() - cam.viewportHeight) {
+			cam.position.y = map.getMapPixelHeight() - cam.viewportHeight;
+		}
 
+		// Update the player object
 		player.update(delta, map);
 
 		/*
@@ -74,8 +97,8 @@ public class PlayScreen implements Screen {
 		renderer.setView(cam);
 		renderer.getSpriteBatch().setProjectionMatrix(cam.combined);
 
-		int[] behind = { 0, 1, 2 };
-		renderer.render(behind);
+		// Render layers below the player (NOT "WalkBehind")
+		renderer.render(map.getBelowLayers());
 
 		// SpriteBatch Begin
 		game.spriteBatch.begin();
@@ -86,8 +109,8 @@ public class PlayScreen implements Screen {
 		// SpriteBath End
 		game.spriteBatch.end();
 
-		int[] above = { 3 };
-		renderer.render(above);
+		// Render layers above the player ("WalkBehind")
+		renderer.render(map.getAboveLayers());
 
 	}
 
@@ -102,12 +125,20 @@ public class PlayScreen implements Screen {
 
 		cam = new OrthographicCamera();
 		cam.setToOrtho(false, MurderDesk.width, MurderDesk.height);
+		cam.position.set(0, 0, 0);
+		
 		cam.update();
 
+		/*
+		 * Map Setup
+		 */
 		map = new GameMap("maps/IsoTest.tmx");
 
 		renderer = new IsometricTiledMapRenderer(map.getTiledMap());
-
+		
+		/*
+		 * Player Object Setup
+		 */
 		player = new Player();
 
 		// If map contains object "Spawn", get a rectangle from the bounding
@@ -138,6 +169,10 @@ public class PlayScreen implements Screen {
 					- map.convertMapToIsometricCoordinates(mapX, mapY).y);
 
 			player.setBoundingBox(playerBox);
+			
+			/*
+			 * Test Messages
+			 */
 
 			System.out.println("Player Data:");
 
@@ -148,7 +183,7 @@ public class PlayScreen implements Screen {
 
 		}
 
-		System.out.println("Camera: " + cam.position.x + ", " + cam.position.y);
+		System.out.println("Camera: " + cam.position.x + ", " + cam.position.y + ", " + cam.position.z);
 	}
 
 	@Override
@@ -170,6 +205,7 @@ public class PlayScreen implements Screen {
 	public void dispose() {
 		map.getTiledMap().dispose();
 		renderer.dispose();
+		player.dispose();
 	}
 
 }
