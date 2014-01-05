@@ -4,6 +4,7 @@ import net.groupfive.murderdesk.screens.PlayScreen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -26,6 +27,8 @@ public class MurderDesk extends Game {
 
 		width = Gdx.graphics.getWidth();
 		height = Gdx.graphics.getHeight();
+		
+		Texture.setEnforcePotImages(false);
 
 		this.setScreen(new PlayScreen(this));
 	}
