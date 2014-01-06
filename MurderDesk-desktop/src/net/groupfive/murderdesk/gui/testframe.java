@@ -1,18 +1,18 @@
 package net.groupfive.murderdesk.gui;
 
 import javax.swing.JPanel;
+
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import javax.swing.border.LineBorder;
-import java.awt.Color;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.TitledBorder;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.CompoundBorder;
-import javax.swing.JLabel;
-import java.awt.GridLayout;
 
+import javax.swing.border.LineBorder;
+
+import java.awt.Color;
+
+import javax.swing.border.TitledBorder;
+
+@SuppressWarnings("serial")
 public class testframe extends JPanel {
 
 	/**

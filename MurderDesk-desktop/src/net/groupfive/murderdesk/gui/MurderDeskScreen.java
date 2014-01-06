@@ -3,8 +3,6 @@ package net.groupfive.murderdesk.gui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GraphicsEnvironment;
-import java.awt.GridBagLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -17,6 +15,7 @@ import javax.swing.border.TitledBorder;
 import net.groupfive.murderdesk.Main;
 import net.groupfive.murderdesk.MurderDesk;
 
+@SuppressWarnings("serial")
 public class MurderDeskScreen extends JFrame{
 	
 	private static int instance = 1;
