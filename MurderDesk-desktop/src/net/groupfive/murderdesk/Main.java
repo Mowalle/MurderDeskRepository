@@ -1,5 +1,6 @@
 package net.groupfive.murderdesk;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -12,15 +13,20 @@ import java.util.Arrays;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
-import net.groupfive.murderdesk.gui.MurderDeskPanel;
+import net.groupfive.murderdesk.gui.GamePanel;
+import net.groupfive.murderdesk.gui.ContentPanel;
 import net.groupfive.murderdesk.gui.MurderDeskScreen;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglAWTCanvas;
+import com.badlogic.gdx.backends.lwjgl.LwjglAWTFrame;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
+import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 
 public class Main {
 	
@@ -43,7 +49,7 @@ public class Main {
 		cfg.title = MurderDesk.TITLE + " " + MurderDesk.VERSION;
 		cfg.useGL20 = true;
 		cfg.width = 640;
-		cfg.height = 480;
+		cfg.height = 100;
 		
 		new LwjglApplication(new MurderDesk(), cfg);
 	}
@@ -90,45 +96,48 @@ public class Main {
 		
 	}
 	
-	private static void initScreen2(MurderDeskScreen s){
-		MurderDeskPanel pCamera = new MurderDeskPanel("Camera");
-		MurderDeskPanel pSound = new MurderDeskPanel("Sound");
-		MurderDeskPanel pTraps = new MurderDeskPanel("Traps");
-		MurderDeskPanel pConsole = new MurderDeskPanel("Console");
-
-		pCamera.setBounds(0, 0, 640, 400);
+	private static void initScreen2(final MurderDeskScreen s){
+		//GamePanel pCamera = new GamePanel("Camera");
+		//final GamePanel pCamera;
+		ContentPanel pSound = new ContentPanel("Sound");
+		ContentPanel pTraps = new ContentPanel("Traps");
+		ContentPanel pConsole = new ContentPanel("Console");
+		
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run () {
+				LwjglFrame test = new LwjglFrame(new MurderDesk(), "test", 800, 600, true);
+				test.setVisible(true);
+			}
+		});
+		
+		//pCamera.setBounds(0, 0, 640, 400);
 		pSound.setBounds(640, 0, 140, 400);
 		pTraps.setBounds(0, 400, 300, 156);
 		pConsole.setBounds(300, 400, 480, 156);
 		
 		/*
-		 * Currently uses a seperate JFrame, instead of the JPanel in the second screen, but the behaviour is the same
-		 */
-		// unused configuration
-		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
-		cfg.useGL20 = true;
-		cfg.vSyncEnabled = true;
-		// create the frame
 		JFrame test = new JFrame();
-		// create a canvas
-		LwjglAWTCanvas gameCanvas = new LwjglAWTCanvas(new MurderDesk(), true);
-		gameCanvas.getCanvas().setSize(640, 400);
-		test.setSize(800, 600);
-		// add and set visible
-		test.getContentPane().add(gameCanvas.getCanvas());
-		test.setVisible(true);
-		//pCamera.add(gameCanvas.getCanvas());
-
-		s.content.add(pCamera);
+        // create a canvas
+        LwjglAWTCanvas gameCanvas = new LwjglAWTCanvas(new MurderDesk(), true);
+        gameCanvas.getCanvas().setSize(640, 400);
+        test.setSize(800, 600);
+        // add and set visible
+        test.getContentPane().add(gameCanvas.getCanvas());
+        test.setVisible(true);
+        */
+		
+		//s.content.add(pCamera);
 		s.content.add(pSound);
 		s.content.add(pTraps);
 		s.content.add(pConsole);
 	}
 
 	private static void initScreen3(MurderDeskScreen s){
-		MurderDeskPanel pSubject = new MurderDeskPanel("Subject");
-		MurderDeskPanel pObjectives = new MurderDeskPanel("Objectives");
-		MurderDeskPanel pBalance = new MurderDeskPanel("Balance");
+		ContentPanel pSubject = new ContentPanel("Subject");
+		ContentPanel pObjectives = new ContentPanel("Objectives");
+		ContentPanel pBalance = new ContentPanel("Balance");
 		
 		pSubject.setBounds(0, 0, 500, 556);
 		pObjectives.setBounds(500, 0, 280, 400);

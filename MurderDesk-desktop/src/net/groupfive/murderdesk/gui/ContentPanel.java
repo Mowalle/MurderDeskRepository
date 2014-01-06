@@ -11,9 +11,9 @@ import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
-public class MurderDeskPanel extends JPanel{
+public class ContentPanel extends JPanel{
 	
-	public MurderDeskPanel(String t){
+	public ContentPanel(String t){
 		setOpaque(false);
 		setSize(100,100);
 		
