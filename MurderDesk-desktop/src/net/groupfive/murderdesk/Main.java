@@ -20,9 +20,9 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		
-		//runAsSingleWindow();
+		runAsSingleWindow();
 		
-		initGUI();
+		//initGUI();
         
 	}
 	
@@ -30,8 +30,8 @@ public class Main {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = MurderDesk.TITLE + " " + MurderDesk.VERSION;
 		cfg.useGL20 = true;
-		cfg.width = 640;
-		cfg.height = 100;
+		cfg.width = 800;
+		cfg.height = 600;
 		
 		new LwjglApplication(new MurderDesk(), cfg);
 	}
