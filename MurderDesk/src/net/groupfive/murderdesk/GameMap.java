@@ -81,6 +81,33 @@ public class GameMap {
 		return result;
 	}
 
+	public boolean hasLayer(String layerName) {
+		boolean found = false;
+		
+		for (int i = 0; i < map.getLayers().getCount(); i++) {
+			if (map.getLayers().get(i).getName().equals(layerName)) {
+				found = true;
+				break;
+			}
+		}
+		return found;
+	}
+	
+	public boolean hasSpawn() {
+		boolean found = false;
+		
+		if (hasLayer("Objects")) {
+			for (int i = 0; i < map.getLayers().get("Objects").getObjects().getCount(); i++) {
+				if (map.getLayers().get("Objects").getObjects().get(i).getName().equalsIgnoreCase("Spawn")) {
+					found = true;
+					break;
+				}
+			}
+		}
+		
+		return found;
+	}
+	
 	public TiledMap getTiledMap() {
 		return map;
 	}

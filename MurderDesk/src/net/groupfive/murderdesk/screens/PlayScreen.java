@@ -10,10 +10,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.utils.Array;
 
 public class PlayScreen implements Screen {
 
@@ -22,8 +19,6 @@ public class PlayScreen implements Screen {
 	public OrthographicCamera cam;
 
 	private Player player;
-	// Should be replaced later
-	private Rectangle playerBox;
 
 	// Map stuff
 	private GameMap map;
@@ -38,8 +33,8 @@ public class PlayScreen implements Screen {
 	@Override
 	public void render(float delta) {
 
-//		 Comment in to log fps in console.
-//		 logger.log();
+		// Comment in to log fps in console.
+		// logger.log();
 
 		/*
 		 * Update logic here
@@ -59,27 +54,29 @@ public class PlayScreen implements Screen {
 		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
 			cam.position.x += 5;
 		}
-		
-		// Camera Bounds
-		// Left
-		if (cam.position.x < Gdx.graphics.getWidth() / 2) {
-			cam.position.x = Gdx.graphics.getWidth() / 2;
-		}
-		
-		// Bottom
-		if (cam.position.y < 0) {
-			cam.position.y = 0;
-		}
-		
-		// Right
-		if (cam.position.x > (Gdx.graphics.getWidth() / 2) + map.getMapPixelWidth() - cam.viewportWidth) {
-			cam.position.x = (Gdx.graphics.getWidth() / 2) + map.getMapPixelWidth() - cam.viewportWidth;
-		}
-		
-		// Top
-		if (cam.position.y > map.getMapPixelHeight() - cam.viewportHeight) {
-			cam.position.y = map.getMapPixelHeight() - cam.viewportHeight;
-		}
+
+		// // Camera Bounds
+		// // Left
+		// if (cam.position.x < Gdx.graphics.getWidth() / 2) {
+		// cam.position.x = Gdx.graphics.getWidth() / 2;
+		// }
+		//
+		// // Bottom
+		// if (cam.position.y < 0) {
+		// cam.position.y = 0;
+		// }
+		//
+		// // Right
+		// if (cam.position.x > (Gdx.graphics.getWidth() / 2) +
+		// map.getMapPixelWidth() - cam.viewportWidth) {
+		// cam.position.x = (Gdx.graphics.getWidth() / 2) +
+		// map.getMapPixelWidth() - cam.viewportWidth;
+		// }
+		//
+		// // Top
+		// if (cam.position.y > map.getMapPixelHeight() - cam.viewportHeight) {
+		// cam.position.y = map.getMapPixelHeight() - cam.viewportHeight;
+		// }
 
 		// Update the player object
 		player.update(delta, map);
@@ -100,13 +97,14 @@ public class PlayScreen implements Screen {
 		// Render layers below the player (NOT "WalkBehind")
 		renderer.render(map.getBelowLayers());
 
-		// SpriteBatch Begin
 		game.spriteBatch.begin();
 
+		game.font.draw(game.spriteBatch,
+				"FPS: " + Gdx.graphics.getFramesPerSecond(), 20, 20);
 		game.spriteBatch.setProjectionMatrix(cam.combined);
+
 		player.draw(game.spriteBatch);
 
-		// SpriteBath End
 		game.spriteBatch.end();
 
 		// Render layers above the player ("WalkBehind")
@@ -126,7 +124,7 @@ public class PlayScreen implements Screen {
 		cam = new OrthographicCamera();
 		cam.setToOrtho(false, MurderDesk.width, MurderDesk.height);
 		cam.position.set(0, 0, 0);
-		
+
 		cam.update();
 
 		/*
@@ -135,55 +133,26 @@ public class PlayScreen implements Screen {
 		map = new GameMap("maps/IsoTest.tmx");
 
 		renderer = new IsometricTiledMapRenderer(map.getTiledMap());
-		
+
 		/*
 		 * Player Object Setup
 		 */
 		player = new Player();
 
-		// If map contains object "Spawn", get a rectangle from the bounding
-		// box.
-		if (map.getMapObject("Objects", "Spawn") instanceof RectangleMapObject) {
-			playerBox = ((RectangleMapObject) map.getMapObject("Objects",
-					"Spawn")).getRectangle();
+		player.spawn(5, 5, map);
 
-			// Get map coordinates of the player box
-			// Might be moved to GameMap.java later
-			float mapX = map.convertScreenToMapCoordinates(
-					playerBox.getX() * 2,
-					map.getMapPixelHeight() - playerBox.getY()
-							- map.getTilePixelHeight()).x;
-			float mapY = map.convertScreenToMapCoordinates(
-					playerBox.getX() * 2,
-					map.getMapPixelHeight() - playerBox.getY()
-							- map.getTilePixelHeight()).y;
+		/*
+		 * Test Messages
+		 */
 
-			player.tileX = (int) mapX;
-			player.tileY = (int) mapY;
+		System.out.println("Player Data:");
 
-			// Get isometic coordinates of the player box
-			// Might be moved to GameMap.java later
-			playerBox.setX(map.getTopCorner().x
-					+ map.convertMapToIsometricCoordinates(mapX, mapY).x);
-			playerBox.setY(map.getTopCorner().y
-					- map.convertMapToIsometricCoordinates(mapX, mapY).y);
+		System.out.println("Position: " + player.getX() + ", " + player.getY());
+		System.out.println("Dimensions: " + player.getWidth() + ", "
+				+ player.getHeight());
 
-			player.setBoundingBox(playerBox);
-			
-			/*
-			 * Test Messages
-			 */
-
-			System.out.println("Player Data:");
-
-			System.out.println("Position: " + player.getX() + ", "
-					+ player.getY());
-			System.out.println("Dimensions: " + player.getWidth() + ", "
-					+ player.getHeight());
-
-		}
-
-		System.out.println("Camera: " + cam.position.x + ", " + cam.position.y + ", " + cam.position.z);
+		System.out.println("Camera: " + cam.position.x + ", " + cam.position.y
+				+ ", " + cam.position.z);
 	}
 
 	@Override

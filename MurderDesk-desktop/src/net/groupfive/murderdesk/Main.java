@@ -26,7 +26,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
 
 public class Main {
 	
-	public final static boolean GUI = true;
+	public final static boolean GUI = false;
 	
 	public static Font ftCamcorder, ftMinecraftia, ftTitle1, ftTitle2, ftRegular, ftSmall;
 	
@@ -52,8 +52,8 @@ public class Main {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = MurderDesk.TITLE + " " + MurderDesk.VERSION;
 		cfg.useGL20 = true;
-		cfg.width = 640;
-		cfg.height = 100;
+		cfg.width = 800;
+		cfg.height = 600;
 		
 		new LwjglApplication(new MurderDesk(), cfg);
 	}
