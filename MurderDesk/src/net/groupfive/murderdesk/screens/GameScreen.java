@@ -3,35 +3,80 @@ package net.groupfive.murderdesk.screens;
 import net.groupfive.murderdesk.GameMap;
 import net.groupfive.murderdesk.MurderDesk;
 import net.groupfive.murderdesk.Player;
+import net.groupfive.murderdesk.ui.GameHUD;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 
-public class PlayScreen implements Screen {
+public class GameScreen extends MurderDeskScreen {
 
-	final MurderDesk game;
+	private final MurderDesk game;
 
-	public OrthographicCamera cam;
+	public OrthographicCamera camera;
 
 	private Player player;
 
 	// Map stuff
 	private GameMap map;
 	private IsometricTiledMapRenderer renderer;
+	
+	private GameHUD hud;
+	
+	/** is done flag **/
+    private boolean isDone = false;
 
-	public FPSLogger logger;
-
-	public PlayScreen(MurderDesk game) {
+	public GameScreen(MurderDesk game) {
 		this.game = game;
+		
+		camera = new OrthographicCamera();
+		camera.setToOrtho(false, MurderDesk.width, MurderDesk.height);
+		camera.position.set(0, 0, 0);
+
+		camera.update();
+
+		/*
+		 * Map Setup
+		 */
+		map = new GameMap("maps/IsoTest.tmx");
+
+		renderer = new IsometricTiledMapRenderer(map.getTiledMap());
+		
+		hud = new GameHUD();
+
+		/*
+		 * Player Object Setup
+		 */
+		player = new Player();
+
+		player.spawn(5, 5, map);
+
+		/*
+		 * Test Messages
+		 */
+
+		System.out.println("Player Data:");
+
+		System.out.println("Position: " + player.getX() + ", " + player.getY());
+		System.out.println("Dimensions: " + player.getWidth() + ", "
+				+ player.getHeight());
+
+		System.out.println("Camera: " + camera.position.x + ", " + camera.position.y
+				+ ", " + camera.position.z);
 	}
 
 	@Override
-	public void render(float delta) {
+	public void dispose() {
+		map.getTiledMap().dispose();
+		renderer.dispose();
+		player.dispose();
+	}
+
+	@Override
+	public void update(float delta) {
 
 		// Comment in to log fps in console.
 		// logger.log();
@@ -40,19 +85,19 @@ public class PlayScreen implements Screen {
 		 * Update logic here
 		 */
 		if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-			cam.position.y += 5;
+			camera.position.y += 5;
 		}
 
 		if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-			cam.position.y -= 5;
+			camera.position.y -= 5;
 		}
 
 		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-			cam.position.x -= 5;
+			camera.position.x -= 5;
 		}
 
 		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-			cam.position.x += 5;
+			camera.position.x += 5;
 		}
 
 		// // Camera Bounds
@@ -80,7 +125,12 @@ public class PlayScreen implements Screen {
 
 		// Update the player object
 		player.update(delta, map);
+		
+	}
 
+	@Override
+	public void draw(float delta) {
+		
 		/*
 		 * Rendering stuff here
 		 */
@@ -89,19 +139,16 @@ public class PlayScreen implements Screen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		cam.update();
+		camera.update();
 
-		renderer.setView(cam);
-		renderer.getSpriteBatch().setProjectionMatrix(cam.combined);
+		renderer.setView(camera);
+		renderer.getSpriteBatch().setProjectionMatrix(camera.combined);
 
 		// Render layers below the player (NOT "WalkBehind")
 		renderer.render(map.getBelowLayers());
 
 		game.spriteBatch.begin();
-
-		game.font.draw(game.spriteBatch,
-				"FPS: " + Gdx.graphics.getFramesPerSecond(), 20, 20);
-		game.spriteBatch.setProjectionMatrix(cam.combined);
+		game.spriteBatch.setProjectionMatrix(camera.combined);
 
 		player.draw(game.spriteBatch);
 
@@ -109,72 +156,14 @@ public class PlayScreen implements Screen {
 
 		// Render layers above the player ("WalkBehind")
 		renderer.render(map.getAboveLayers());
-
+		
+		hud.draw(delta);
+		
 	}
 
 	@Override
-	public void resize(int width, int height) {
-	}
-
-	@Override
-	public void show() {
-
-		logger = new FPSLogger();
-
-		cam = new OrthographicCamera();
-		cam.setToOrtho(false, MurderDesk.width, MurderDesk.height);
-		cam.position.set(0, 0, 0);
-
-		cam.update();
-
-		/*
-		 * Map Setup
-		 */
-		map = new GameMap("maps/IsoTest.tmx");
-
-		renderer = new IsometricTiledMapRenderer(map.getTiledMap());
-
-		/*
-		 * Player Object Setup
-		 */
-		player = new Player();
-
-		player.spawn(5, 5, map);
-
-		/*
-		 * Test Messages
-		 */
-
-		System.out.println("Player Data:");
-
-		System.out.println("Position: " + player.getX() + ", " + player.getY());
-		System.out.println("Dimensions: " + player.getWidth() + ", "
-				+ player.getHeight());
-
-		System.out.println("Camera: " + cam.position.x + ", " + cam.position.y
-				+ ", " + cam.position.z);
-	}
-
-	@Override
-	public void hide() {
-
-	}
-
-	@Override
-	public void pause() {
-
-	}
-
-	@Override
-	public void resume() {
-
-	}
-
-	@Override
-	public void dispose() {
-		map.getTiledMap().dispose();
-		renderer.dispose();
-		player.dispose();
+	public boolean isDone() {	
+		return isDone;
 	}
 
 }

@@ -1,10 +1,11 @@
 package net.groupfive.murderdesk;
 
-import net.groupfive.murderdesk.screens.PlayScreen;
+import net.groupfive.murderdesk.screens.MurderDeskScreen;
+import net.groupfive.murderdesk.screens.GameScreen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -19,6 +20,45 @@ public class MurderDesk extends Game {
 	public SpriteBatch spriteBatch;
 	public BitmapFont font;
 
+	private FPSLogger logger;
+
+	@Override
+	public void render() {
+
+		MurderDeskScreen currentScreen = getScreen();
+
+		// update the screen
+		currentScreen.render(Gdx.graphics.getDeltaTime());
+
+		// When the screen is done we change to the
+		// next screen. Ideally the screen transitions are handled
+		// in the screen itself or in a proper state machine.
+		if (currentScreen.isDone()) {
+
+			// dispose the resources of the current screen
+			currentScreen.dispose();
+
+			// // if the current screen is a main menu screen we switch to
+			// // the game loop
+			// if (currentScreen instanceof MainMenu) {
+			// setScreen(new GameLoop());
+			// } else {
+			// // if the current screen is a game loop screen we switch to the
+			// // game over screen
+			// if (currentScreen instanceof GameLoop) {
+			// setScreen(new GameOver());
+			// } else if (currentScreen instanceof GameOver) {
+			// // if the current screen is a game over screen we switch to the
+			// // main menu screen
+			// setScreen(new MainMenu());
+			// }
+			// }
+		}
+
+		// logger.log();
+
+	}
+
 	@Override
 	public void create() {
 
@@ -27,8 +67,10 @@ public class MurderDesk extends Game {
 
 		width = Gdx.graphics.getWidth();
 		height = Gdx.graphics.getHeight();
-		
-		this.setScreen(new PlayScreen(this));
+
+		setScreen(new GameScreen(this));
+
+		logger = new FPSLogger();
 	}
 
 	@Override
@@ -37,9 +79,14 @@ public class MurderDesk extends Game {
 		font.dispose();
 	}
 
+	/**
+	 * For this game each of our screens is an instance of MurderDeskScreen.
+	 * 
+	 * @return the currently active {@link MurderDeskScreen}.
+	 */
 	@Override
-	public void render() {
-		super.render();
+	public MurderDeskScreen getScreen() {
+		return (MurderDeskScreen) super.getScreen();
 	}
 
 }
