@@ -166,11 +166,9 @@ public class Player {
 						originalX = x;
 						originalY = y;
 						newX = map.getTopCorner().x
-								+ map.convertMapToIsometricCoordinates(tileX,
-										tileY).x;
+								+ map.convertMapToIsometricCoordinates(tileX, tileY).x - (map.getTilePixelWidth() / 2);
 						newY = map.getTopCorner().y
-								- map.convertMapToIsometricCoordinates(tileX,
-										tileY).y;
+								- map.convertMapToIsometricCoordinates(tileX, tileY).y - (map.getTilePixelHeight());
 						moving = true;
 						System.out.println("Moving from " + originalX + ", "
 								+ originalY + " to " + newX + ", " + newY);
@@ -259,10 +257,12 @@ public class Player {
 		tileX = tiledX;
 		tileY = tiledY;
 
+		System.out.println(map.getTopCorner().y + " - " + map.convertMapToIsometricCoordinates(tiledX, tiledY).y);
+		
 		x = map.getTopCorner().x
-				+ map.convertMapToIsometricCoordinates(tiledX, tiledY).x;
+				+ map.convertMapToIsometricCoordinates(tiledX, tiledY).x - (map.getTilePixelWidth() / 2);
 		y = map.getTopCorner().y
-				- map.convertMapToIsometricCoordinates(tiledX, tiledY).y;
+				- map.convertMapToIsometricCoordinates(tiledX, tiledY).y - (map.getTilePixelHeight());
 	}
 
 	public void spawn(GameMap map) {
@@ -298,12 +298,11 @@ public class Player {
 				
 				// Get isometic coordinates of the player box
 				// Might be moved to GameMap.java later
-				playerBox.setX(map.getTopCorner().x
-						+ map.convertMapToIsometricCoordinates(mapX, mapY).x);
-				playerBox.setY(map.getTopCorner().y
-						- map.convertMapToIsometricCoordinates(mapX, mapY).y);
+				
 
-				setBoundingBox(playerBox);
+				spawn(tileX, tileY, map);
+				
+
 			} else {
 				spawn(0, 0, map);
 			}

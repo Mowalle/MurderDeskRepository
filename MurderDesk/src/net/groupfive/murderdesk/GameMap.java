@@ -5,6 +5,7 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
@@ -34,12 +35,18 @@ public class GameMap {
 	/** Pixel coordinates of map's top corner. */
 	private Vector2 topCorner;
 
-	/** Array containing indices of the layers that are rendered above the player. */
+	/**
+	 * Array containing indices of the layers that are rendered above the
+	 * player.
+	 */
 	private int[] aboveLayers;
 
-	/** Array containing indices of the layers that are rendered below the player. */
+	/**
+	 * Array containing indices of the layers that are rendered below the
+	 * player.
+	 */
 	private int[] belowLayers;
-	
+
 	public GameMap(String fileName) {
 		this(new TmxMapLoader().load(fileName));
 	}
@@ -77,14 +84,13 @@ public class GameMap {
 
 		result.x = (mapX - mapY) * (tilePixelWidth / 2);
 		result.y = (mapX + mapY) * (tilePixelHeight / 2);
-		System.out.println(result);
 
 		return result;
 	}
 
 	public boolean hasLayer(String layerName) {
 		boolean found = false;
-		
+
 		for (int i = 0; i < map.getLayers().getCount(); i++) {
 			if (map.getLayers().get(i).getName().equals(layerName)) {
 				found = true;
@@ -93,31 +99,31 @@ public class GameMap {
 		}
 		return found;
 	}
-	
+
 	public boolean hasSpawn() {
 		boolean found = false;
-		
+
 		if (hasLayer("Objects")) {
-			for (int i = 0; i < map.getLayers().get("Objects").getObjects().getCount(); i++) {
-				if (map.getLayers().get("Objects").getObjects().get(i).getName().equalsIgnoreCase("Spawn")) {
+			for (int i = 0; i < map.getLayers().get("Objects").getObjects()
+					.getCount(); i++) {
+				if (map.getLayers().get("Objects").getObjects().get(i)
+						.getName().equalsIgnoreCase("Spawn")) {
 					found = true;
-					System.out.println(map.getLayers().get("Objects").getObjects().get("Spawn").getProperties().get("x", Integer.class));
-					System.out.println(map.getLayers().get("Objects").getObjects().get("Spawn").getProperties().get("y", Integer.class));
-					
 					break;
 				}
 			}
 		}
-		
+
 		return found;
 	}
-	
+
 	public TiledMap getTiledMap() {
 		return map;
 	}
 
 	/**
 	 * Set the underlying TileMap of the GameMap.
+	 * 
 	 * @param map
 	 */
 	public void setTiledMap(TiledMap map) {
@@ -133,20 +139,21 @@ public class GameMap {
 		mapPixelWidth = mapWidth * tilePixelWidth;
 		mapPixelHeight = mapHeight * tilePixelHeight;
 
-		topCorner = new Vector2(tilePixelWidth * ((mapHeight / 2) - 0.5f),
-				(mapHeight - 1) * tilePixelHeight / 2);
+		topCorner = new Vector2(mapHeight * (tilePixelWidth / 2),
+				(mapHeight + 1) * (tilePixelHeight / 2));
 		System.out.println(topCorner);
 		calculateLayerDepth();
 
 	}
-	
+
 	/**
-	 * Calculates which layers are rendered above the player (called "WalkBehind") and which are not.
+	 * Calculates which layers are rendered above the player (called
+	 * "WalkBehind") and which are not.
 	 */
-	private void calculateLayerDepth() {		
+	private void calculateLayerDepth() {
 		Array<Integer> above = new Array<Integer>();
 		Array<Integer> below = new Array<Integer>();
-		
+
 		for (int i = 0; i < map.getLayers().getCount(); i++) {
 			if (map.getLayers().get(i).getName().equalsIgnoreCase("WalkBehind")) {
 				above.add(i);
@@ -154,34 +161,60 @@ public class GameMap {
 				below.add(i);
 			}
 		}
-		
+
 		aboveLayers = new int[above.size];
-		belowLayers = new int [below.size];
-		
+		belowLayers = new int[below.size];
+
 		for (int i = 0; i < above.size; i++) {
 			aboveLayers[i] = above.get(i);
 		}
-		
+
 		for (int i = 0; i < below.size; i++) {
 			belowLayers[i] = below.get(i);
 		}
-		
+
 	}
-	
+
 	/**
-	 * Returns the indices of the layers that should be rendered above the player (called "WalkBehind").
+	 * Returns the indices of the layers that should be rendered above the
+	 * player (called "WalkBehind").
+	 * 
 	 * @return
 	 */
 	public int[] getAboveLayers() {
 		return aboveLayers;
 	}
-	
+
 	/**
-	 * Returns the indices of the layers that should be rendered below the player (NOT called "WalkBehind").
+	 * Returns the indices of the layers that should be rendered below the
+	 * player (NOT called "WalkBehind").
+	 * 
 	 * @return
 	 */
 	public int[] getBelowLayers() {
 		return belowLayers;
+	}
+
+	public Rectangle getBoundingBox() {
+		Rectangle boundingBox = new Rectangle();
+
+		Vector2 topLeft;
+		Vector2 bottomLeft;
+		Vector2 bottomRight;
+		Vector2 topRight;
+
+		topLeft = new Vector2(0, (mapHeight + 1)* (tilePixelHeight / 2));
+		bottomLeft = new Vector2(0, (mapWidth - 1) * (tilePixelHeight / 2) * -1);
+		
+		bottomRight = new Vector2 ((mapWidth + mapHeight) * (tilePixelWidth / 2), (mapWidth - 1) * (tilePixelHeight / 2) * -1);
+		topRight = new Vector2((mapWidth + mapHeight) * (tilePixelWidth / 2), (mapHeight + 1)* (tilePixelHeight / 2));
+
+		boundingBox.x = bottomLeft.x;
+		boundingBox.y = bottomLeft.y;
+		boundingBox.width = bottomRight.x - bottomLeft.x;
+		boundingBox.height = topLeft.y - bottomLeft.y;
+		
+		return boundingBox;
 	}
 
 	public int getMapWidth() {
@@ -220,12 +253,14 @@ public class GameMap {
 	 * @return
 	 */
 	public int getTileId(int layerIndex, int x, int y) {
-		
+
 		TiledMapTileLayer tileLayer = (TiledMapTileLayer) map.getLayers().get(
 				layerIndex);
 
-		// The "tileLayer.getHeight() - 1 - y" is to invert the cells, because they are read out mirrored for some reason.
-		TiledMapTileLayer.Cell cell = tileLayer.getCell(x, tileLayer.getHeight() - 1 - y);
+		// The "tileLayer.getHeight() - 1 - y" is to invert the cells, because
+		// they are read out mirrored for some reason.
+		TiledMapTileLayer.Cell cell = tileLayer.getCell(x,
+				tileLayer.getHeight() - 1 - y);
 
 		if (cell == null) {
 			return -1;
@@ -244,28 +279,31 @@ public class GameMap {
 
 	public boolean checkCollisionTile(String collisionLayerName, int x, int y) {
 
-		if (x >= ((TiledMapTileLayer) map.getLayers().get(collisionLayerName)).getWidth() || x < 0) {
+		if (x >= ((TiledMapTileLayer) map.getLayers().get(collisionLayerName))
+				.getWidth() || x < 0) {
 			System.out.println("Reached edge of map!");
 			return true;
 		}
 
-		if (y >= ((TiledMapTileLayer) map.getLayers().get(collisionLayerName)).getHeight() || y < 0) {
+		if (y >= ((TiledMapTileLayer) map.getLayers().get(collisionLayerName))
+				.getHeight() || y < 0) {
 			System.out.println("Reached edge of map!");
 			return true;
 		}
-		
+
 		// Look at all layers
 		for (int i = 0; i < map.getLayers().getCount(); i++) {
 			// if layer is called "Collision"
 			if (map.getLayers().get(i).getName().equalsIgnoreCase("Collision")) {
-				// if tile x,y contains something else than nothing then collision
+				// if tile x,y contains something else than nothing then
+				// collision
 				if (getTileId(i, x, y) != -1) {
 					System.out.println("Collision at: " + x + ", " + y);
 					return true;
 				}
 			}
 		}
-		
+
 		return false;
 	}
 }
