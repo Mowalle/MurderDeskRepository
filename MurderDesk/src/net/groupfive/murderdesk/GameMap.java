@@ -77,6 +77,7 @@ public class GameMap {
 
 		result.x = (mapX - mapY) * (tilePixelWidth / 2);
 		result.y = (mapX + mapY) * (tilePixelHeight / 2);
+		System.out.println(result);
 
 		return result;
 	}
@@ -100,6 +101,9 @@ public class GameMap {
 			for (int i = 0; i < map.getLayers().get("Objects").getObjects().getCount(); i++) {
 				if (map.getLayers().get("Objects").getObjects().get(i).getName().equalsIgnoreCase("Spawn")) {
 					found = true;
+					System.out.println(map.getLayers().get("Objects").getObjects().get("Spawn").getProperties().get("x", Integer.class));
+					System.out.println(map.getLayers().get("Objects").getObjects().get("Spawn").getProperties().get("y", Integer.class));
+					
 					break;
 				}
 			}
@@ -129,9 +133,9 @@ public class GameMap {
 		mapPixelWidth = mapWidth * tilePixelWidth;
 		mapPixelHeight = mapHeight * tilePixelHeight;
 
-		topCorner = new Vector2((mapWidth - 1) * (tilePixelWidth / 2),
-				(mapHeight - 1) * (tilePixelHeight / 2));
-		
+		topCorner = new Vector2(tilePixelWidth * ((mapHeight / 2) - 0.5f),
+				(mapHeight - 1) * tilePixelHeight / 2);
+		System.out.println(topCorner);
 		calculateLayerDepth();
 
 	}
@@ -256,7 +260,7 @@ public class GameMap {
 			if (map.getLayers().get(i).getName().equalsIgnoreCase("Collision")) {
 				// if tile x,y contains something else than nothing then collision
 				if (getTileId(i, x, y) != -1) {
-					System.out.println("Collision!");
+					System.out.println("Collision at: " + x + ", " + y);
 					return true;
 				}
 			}

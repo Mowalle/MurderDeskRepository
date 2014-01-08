@@ -94,7 +94,7 @@ public class Player {
 	private float currentCooldownTime = 0f;
 
 	public Player() {
-		spriteSheet = new Texture("textures/Character2.png");
+		spriteSheet = new Texture("textures/Character.png");
 
 		frames = TextureRegion.split(spriteSheet, FRAME_WIDTH, FRAME_HEIGHT);
 		walkAnimationLU = new Animation(0.125f, frames[0]);
@@ -136,6 +136,9 @@ public class Player {
 				int newTileY = tileY;
 
 				randDirection = randGenerator.nextInt(4);
+				
+//				//To disable random movement
+//				randDirection = -1;
 
 				// Moving with keys, should be replaced with AI
 				if (Gdx.input.isKeyPressed(Keys.W) || randDirection == 0) {
@@ -292,7 +295,7 @@ public class Player {
 
 				tileX = (int) mapX;
 				tileY = (int) mapY;
-
+				
 				// Get isometic coordinates of the player box
 				// Might be moved to GameMap.java later
 				playerBox.setX(map.getTopCorner().x
