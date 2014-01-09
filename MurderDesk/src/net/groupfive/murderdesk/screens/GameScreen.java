@@ -1,6 +1,7 @@
 package net.groupfive.murderdesk.screens;
 
 import net.groupfive.murderdesk.GameMap;
+import net.groupfive.murderdesk.JujiPlayer;
 import net.groupfive.murderdesk.MurderDesk;
 import net.groupfive.murderdesk.Player;
 import net.groupfive.murderdesk.ui.GameHUD;
@@ -20,7 +21,7 @@ public class GameScreen extends MurderDeskScreen {
 	public OrthographicCamera camera;
 	public Rectangle viewport;
 
-	private Player player;
+	private JujiPlayer player;
 
 	Texture test = new Texture("textures/mousemap.png");
 
@@ -47,7 +48,7 @@ public class GameScreen extends MurderDeskScreen {
 		/*
 		 * Map Setup
 		 */
-		map = new GameMap("maps/IsoTest.tmx");
+		map = new GameMap("maps/test1.tmx");
 		System.out.println("Map: " + map.getMapPixelWidth() + ", "
 				+ map.getMapPixelHeight());
 		camera.position.set(map.getBoundingBox().width / 2,
@@ -60,9 +61,9 @@ public class GameScreen extends MurderDeskScreen {
 		/*
 		 * Player Object Setup
 		 */
-		player = new Player();
+		player = new JujiPlayer();
 
-		player.spawn(1, 1, map);
+		player.spawn(map);
 
 		System.out.println("Player: " + player.getX() + ", " + player.getY());
 
@@ -157,11 +158,11 @@ public class GameScreen extends MurderDeskScreen {
 
 		camera.update();
 
-		game.spriteBatch.begin();
-		game.spriteBatch.draw(test, map.getBoundingBox().getX(), map
-				.getBoundingBox().getY(), map.getBoundingBox().getWidth(), map
-				.getBoundingBox().getHeight());
-		game.spriteBatch.end();
+//		game.spriteBatch.begin();
+//		game.spriteBatch.draw(test, map.getBoundingBox().getX(), map
+//				.getBoundingBox().getY(), map.getBoundingBox().getWidth(), map
+//				.getBoundingBox().getHeight());
+//		game.spriteBatch.end();
 		
 		renderer.setView(camera);
 		renderer.getSpriteBatch().setProjectionMatrix(camera.combined);
