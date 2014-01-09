@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.Rectangle;
 
-public class Player {
+public class JujiPlayer {
 
 	/** Contains sprite sheet for character. */
 	private Texture spriteSheet;
@@ -32,19 +32,19 @@ public class Player {
 	public int tileX, tileY;
 
 	/** Width of the frames on the sprite sheet in pixel. */
-	private final static int FRAME_WIDTH = 24;
+	private final static int FRAME_WIDTH = 64;
 	/** Height of the frames on the sprite sheet in pixel. */
-	private final static int FRAME_HEIGHT = 32;
+	private final static int FRAME_HEIGHT = 64;
 	/**
 	 * x-Offset of where to render the player sprite in relation to the bottom
 	 * left corner of the underlying tile.
 	 */
-	private final static int SPRITE_OFFSET_X = 20;
+	private final static int SPRITE_OFFSET_X = 0;
 	/**
 	 * y-Offset of where to render the player sprite in relation to the bottom
 	 * left corner of the underlying tile.
 	 */
-	private final static int SPRITE_OFFSET_Y = 15;
+	private final static int SPRITE_OFFSET_Y = 8;
 
 	/**
 	 * Direction constants for the player to walk.
@@ -93,25 +93,25 @@ public class Player {
 	private int waitTime;
 	private float currentCooldownTime = 0f;
 
-	public Player() {
-		spriteSheet = new Texture("textures/CharacterOskar.png");
+	public JujiPlayer() {
+		spriteSheet = new Texture("textures/juji.png");
 
 		frames = TextureRegion.split(spriteSheet, FRAME_WIDTH, FRAME_HEIGHT);
-		walkAnimationLU = new Animation(0.125f, frames[0]);
+		walkAnimationLU = new Animation(0.125f, frames[6]);
 		walkAnimationLU.setPlayMode(Animation.LOOP_PINGPONG);
-		idleAnimationLU = new Animation(0.125f, frames[0][1]);
-
-		walkAnimationRU = new Animation(0.125f, frames[1]);
+		idleAnimationLU = new Animation(0.125f, frames[2]);
+		
+		walkAnimationRU = new Animation(0.125f, frames[7]);
 		walkAnimationRU.setPlayMode(Animation.LOOP_PINGPONG);
-		idleAnimationRU = new Animation(0.125f, frames[1][1]);
+		idleAnimationRU = new Animation(0.125f, frames[3]);
 
-		walkAnimationRD = new Animation(0.125f, frames[2]);
+		walkAnimationRD = new Animation(0.125f, frames[5]);
 		walkAnimationRD.setPlayMode(Animation.LOOP_PINGPONG);
-		idleAnimationRD = new Animation(0.125f, frames[2][1]);
+		idleAnimationRD = new Animation(0.125f, frames[1]);
 
-		walkAnimationLD = new Animation(0.125f, frames[3]);
+		walkAnimationLD = new Animation(0.125f, frames[4]);
 		walkAnimationLD.setPlayMode(Animation.LOOP_PINGPONG);
-		idleAnimationLD = new Animation(0.125f, frames[3][1]);
+		idleAnimationLD = new Animation(0.125f, frames[0]);
 
 		currentAnimation = walkAnimationLD;
 
@@ -257,6 +257,8 @@ public class Player {
 		tileX = tiledX;
 		tileY = tiledY;
 
+		System.out.println(map.getTopCorner().y + " - " + map.convertMapToIsometricCoordinates(tiledX, tiledY).y);
+		
 		x = map.getTopCorner().x
 				+ map.convertMapToIsometricCoordinates(tiledX, tiledY).x - (map.getTilePixelWidth() / 2);
 		y = map.getTopCorner().y

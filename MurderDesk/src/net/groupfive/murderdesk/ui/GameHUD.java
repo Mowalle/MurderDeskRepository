@@ -15,6 +15,7 @@ public class GameHUD {
 		spriteBatch = new SpriteBatch();
 		font = new BitmapFont(Gdx.files.internal("fonts/Minecraftia.fnt"),
 				Gdx.files.internal("fonts/Minecraftia.png"), false);
+		
 		background = new Texture("textures/uiTest.png");
 	}
 
