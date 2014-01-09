@@ -1,9 +1,9 @@
 package net.groupfive.murderdesk.screens;
 
 import net.groupfive.murderdesk.GameMap;
-import net.groupfive.murderdesk.JujiPlayer;
 import net.groupfive.murderdesk.MurderDesk;
 import net.groupfive.murderdesk.Player;
+import net.groupfive.murderdesk.JujiPlayer; //Only for testing purposes
 import net.groupfive.murderdesk.ui.GameHUD;
 
 import com.badlogic.gdx.Gdx;
@@ -23,7 +23,7 @@ public class GameScreen extends MurderDeskScreen {
 
 	private JujiPlayer player;
 
-	Texture test = new Texture("textures/mousemap.png");
+	Texture test = new Texture("textures/mousemap.png"); //Only for testing purposes
 
 	// Map stuff
 	private GameMap map;
@@ -38,7 +38,7 @@ public class GameScreen extends MurderDeskScreen {
 		this.game = game;
 
 		camera = new OrthographicCamera();
-		viewport = new Rectangle(25, 150, 640, 400);
+		viewport = new Rectangle(25, 150, 640, 400); // Hardcoded Values
 
 		camera.setToOrtho(false, viewport.width, viewport.height);
 		camera.position.set(0, 0, 0);
@@ -52,7 +52,7 @@ public class GameScreen extends MurderDeskScreen {
 		System.out.println("Map BoundingBox: " + map.getBoundingBox().x + ", " + map.getBoundingBox().y + ", " + map.getBoundingBox().width + ", "
 				+ map.getBoundingBox().height);
 	
-		camera.position.set(map.getBoundingBox().width / 2, map.getBoundingBox().height / 2 + map.getBoundingBox().y, 0);
+		camera.position.set(map.getMapPixelWidth() / 2, map.getMapPixelHeight() / 2 + map.getBoundingBox().y, 0);
 		
 		renderer = new IsometricTiledMapRenderer(map.getTiledMap());
 
@@ -85,9 +85,6 @@ public class GameScreen extends MurderDeskScreen {
 	@Override
 	public void update(float delta) {
 
-		// Comment in to log fps in console.
-		// logger.log();
-
 		/*
 		 * Update logic here
 		 */
@@ -107,35 +104,8 @@ public class GameScreen extends MurderDeskScreen {
 			camera.position.x += 5;
 		}
 
-		// // Camera Bounds
-		// if (map.getMapPixelWidth() > viewport.width) {
-		//
-		// // Left
-		// if (camera.position.x < viewport.width / 2) {
-		// camera.position.x = viewport.width / 2;
-		// }
-		//
-		// // // Right
-		// // if (cam.position.x > (Gdx.graphics.getWidth() / 2) +
-		// // map.getMapPixelWidth() - cam.viewportWidth) {
-		// // cam.position.x = (Gdx.graphics.getWidth() / 2) +
-		// // map.getMapPixelWidth() - cam.viewportWidth;
-		// // }
-		// }
-
-		// // Bottom
-		// if (camera.position.y < 0) {
-		// camera.position.y = 0;
-		// }
-
-		//
-		// // Top
-		// if (camera.position.y > 16) {
-		// camera.position.y = 16;
-		// }
-
-		// System.out.println("Camera: " + camera.position.x + ", "
-		// + camera.position.y + ", " + camera.position.z);
+		// Camera Bounds
+		
 
 		// Update the player object
 		player.update(delta, map);
@@ -166,10 +136,6 @@ public class GameScreen extends MurderDeskScreen {
 		
 		renderer.setView(camera);
 		renderer.getSpriteBatch().setProjectionMatrix(camera.combined);
-		
-//		game.spriteBatch.begin();
-//		game.spriteBatch.draw(test, map.getBoundingBox().x, map.getBoundingBox().y, map.getBoundingBox().width, map.getBoundingBox().height);
-//		game.spriteBatch.end();
 		
 		// Render layers below the player (NOT "WalkBehind")
 		renderer.render(map.getBelowLayers());

@@ -32,9 +32,6 @@ public class GameMap {
 	/** Height of underlying tiled map in pixel. */
 	private int mapPixelHeight;
 
-	/** Pixel coordinates of map's top corner. */
-	private Vector2 topCorner;
-
 	/**
 	 * Array containing indices of the layers that are rendered above the
 	 * player.
@@ -139,9 +136,6 @@ public class GameMap {
 		mapPixelWidth = mapWidth * tilePixelWidth;
 		mapPixelHeight = mapHeight * tilePixelHeight;
 
-		topCorner = new Vector2(mapHeight * (tilePixelWidth / 2),
-				(mapHeight + 1) * (tilePixelHeight / 2));
-		System.out.println(topCorner);
 		calculateLayerDepth();
 
 	}
@@ -195,25 +189,32 @@ public class GameMap {
 		return belowLayers;
 	}
 
+	/**
+	 * Returns a rectangle that is the bounding box of the map.
+	 * 
+	 * @return Rectangle that is the bounding box of the map.
+	 */
 	public Rectangle getBoundingBox() {
 		Rectangle boundingBox = new Rectangle();
 
-		Vector2 topLeft;
-		Vector2 bottomLeft;
-		Vector2 bottomRight;
-		Vector2 topRight;
+		Vector2 pointLeft = new Vector2(0, tilePixelHeight / 2);
+		Vector2 pointTop = new Vector2((tilePixelWidth / 2) * mapHeight,
+				(mapHeight + 1) * (tilePixelHeight / 2));
+		Vector2 pointBottom = new Vector2((tilePixelWidth / 2) * mapWidth,
+				(mapWidth - 1) * (tilePixelHeight / 2) * -1);
+		Vector2 pointRight = new Vector2((mapWidth + mapHeight)
+				* (tilePixelWidth / 2), mapHeight * (tilePixelHeight / 2) * -1);
 
-		topLeft = new Vector2(0, (mapHeight + 1)* (tilePixelHeight / 2));
-		bottomLeft = new Vector2(0, (mapWidth - 1) * (tilePixelHeight / 2) * -1);
-		
-		bottomRight = new Vector2 ((mapWidth + mapHeight) * (tilePixelWidth / 2), (mapWidth - 1) * (tilePixelHeight / 2) * -1);
-		topRight = new Vector2((mapWidth + mapHeight) * (tilePixelWidth / 2), (mapHeight + 1)* (tilePixelHeight / 2));
+		Vector2 topLeft = new Vector2(pointLeft.x, pointTop.y);
+		Vector2 bottomLeft = new Vector2(pointLeft.x, pointBottom.y);
+		Vector2 bottomRight = new Vector2(pointRight.x, pointBottom.y);
+//		Vector2 topRight = new Vector2(pointRight.x, pointTop.y); //Not needed
 
 		boundingBox.x = bottomLeft.x;
 		boundingBox.y = bottomLeft.y;
 		boundingBox.width = bottomRight.x - bottomLeft.x;
 		boundingBox.height = topLeft.y - bottomLeft.y;
-		
+
 		return boundingBox;
 	}
 
@@ -241,8 +242,23 @@ public class GameMap {
 		return mapPixelHeight;
 	}
 
-	public Vector2 getTopCorner() {
-		return topCorner;
+	public Vector2 getCornerTop() {
+		return new Vector2((tilePixelWidth / 2) * mapHeight, (mapHeight + 1)
+				* (tilePixelHeight / 2));
+	}
+
+	public Vector2 getCornerBottom() {
+		return new Vector2((tilePixelWidth / 2) * mapWidth, (mapWidth - 1)
+				* (tilePixelHeight / 2) * -1);
+	}
+
+	public Vector2 getCornerLeft() {
+		return new Vector2(0, tilePixelHeight / 2);
+	}
+
+	public Vector2 getCornerRight() {
+		return new Vector2((mapWidth + mapHeight) * (tilePixelWidth / 2),
+				mapHeight * (tilePixelHeight / 2) * -1);
 	}
 
 	/**

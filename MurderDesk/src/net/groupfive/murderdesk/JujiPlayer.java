@@ -165,9 +165,9 @@ public class JujiPlayer {
 						tileY = newTileY;
 						originalX = x;
 						originalY = y;
-						newX = map.getTopCorner().x
+						newX = map.getCornerTop().x
 								+ map.convertMapToIsometricCoordinates(tileX, tileY).x - (map.getTilePixelWidth() / 2);
-						newY = map.getTopCorner().y
+						newY = map.getCornerTop().y
 								- map.convertMapToIsometricCoordinates(tileX, tileY).y - (map.getTilePixelHeight());
 						moving = true;
 						System.out.println("Moving from " + originalX + ", "
@@ -257,11 +257,9 @@ public class JujiPlayer {
 		tileX = tiledX;
 		tileY = tiledY;
 
-		System.out.println(map.getTopCorner().y + " - " + map.convertMapToIsometricCoordinates(tiledX, tiledY).y);
-		
-		x = map.getTopCorner().x
+		x = map.getCornerTop().x
 				+ map.convertMapToIsometricCoordinates(tiledX, tiledY).x - (map.getTilePixelWidth() / 2);
-		y = map.getTopCorner().y
+		y = map.getCornerTop().y
 				- map.convertMapToIsometricCoordinates(tiledX, tiledY).y - (map.getTilePixelHeight());
 	}
 
