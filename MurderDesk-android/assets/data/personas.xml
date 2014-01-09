@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8">
+<personas>
+	<persona>
+		<general>
+			<id>1</id>
+			<fname>First Name</fname>
+			<lname>Last Name</lname>
+			<age>29</age>
+			<location>City, Somehwer</location>
+			<captured>dd/mm/yyyy</captured>
+			<termination>dd/mm/yyyy</termination>
+		</general>
+		<details>
+			<detail>detail 1</detail>
+			<detail>detail 2</detail>
+			<detail>detail 3</detail>
+			<detail>Add as much details as you want</detail>
+		</details>
+	</persona>
+	<persona>
+		<general>
+			<id>249-b</id>
+			<fname>Johnny</fname>
+			<lname>Appleseed</lname>
+			<age>26</age>
+			<location>Houston, TX</location>
+			<captured>26/12/1993</captured>
+			<termination>29/02/2014</termination>
+		</general>
+		<details>
+			<detail>This is Mike. Mike is a drug dealer. Not a biggy, but still he is doing his job good.</detail>
+			<detail>Beneath drug dealing he had some police records going on. He stole, fought and almost killed.</detail>
+			<detail>He is the stereotypical guy who just cause problems and cannot control his anger so he always get into bizarre/ dangerous situations.</detail>
+			<detail>He does not really think of the consequences that can happen with his actions.</detail>
+			<detail>No one really knows why he is stealing and fighting.</detail>
+			<detail>I guess it is one of the cases where he does not know that else to do with his life.</detail>
+		</details>
+	</persona>
+</personas>

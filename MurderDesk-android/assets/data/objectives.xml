@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8">
+<objectives>
+	<objective>
+		<text>Lead character to some scary place</text>
+		<reward>5000</reward>
+	</objective>
+	<objective>
+		<text>Turn of the lights</text>
+		<reward>20</reward>
+	</objective>
+</objectives>
+	

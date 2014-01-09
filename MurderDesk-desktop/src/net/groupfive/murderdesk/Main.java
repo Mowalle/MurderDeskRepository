@@ -18,19 +18,33 @@ public class Main {
 	static GUI gui;
 	static Model m, n;
 	static Controller c;
+	static DataController d;
 	
 	/**
 	 * Use the GUI boolean to enable or disable the three-screen UI.
 	 */
 	public final static boolean GUI = false;
 		
-	public static void mains (String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run () {
-				new GamePanel();
-			}
-		});
+	public static void main (String[] args) {
+		
+		c = new Controller();
+		
+		d = new DataController();
+		d.load();
+		d.log();
+		
+		if(GUI){
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run () {
+					
+					m = new Model(c);
+					c.addObserver(new GUI());
+				}
+			});
+		} else{
+			runAsSingleWindow();
+		}
 	}
 	
 	public static void runAsSingleWindow(){

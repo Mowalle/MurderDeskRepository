@@ -29,6 +29,7 @@ public class GamePanel extends JFrame {
 		setSize(800, 600);
 	}
 	
+	/*
 	public static void main (String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
@@ -37,6 +38,7 @@ public class GamePanel extends JFrame {
 			}
 		});
 	}
+	*/
 }
 
 /*

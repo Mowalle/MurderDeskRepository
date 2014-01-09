@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8">
+<rooms>
+	<room id="1">
+		<name>Cellar</name>
+		<traps>
+			<trap>Open some door</trap>
+			<trap>Fill with some gas</trap>
+			<trap>Release the kraken</trap>
+		</traps>
+	</room>
+</rooms>
