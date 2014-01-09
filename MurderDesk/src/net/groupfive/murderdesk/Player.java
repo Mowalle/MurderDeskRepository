@@ -257,8 +257,6 @@ public class Player {
 		tileX = tiledX;
 		tileY = tiledY;
 
-		System.out.println(map.getTopCorner().y + " - " + map.convertMapToIsometricCoordinates(tiledX, tiledY).y);
-		
 		x = map.getTopCorner().x
 				+ map.convertMapToIsometricCoordinates(tiledX, tiledY).x - (map.getTilePixelWidth() / 2);
 		y = map.getTopCorner().y

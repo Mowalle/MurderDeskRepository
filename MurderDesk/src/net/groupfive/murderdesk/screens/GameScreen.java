@@ -49,11 +49,11 @@ public class GameScreen extends MurderDeskScreen {
 		 * Map Setup
 		 */
 		map = new GameMap("maps/test1.tmx");
-		System.out.println("Map: " + map.getMapPixelWidth() + ", "
-				+ map.getMapPixelHeight());
-		camera.position.set(map.getBoundingBox().width / 2,
-				map.getBoundingBox().height / 2, 0);
-
+		System.out.println("Map BoundingBox: " + map.getBoundingBox().x + ", " + map.getBoundingBox().y + ", " + map.getBoundingBox().width + ", "
+				+ map.getBoundingBox().height);
+	
+		camera.position.set(map.getBoundingBox().width / 2, map.getBoundingBox().height / 2 + map.getBoundingBox().y, 0);
+		
 		renderer = new IsometricTiledMapRenderer(map.getTiledMap());
 
 		hud = new GameHUD();
@@ -166,13 +166,17 @@ public class GameScreen extends MurderDeskScreen {
 		
 		renderer.setView(camera);
 		renderer.getSpriteBatch().setProjectionMatrix(camera.combined);
-
+		
+//		game.spriteBatch.begin();
+//		game.spriteBatch.draw(test, map.getBoundingBox().x, map.getBoundingBox().y, map.getBoundingBox().width, map.getBoundingBox().height);
+//		game.spriteBatch.end();
+		
 		// Render layers below the player (NOT "WalkBehind")
 		renderer.render(map.getBelowLayers());
 
 		game.spriteBatch.begin();
 		game.spriteBatch.setProjectionMatrix(camera.combined);
-
+		
 		player.draw(game.spriteBatch);
 
 		game.spriteBatch.end();
