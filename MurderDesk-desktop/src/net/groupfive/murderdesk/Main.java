@@ -1,62 +1,36 @@
 package net.groupfive.murderdesk;
 
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.EventQueue;
-import java.awt.Font;
-import java.awt.ScrollPane;
-import java.io.InputStream;
-
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
-import javax.swing.text.StyledDocument;
 
 import net.groupfive.murderdesk.gui.GamePanel;
-import net.groupfive.murderdesk.gui.ContentPanel;
-import net.groupfive.murderdesk.gui.MurderDeskScreen;
-import net.groupfive.murderdesk.gui.NormalText;
-import net.groupfive.murderdesk.gui.NormalTextScroll;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
 
+/**
+ * Main class of the MurderDesk game. The most important parts are:<br>
+ * [1] Controller. This part of the application collects all user/AI input and will notify all observers of changes<br>
+ * [x] Observers. All classes that implement the Observer class will be linked to the controller and notified accordingly<br>
+ * [x] Models. These provide the game logic. Pass the Controller (in the constructor or aftwerwards) and use any of the functions available.
+ */
 public class Main {
 	
 	static GUI gui;
 	static Model m, n;
 	static Controller c;
 	
-	public final static boolean GUI = true;
-		
 	/**
-	 * Creates and shows the game or user interface.
 	 * Use the GUI boolean to enable or disable the three-screen UI.
 	 */
-	public static void main(String[] args) {
-		// set up the logic part (atm it's just a random number generator that signals the controller)
-		// we want a shared controller (that takes care of ALL events) for the whole application
-		c = new Controller();
-		// set up as much Models or other stuff taking care of the logic as wanted.
-		m = new Model(c);
-		n = new Model(c);
+	public final static boolean GUI = false;
 		
-		if(GUI){
-			javax.swing.SwingUtilities.invokeLater(new Runnable() {
-				@Override
-	            public void run() {
-	                gui = new GUI();
-	                c.addObserver(gui);
-	                //m.addObserver(gui);
-	                //n.addObserver(gui);
-	            }
-	        });
-		} else{
-			runAsSingleWindow();
-		}
+	public static void mains (String[] args) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run () {
+				new GamePanel();
+			}
+		});
 	}
 	
 	public static void runAsSingleWindow(){

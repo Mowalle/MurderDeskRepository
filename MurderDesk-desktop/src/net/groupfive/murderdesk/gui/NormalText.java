@@ -18,6 +18,7 @@ import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
 import sun.swing.SwingUtilities2;
+import net.groupfive.murderdesk.GUI;
 import net.groupfive.murderdesk.Main;
 
 @SuppressWarnings("serial")
@@ -34,8 +35,10 @@ public class NormalText extends JTextPane {
 	    s = sc.addStyle("RegularText", null);
 	    s.addAttribute(StyleConstants.Foreground, Color.white);
 	    s.addAttribute(StyleConstants.FontSize, 11);
-	    s.addAttribute(StyleConstants.FontFamily, Main.ftRegular.getFamily());
+	    s.addAttribute(StyleConstants.FontFamily, GUI.ftRegular.getFamily());
 	    setParagraphAttributes(s, false);
+	    DefaultCaret caret = (DefaultCaret)this.getCaret();
+	    caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 	}
 	
 	public void append(String s) { // better implementation--uses

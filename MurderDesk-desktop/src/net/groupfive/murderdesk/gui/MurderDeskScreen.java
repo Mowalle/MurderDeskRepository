@@ -12,6 +12,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
+import net.groupfive.murderdesk.GUI;
 import net.groupfive.murderdesk.Main;
 import net.groupfive.murderdesk.MurderDesk;
 
@@ -45,22 +46,22 @@ public class MurderDeskScreen extends JFrame{
 							title,
 							TitledBorder.CENTER,
 							TitledBorder.TOP,
-							Main.ftTitle1,
+							GUI.ftTitle1,
 							Color.WHITE),
 					"Murdersoft " + MurderDesk.VERSION + " - (c) 2014 EGI/5",
 					TitledBorder.CENTER,
 					TitledBorder.BOTTOM,
-					Main.ftSmall,
+					GUI.ftSmall,
 					Color.WHITE));
 		mainPanel.setBorder(border);
 		
 		// add extra title content
 		JLabel lblTerminal = new JLabel("Terminal #16/" + instance);
-		lblTerminal.setFont(Main.ftCamcorder.deriveFont(Font.PLAIN, 18));
+		lblTerminal.setFont(GUI.ftCamcorder.deriveFont(Font.PLAIN, 18));
 		lblTerminal.setBounds(10, 5, 150, 21);
 		mainPanel.add(lblTerminal);
 		JLabel lblTime = new JLabel("13:42", SwingConstants.RIGHT);
-		lblTime.setFont(Main.ftCamcorder.deriveFont(Font.PLAIN, 18));
+		lblTime.setFont(GUI.ftCamcorder.deriveFont(Font.PLAIN, 18));
 		lblTime.setBounds(640, 5, 150, 21);
 		mainPanel.add(lblTime);
 		

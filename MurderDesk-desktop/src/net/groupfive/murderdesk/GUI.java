@@ -11,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
 import net.groupfive.murderdesk.gui.ContentPanel;
+import net.groupfive.murderdesk.gui.GamePanel;
 import net.groupfive.murderdesk.gui.MurderDeskScreen;
 import net.groupfive.murderdesk.gui.NormalText;
 import net.groupfive.murderdesk.gui.NormalTextScroll;
@@ -52,12 +53,11 @@ public class GUI implements Observer {
 				
 				// show
 		        screen1.setVisible(true);
-		        screen2.setVisible(true);
-		        screen3.setVisible(true);
+		       	screen2.setVisible(true);
+		       	screen3.setVisible(true);
 	}
 	
 	private void initScreen1(MurderDeskScreen s){
-		
 	}
 	
 	private void initScreen2(final MurderDeskScreen s){
