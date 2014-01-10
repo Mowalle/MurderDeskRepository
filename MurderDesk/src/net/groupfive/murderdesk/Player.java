@@ -32,19 +32,19 @@ public class Player {
 	public int tileX, tileY;
 
 	/** Width of the frames on the sprite sheet in pixel. */
-	private final static int FRAME_WIDTH = 24;
+	private final static int FRAME_WIDTH = 64;
 	/** Height of the frames on the sprite sheet in pixel. */
-	private final static int FRAME_HEIGHT = 32;
+	private final static int FRAME_HEIGHT = 64;
 	/**
 	 * x-Offset of where to render the player sprite in relation to the bottom
 	 * left corner of the underlying tile.
 	 */
-	private final static int SPRITE_OFFSET_X = 20;
+	private final static int SPRITE_OFFSET_X = 0;
 	/**
 	 * y-Offset of where to render the player sprite in relation to the bottom
 	 * left corner of the underlying tile.
 	 */
-	private final static int SPRITE_OFFSET_Y = 15;
+	private final static int SPRITE_OFFSET_Y = 8;
 
 	/**
 	 * Direction constants for the player to walk.
@@ -55,7 +55,7 @@ public class Player {
 	private static final int LEFT_DOWN = 3;
 
 	/** Shows whether movement animation is still being played */
-	private boolean moving;
+	private boolean isMoving;
 
 	private int currentDirection = 1;
 
@@ -93,30 +93,32 @@ public class Player {
 	private int waitTime;
 	private float currentCooldownTime = 0f;
 
+	private boolean allowMovement = true;
+
 	public Player() {
-		spriteSheet = new Texture("textures/CharacterOskar.png");
+		spriteSheet = new Texture("textures/juji.png");
 
 		frames = TextureRegion.split(spriteSheet, FRAME_WIDTH, FRAME_HEIGHT);
-		walkAnimationLU = new Animation(0.125f, frames[0]);
+		walkAnimationLU = new Animation(0.125f, frames[6]);
 		walkAnimationLU.setPlayMode(Animation.LOOP_PINGPONG);
-		idleAnimationLU = new Animation(0.125f, frames[0][1]);
-
-		walkAnimationRU = new Animation(0.125f, frames[1]);
+		idleAnimationLU = new Animation(0.125f, frames[2]);
+		
+		walkAnimationRU = new Animation(0.125f, frames[7]);
 		walkAnimationRU.setPlayMode(Animation.LOOP_PINGPONG);
-		idleAnimationRU = new Animation(0.125f, frames[1][1]);
+		idleAnimationRU = new Animation(0.125f, frames[3]);
 
-		walkAnimationRD = new Animation(0.125f, frames[2]);
+		walkAnimationRD = new Animation(0.125f, frames[5]);
 		walkAnimationRD.setPlayMode(Animation.LOOP_PINGPONG);
-		idleAnimationRD = new Animation(0.125f, frames[2][1]);
+		idleAnimationRD = new Animation(0.125f, frames[1]);
 
-		walkAnimationLD = new Animation(0.125f, frames[3]);
+		walkAnimationLD = new Animation(0.125f, frames[4]);
 		walkAnimationLD.setPlayMode(Animation.LOOP_PINGPONG);
-		idleAnimationLD = new Animation(0.125f, frames[3][1]);
+		idleAnimationLD = new Animation(0.125f, frames[0]);
 
 		currentAnimation = walkAnimationLD;
 
 		animationStateTime = 0f;
-		moving = false;
+		isMoving = false;
 
 		randGenerator = new Random();
 		waitTime = randGenerator.nextInt(4);
@@ -124,103 +126,113 @@ public class Player {
 
 	public void update(float delta, GameMap map) {
 
-		if (!moving) {
+		if (allowMovement) {
+			if (!isMoving) {
 
-			if (currentCooldownTime < waitTime) {
-				currentCooldownTime += delta;
-			} else {
-				currentCooldownTime = 0f;
-				waitTime = randGenerator.nextInt(4);
+				if (currentCooldownTime < waitTime) {
+					currentCooldownTime += delta;
+				} else {
+					currentCooldownTime = 0f;
+					waitTime = randGenerator.nextInt(4);
 
-				int newTileX = tileX;
-				int newTileY = tileY;
+					int newTileX = tileX;
+					int newTileY = tileY;
 
-				randDirection = randGenerator.nextInt(4);
-				
-//				//To disable random movement
-//				randDirection = -1;
+					randDirection = randGenerator.nextInt(4);
 
-				// Moving with keys, should be replaced with AI
-				if (Gdx.input.isKeyPressed(Keys.W) || randDirection == 0) {
-					currentDirection = LEFT_UP;
-					newTileX -= 1;
-					newTileY += 0;
-				} else if (Gdx.input.isKeyPressed(Keys.S) || randDirection == 1) {
-					currentDirection = RIGHT_DOWN;
-					newTileX += 1;
-					newTileY += 0;
-				} else if (Gdx.input.isKeyPressed(Keys.D) || randDirection == 2) {
-					currentDirection = RIGHT_UP;
-					newTileX += 0;
-					newTileY -= 1;
-				} else if (Gdx.input.isKeyPressed(Keys.A) || randDirection == 3) {
-					currentDirection = LEFT_DOWN;
-					newTileX += 0;
-					newTileY += 1;
-				}
+					 //To disable random movement
+					 randDirection = -1;
 
-				if (!map.checkCollisionTile(newTileX, newTileY)) {
-					if (tileX != newTileX || tileY != newTileY) {
-						tileX = newTileX;
-						tileY = newTileY;
-						originalX = x;
-						originalY = y;
-						newX = map.getCornerTop().x
-								+ map.convertMapToIsometricCoordinates(tileX, tileY).x - (map.getTilePixelWidth() / 2);
-						newY = map.getCornerTop().y
-								- map.convertMapToIsometricCoordinates(tileX, tileY).y - (map.getTilePixelHeight());
-						moving = true;
-						System.out.println("Moving from " + originalX + ", "
-								+ originalY + " to " + newX + ", " + newY);
+					// Moving with keys, should be replaced with AI
+					if (Gdx.input.isKeyPressed(Keys.W) || randDirection == 0) {
+						currentDirection = LEFT_UP;
+						newTileX -= 1;
+						newTileY += 0;
+					} else if (Gdx.input.isKeyPressed(Keys.S)
+							|| randDirection == 1) {
+						currentDirection = RIGHT_DOWN;
+						newTileX += 1;
+						newTileY += 0;
+					} else if (Gdx.input.isKeyPressed(Keys.D)
+							|| randDirection == 2) {
+						currentDirection = RIGHT_UP;
+						newTileX += 0;
+						newTileY -= 1;
+					} else if (Gdx.input.isKeyPressed(Keys.A)
+							|| randDirection == 3) {
+						currentDirection = LEFT_DOWN;
+						newTileX += 0;
+						newTileY += 1;
+					}
+
+					if (!map.checkCollisionTile(newTileX, newTileY)) {
+						if (tileX != newTileX || tileY != newTileY) {
+							tileX = newTileX;
+							tileY = newTileY;
+							originalX = x;
+							originalY = y;
+							newX = map.getCornerTop().x
+									+ map.convertMapToIsometricCoordinates(
+											tileX, tileY).x
+									- (map.getTilePixelWidth() / 2);
+							newY = map.getCornerTop().y
+									- map.convertMapToIsometricCoordinates(
+											tileX, tileY).y
+									- (map.getTilePixelHeight());
+							isMoving = true;
+							System.out.println("Moving from " + originalX
+									+ ", " + originalY + " to " + newX + ", "
+									+ newY);
+						}
 					}
 				}
-			}
 
-		} else {
+			} else {
 
-			// Do interpolation stuff
-			x += (newX - originalX) * (delta / MOVEMENT_SPEED);
-			y += (newY - originalY) * (delta / MOVEMENT_SPEED);
+				// Do interpolation stuff
+				x += (newX - originalX) * (delta / MOVEMENT_SPEED);
+				y += (newY - originalY) * (delta / MOVEMENT_SPEED);
 
-			if (newX < originalX && x <= newX) {
-				x = newX;
-			} else if (newX > originalX && x >= newX) {
-				x = newX;
-			}
+				if (newX < originalX && x <= newX) {
+					x = newX;
+				} else if (newX > originalX && x >= newX) {
+					x = newX;
+				}
 
-			if (newY < originalY && y <= newY) {
-				y = newY;
-			} else if (newY > originalY && y >= newY) {
-				y = newY;
-			}
+				if (newY < originalY && y <= newY) {
+					y = newY;
+				} else if (newY > originalY && y >= newY) {
+					y = newY;
+				}
 
-			// If goal was reached
-			if (x == newX && y == newY) {
-				moving = false;
+				// If goal was reached
+				if (x == newX && y == newY) {
+					isMoving = false;
+				}
 			}
 		}
 
 		switch (currentDirection) {
 		case 0:
-			if (moving)
+			if (isMoving)
 				currentAnimation = walkAnimationLU;
 			else
 				currentAnimation = idleAnimationLU;
 			break;
 		case 1:
-			if (moving)
+			if (isMoving)
 				currentAnimation = walkAnimationRD;
 			else
 				currentAnimation = idleAnimationRD;
 			break;
 		case 2:
-			if (moving)
+			if (isMoving)
 				currentAnimation = walkAnimationRU;
 			else
 				currentAnimation = idleAnimationRU;
 			break;
 		case 3:
-			if (moving)
+			if (isMoving)
 				currentAnimation = walkAnimationLD;
 			else
 				currentAnimation = idleAnimationLD;
@@ -258,9 +270,11 @@ public class Player {
 		tileY = tiledY;
 
 		x = map.getCornerTop().x
-				+ map.convertMapToIsometricCoordinates(tiledX, tiledY).x - (map.getTilePixelWidth() / 2);
+				+ map.convertMapToIsometricCoordinates(tiledX, tiledY).x
+				- (map.getTilePixelWidth() / 2);
 		y = map.getCornerTop().y
-				- map.convertMapToIsometricCoordinates(tiledX, tiledY).y - (map.getTilePixelHeight());
+				- map.convertMapToIsometricCoordinates(tiledX, tiledY).y
+				- (map.getTilePixelHeight());
 	}
 
 	public void spawn(GameMap map) {
@@ -293,13 +307,11 @@ public class Player {
 
 				tileX = (int) mapX;
 				tileY = (int) mapY;
-				
+
 				// Get isometic coordinates of the player box
 				// Might be moved to GameMap.java later
-				
 
 				spawn(tileX, tileY, map);
-				
 
 			} else {
 				spawn(0, 0, map);
@@ -327,6 +339,14 @@ public class Player {
 
 	public float getHeight() {
 		return height;
+	}
+
+	public boolean isMoving() {
+		return isMoving;
+	}
+
+	public void allowMovement(boolean canMove) {
+		allowMovement = canMove;
 	}
 
 	public void dispose() {

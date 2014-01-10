@@ -14,10 +14,10 @@ public class TrapDoor extends Trap {
 
 	/** Trapdoor's position in pixel coordinates */
 	private float x, y;
-	/** Trapdoor's position in pixel coordinates */
+	/** Trapdoor's position in tile coordinates */
 	private float tiledX, tiledY;
-	/** Trapdoor's width and height in tile coordinates */
-	private float width, height;
+	/** Trapdoor's width and height in pixel coordinates */
+	private float tiledWidth, tiledHeight;
 
 	/** Trapdoor's texture */
 	Texture sprite;
@@ -33,7 +33,7 @@ public class TrapDoor extends Trap {
 		this.myMap = map;
 		this.id = id;
 		sprite = new Texture("textures/traps/TrapDoor.png");
-		width = height = 2;
+		tiledWidth = tiledHeight = 2;
 
 		// If layer "Traps" exists
 		if (myMap.hasLayer("Traps")) {
@@ -50,18 +50,20 @@ public class TrapDoor extends Trap {
 					// Get map coordinates of the trap box
 					tiledX = map.convertScreenToMapCoordinates(
 							trapBox.getX() * 2, 0).x;
-					tiledY = map.convertScreenToMapCoordinates(
-							0,
+					tiledY = map.convertScreenToMapCoordinates(0,
 							map.getMapPixelHeight() - trapBox.getY()
-									- height * map.getTilePixelHeight()).y;
+									- tiledHeight * map.getTilePixelHeight()).y;
 
 					x = map.getCornerTop().x
-							+ map.convertMapToIsometricCoordinates(tiledX, tiledY).x - (map.getTilePixelWidth());
+							+ map.convertMapToIsometricCoordinates(tiledX,
+									tiledY).x - (map.getTilePixelWidth());
 					y = map.getCornerTop().y
-							- map.convertMapToIsometricCoordinates(tiledX, tiledY).y - (map.getTilePixelHeight() * 2);					
+							- map.convertMapToIsometricCoordinates(tiledX,
+									tiledY).y - (map.getTilePixelHeight() * 2);
 
-					System.out.println(x + ", " + y);
-					
+					System.out.println(x + ", " + y + ", " + tiledWidth + ", "
+							+ tiledHeight);
+
 				} else {
 					System.out
 							.println("Trapdoor could not be created correctly: object "
@@ -90,24 +92,34 @@ public class TrapDoor extends Trap {
 		if (!isActive) {
 			if (checkCondition(player)) {
 				activate(player);
+			}
+		} else {
+			if (checkCondition(player)) {
+				applyTrapOverTime(player);
 			} else {
 				deactivate(player);
 			}
-		} else {
-			applyTrapOverTime(player);
 		}
 	}
-	
+
 	@Override
 	public void draw(SpriteBatch spriteBatch) {
-		spriteBatch.draw(sprite, x, y);
+		if (isActive)
+			spriteBatch.draw(sprite, x, y);
 	}
 
 	protected boolean checkCondition(Player player) {
-		// Hardcoded Values
-		if (player.tileX >= x && player.tileX <= x + (width / 2)
-				&& player.tileY >= y && player.tileY <= y + (height / 2)) {
-
+		// Condition for the trapdoor, which is in this case whether the player stands ontop of it or not.
+		if (!player.isMoving()) {
+			if (player.tileX >= tiledX && player.tileX < tiledX + tiledWidth
+					&& player.tileY >= tiledY
+					&& player.tileY < tiledY + tiledHeight) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
 		}
 	}
 
@@ -125,14 +137,16 @@ public class TrapDoor extends Trap {
 
 	@Override
 	protected void applyTrapOnActivation(Player player) {
-		// TODO Auto-generated method stub
-
+		// TODO
+		System.out.println(id + " was activated: applyTrapOnActivation(...)");
+		System.out.println("Player: " + player.tileX + ", " + player.tileY);
 	}
 
 	@Override
 	protected void applyTrapOnDeactivation(Player player) {
-		// TODO Auto-generated method stub
-
+		// TODO
+		System.out.println(id + " was deactivated: applyTrapOnDeactivation(...)");
+		System.out.println("Player: " + player.tileX + ", " + player.tileY);
 	}
 
 	public float getX() {
@@ -143,17 +157,16 @@ public class TrapDoor extends Trap {
 		return y;
 	}
 
-	public float getWidth() {
-		return width;
+	public float getTiledWidth() {
+		return tiledWidth;
 	}
 
-	public float getHeight() {
-		return height;
+	public float getTiledHeight() {
+		return tiledHeight;
 	}
 
 	public void dispose() {
 		sprite.dispose();
 	}
-
 
 }

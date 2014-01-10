@@ -22,7 +22,7 @@ public class GameScreen extends MurderDeskScreen {
 	public OrthographicCamera camera;
 	public Rectangle viewport;
 
-	private JujiPlayer player;
+	private Player player;
 
 	Texture test = new Texture("textures/mousemap.png"); //Only for testing purposes
 
@@ -68,9 +68,9 @@ public class GameScreen extends MurderDeskScreen {
 		/*
 		 * Player Object Setup
 		 */
-		player = new JujiPlayer();
+		player = new Player();
 
-		player.spawn(map);
+		player.spawn(5, 6, map);
 
 		System.out.println("Player: " + player.getX() + ", " + player.getY());
 
@@ -114,6 +114,8 @@ public class GameScreen extends MurderDeskScreen {
 
 		// Camera Bounds
 		
+		// Trap Update
+		testTrap.update(player);
 
 		// Update the player object
 		player.update(delta, map);
