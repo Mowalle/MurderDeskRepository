@@ -5,7 +5,7 @@
  </tileset>
  <layer name="Base" width="15" height="15">
   <data encoding="base64" compression="zlib">
-   eJxjZGBgYCQRwwCp+pD1k6uXFMxNgV5mGtrDA8RMZNiDjlmAmJVMN/ECMR8V/E7veEQOO2rEI7J5DBTENwOR+rG5BwA82gFc
+   eJxjZGBgYCQRwwCp+pD1k6uXFMxNgV5mGtrDA8RMZNgzGP1O73hEDjtq+AXZPAYKwpaBSP3Y3AMACfoBPA==
   </data>
  </layer>
  <layer name="Collision" width="15" height="15">
@@ -30,6 +30,8 @@
  </layer>
  <objectgroup name="Objects" width="15" height="15">
   <object name="Spawn" x="96" y="128" width="32" height="32"/>
-  <object name="Trapdoor" type="Trap" x="192" y="224" width="64" height="64"/>
+ </objectgroup>
+ <objectgroup name="Traps" width="15" height="15">
+  <object name="trapdoor01" type="TrapDoor" x="192" y="224" width="64" height="64"/>
  </objectgroup>
 </map>

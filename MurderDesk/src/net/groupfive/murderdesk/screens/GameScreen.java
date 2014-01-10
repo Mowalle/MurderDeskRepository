@@ -4,6 +4,7 @@ import net.groupfive.murderdesk.GameMap;
 import net.groupfive.murderdesk.MurderDesk;
 import net.groupfive.murderdesk.Player;
 import net.groupfive.murderdesk.JujiPlayer; //Only for testing purposes
+import net.groupfive.murderdesk.traps.TrapDoor;
 import net.groupfive.murderdesk.ui.GameHUD;
 
 import com.badlogic.gdx.Gdx;
@@ -28,11 +29,15 @@ public class GameScreen extends MurderDeskScreen {
 	// Map stuff
 	private GameMap map;
 	private IsometricTiledMapRenderer renderer;
+	
+	// Traps
+	TrapDoor testTrap;
 
 	private GameHUD hud;
 
 	/** is done flag **/
 	private boolean isDone = false;
+
 
 	public GameScreen(MurderDesk game) {
 		this.game = game;
@@ -51,6 +56,8 @@ public class GameScreen extends MurderDeskScreen {
 		map = new GameMap("maps/test1.tmx");
 		System.out.println("Map BoundingBox: " + map.getBoundingBox().x + ", " + map.getBoundingBox().y + ", " + map.getBoundingBox().width + ", "
 				+ map.getBoundingBox().height);
+		
+		testTrap = new TrapDoor("trapdoor01", map);
 	
 		camera.position.set(map.getMapPixelWidth() / 2, map.getMapPixelHeight() / 2 + map.getBoundingBox().y, 0);
 		
@@ -78,6 +85,7 @@ public class GameScreen extends MurderDeskScreen {
 	@Override
 	public void dispose() {
 		map.getTiledMap().dispose();
+		testTrap.dispose();
 		renderer.dispose();
 		player.dispose();
 	}
@@ -142,6 +150,8 @@ public class GameScreen extends MurderDeskScreen {
 
 		game.spriteBatch.begin();
 		game.spriteBatch.setProjectionMatrix(camera.combined);
+		
+		testTrap.draw(game.spriteBatch);
 		
 		player.draw(game.spriteBatch);
 

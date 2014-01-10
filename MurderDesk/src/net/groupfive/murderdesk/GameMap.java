@@ -97,14 +97,14 @@ public class GameMap {
 		return found;
 	}
 
-	public boolean hasSpawn() {
+	public boolean hasObject(String layerName, String objectName) {
 		boolean found = false;
 
-		if (hasLayer("Objects")) {
-			for (int i = 0; i < map.getLayers().get("Objects").getObjects()
+		if (hasLayer(layerName)) {
+			for (int i = 0; i < map.getLayers().get(layerName).getObjects()
 					.getCount(); i++) {
-				if (map.getLayers().get("Objects").getObjects().get(i)
-						.getName().equalsIgnoreCase("Spawn")) {
+				if (map.getLayers().get(layerName).getObjects().get(i)
+						.getName().equals(objectName)) {
 					found = true;
 					break;
 				}

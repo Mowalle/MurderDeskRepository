@@ -266,7 +266,7 @@ public class Player {
 	public void spawn(GameMap map) {
 
 		if (map.hasLayer("Objects")) {
-			if (map.hasSpawn()) {
+			if (map.hasObject("Objects", "Spawn")) {
 				Rectangle playerBox = new Rectangle();
 
 				float mapX, mapY;
