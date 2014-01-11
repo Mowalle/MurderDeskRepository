@@ -13,7 +13,6 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
 import net.groupfive.murderdesk.GUI;
-import net.groupfive.murderdesk.Main;
 import net.groupfive.murderdesk.MurderDesk;
 
 @SuppressWarnings("serial")

@@ -1,76 +1,43 @@
 package net.groupfive.murderdesk.gui;
 
-import java.awt.BorderLayout;
-import java.awt.Container;
+import java.awt.geom.Rectangle2D;
 
 import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
+import javax.swing.JRootPane;
 
 import net.groupfive.murderdesk.MurderDesk;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglAWTCanvas;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
-
-import net.groupfive.murderdesk.MurderDesk;
-
-public class GamePanel extends JFrame {
-	LwjglCanvas canvas;
-
-	public GamePanel () {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-		Container container = getContentPane();
-		canvas = new LwjglCanvas(new MurderDesk(), true);
-
-		container.add(canvas.getCanvas(), BorderLayout.CENTER);
-
-		pack();
-		setVisible(true);
-		setSize(800, 600);
-	}
-	
-	/*
-	public static void main (String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run () {
-				new GamePanel();
-			}
-		});
-	}
-	*/
-}
-
-/*
-package net.groupfive.murderdesk.gui;
-
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.util.Arrays;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
-import net.groupfive.murderdesk.MurderDesk;
-
-import com.badlogic.gdx.Graphics.DisplayMode;
-import com.badlogic.gdx.backends.lwjgl.LwjglAWTCanvas;
-import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
+import com.sun.awt.AWTUtilities;
 
 @SuppressWarnings("serial")
 public class GamePanel extends JFrame {
 	
-	LwjglCanvas canvas;
+	private final static int WIDTH = 630;
+	private final static int HEIGHT = 387;
 
-	public GamePanel(String t) {
+	public GamePanel() {
+		
+		// configuration
+		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
+		cfg.title = MurderDesk.TITLE + " " + MurderDesk.VERSION;
+		cfg.useGL20 = true;
+		cfg.width = WIDTH;
+		cfg.height = HEIGHT;
+		
+		// create canvas & add to frame
+		LwjglCanvas canvas = new LwjglCanvas(new MurderDesk(), cfg);
+		canvas.getCanvas().setSize(WIDTH,HEIGHT);	
+		getContentPane().add(canvas.getCanvas());
+		
+		// (un)decorate the frame
+		JRootPane root = getRootPane();
+		root.getRootPane().putClientProperty("Window.shadow", root);
+		setUndecorated(true);
+		setFocusable(false);
+		setAlwaysOnTop(true);
+		AWTUtilities.setWindowShape(this, new Rectangle2D.Double(0, 0, WIDTH, HEIGHT));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setLayout(null);
-
-		Container container = getContentPane();
-		canvas = new LwjglCanvas(new Drop(), true);
-		canvas.getCanvas().setSize(800,600);
-		setBounds(0,0,800,600);
-		container.add(canvas.getCanvas());
 	}
 }
-*/

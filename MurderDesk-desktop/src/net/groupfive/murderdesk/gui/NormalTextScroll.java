@@ -1,11 +1,11 @@
 package net.groupfive.murderdesk.gui;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 
 import javax.swing.BorderFactory;
 import javax.swing.JScrollPane;
 
+@SuppressWarnings("serial")
 public class NormalTextScroll extends JScrollPane {
 		
 	public NormalTextScroll(Component view){
