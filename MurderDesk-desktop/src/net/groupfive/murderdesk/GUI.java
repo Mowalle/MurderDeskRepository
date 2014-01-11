@@ -76,7 +76,7 @@ public class GUI implements Observer {
 		NormalText txtConsole = new NormalText();
 		NormalTextScroll txtConsoleScroll = new NormalTextScroll(txtConsole);
 		pConsole.add(txtConsoleScroll, BorderLayout.CENTER);
-		
+
 		s.content.add(pCamera);
 		s.content.add(pSound);
 		s.content.add(pTraps);

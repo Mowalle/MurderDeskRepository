@@ -1,26 +1,23 @@
 package net.groupfive.murderdesk;
 
-import net.groupfive.murderdesk.screens.MurderDeskScreen;
 import net.groupfive.murderdesk.screens.GameScreen;
+import net.groupfive.murderdesk.screens.MurderDeskScreen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class MurderDesk extends Game {
 
 	public static final String TITLE = "The Murder Desk";
-	public static final String VERSION = "v0.0.3";
+	public static final String VERSION = "v0.1";
 
 	public static int width;
 	public static int height;
 
 	public SpriteBatch spriteBatch;
 	public BitmapFont font;
-
-	private FPSLogger logger;
 
 	@Override
 	public void render() {
@@ -53,6 +50,7 @@ public class MurderDesk extends Game {
 			// setScreen(new MainMenu());
 			// }
 			// }
+			this.dispose(); 
 		}
 
 		// logger.log();
@@ -70,7 +68,6 @@ public class MurderDesk extends Game {
 
 		setScreen(new GameScreen(this));
 
-		logger = new FPSLogger();
 	}
 
 	@Override

@@ -8,9 +8,9 @@ import net.groupfive.murderdesk.Player;
 public abstract class Trap {
 
 	protected String id;
-	
+
 	protected GameMap myMap;
-	
+
 	protected boolean isActive;
 
 	/**
@@ -39,20 +39,23 @@ public abstract class Trap {
 	 * 
 	 * @param player
 	 */
-	public void update(Player player) {
+	public void update(float delta, Player player) {
 
 		if (!isActive) {
 			if (checkCondition()) {
 				activate(player);
+			}
+		} else {
+			if (checkCondition()) {
+				applyTrapOverTime(player);
 			} else {
 				deactivate(player);
 			}
-		} else {
-			applyTrapOverTime(player);
 		}
+
 	}
-	
-	public abstract void draw(SpriteBatch spriteBatch);
+
+	public abstract void draw(float delta, SpriteBatch spriteBatch);
 
 	/**
 	 * Checks whether to activate or deactivate the trap.

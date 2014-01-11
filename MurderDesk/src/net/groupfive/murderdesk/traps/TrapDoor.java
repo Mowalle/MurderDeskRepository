@@ -1,14 +1,14 @@
 package net.groupfive.murderdesk.traps;
 
-import java.util.Iterator;
+import net.groupfive.murderdesk.GameMap;
+import net.groupfive.murderdesk.Player;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.Rectangle;
-
-import net.groupfive.murderdesk.GameMap;
-import net.groupfive.murderdesk.Player;
 
 public class TrapDoor extends Trap {
 
@@ -22,6 +22,24 @@ public class TrapDoor extends Trap {
 	/** Trapdoor's texture */
 	Texture sprite;
 
+	// Getters -----------
+	public float getX() {
+		return x;
+	}
+
+	public float getY() {
+		return y;
+	}
+
+	public float getTiledWidth() {
+		return tiledWidth;
+	}
+
+	public float getTiledHeight() {
+		return tiledHeight;
+	}
+	// --------------------
+	
 	/**
 	 * Creates a new Trapdoor trap. 'id' has to be the same String as defined in
 	 * the tiled map editor.
@@ -87,33 +105,34 @@ public class TrapDoor extends Trap {
 	}
 
 	// Override update method so that we can use checkCondition(player)
-	@Override
-	public void update(Player player) {
-		if (!isActive) {
-			if (checkCondition(player)) {
-				activate(player);
-			}
-		} else {
-			if (checkCondition(player)) {
-				applyTrapOverTime(player);
-			} else {
-				deactivate(player);
-			}
-		}
-	}
+//	@Override
+//	public void update(Player player) {
+//		if (!isActive) {
+//			if (checkCondition(player)) {
+//				activate(player);
+//			}
+//		} else {
+//			if (checkCondition(player)) {
+//				applyTrapOverTime(player);
+//			} else {
+//				deactivate(player);
+//			}
+//		}
+//	}
 
 	@Override
-	public void draw(SpriteBatch spriteBatch) {
+	public void draw(float delta, SpriteBatch spriteBatch) {
 		if (isActive)
 			spriteBatch.draw(sprite, x, y);
 	}
 
 	protected boolean checkCondition(Player player) {
-		// Condition for the trapdoor, which is in this case whether the player stands ontop of it or not.
-		if (!player.isMoving()) {
-			if (player.tileX >= tiledX && player.tileX < tiledX + tiledWidth
-					&& player.tileY >= tiledY
-					&& player.tileY < tiledY + tiledHeight) {
+		// Condition for the trapdoor, which is in this case whether the player
+		// stands ontop of it or not.
+		if (!player.isAnimating()) {
+			if (player.getTiledX() >= tiledX && player.getTiledX() < tiledX + tiledWidth
+					&& player.getTiledY() >= tiledY
+					&& player.getTiledY() < tiledY + tiledHeight) {
 				return true;
 			} else {
 				return false;
@@ -125,44 +144,43 @@ public class TrapDoor extends Trap {
 
 	@Override
 	protected boolean checkCondition() {
-		// TODO Auto-generated method stub
+		if (Gdx.input.isKeyPressed(Keys.SPACE))
+			return true;
 		return false;
 	}
 
 	@Override
 	protected void applyTrapOverTime(Player player) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	protected void applyTrapOnActivation(Player player) {
-		// TODO
-		System.out.println(id + " was activated: applyTrapOnActivation(...)");
-		System.out.println("Player: " + player.tileX + ", " + player.tileY);
+		// If player is close to trap, turn him and apply stat effects
+		if (player.getTiledX() >= tiledX && player.getTiledX() <= tiledX + 1 && player.getTiledY() == tiledY - 1) {
+			player.setCurrentDirection(Player.LEFT_DOWN);
+			player.setPulse(player.getPulse() + 10);
+			// TODO
+		} else if (player.getTiledX() >= tiledX && player.getTiledX() <= tiledX + 1 && player.getTiledY() == tiledY + 2) {
+			player.setCurrentDirection(Player.RIGHT_UP);
+			player.setPulse(player.getPulse() + 10);
+			// TODO
+		} else if (player.getTiledX() == tiledX - 1 && player.getTiledY() >= tiledY && player.getTiledY() <= tiledY + 1) {
+			player.setCurrentDirection(Player.RIGHT_DOWN);
+			player.setPulse(player.getPulse() + 10);
+		} else if (player.getTiledX() == tiledX + 2 && player.getTiledY() >= tiledY && player.getTiledY() <= tiledY + 1) {
+			player.setCurrentDirection(Player.LEFT_UP);
+			player.setPulse(player.getPulse() + 10);
+			
+		}
 	}
 
 	@Override
 	protected void applyTrapOnDeactivation(Player player) {
 		// TODO
-		System.out.println(id + " was deactivated: applyTrapOnDeactivation(...)");
-		System.out.println("Player: " + player.tileX + ", " + player.tileY);
-	}
-
-	public float getX() {
-		return x;
-	}
-
-	public float getY() {
-		return y;
-	}
-
-	public float getTiledWidth() {
-		return tiledWidth;
-	}
-
-	public float getTiledHeight() {
-		return tiledHeight;
+		System.out.println(id
+				+ " was deactivated: applyTrapOnDeactivation(...)");
+		System.out.println("Player: " + player.getTiledX() + ", " + player.getTiledY());
 	}
 
 	public void dispose() {

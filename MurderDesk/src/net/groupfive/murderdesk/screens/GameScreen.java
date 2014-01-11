@@ -3,8 +3,7 @@ package net.groupfive.murderdesk.screens;
 import net.groupfive.murderdesk.GameMap;
 import net.groupfive.murderdesk.MurderDesk;
 import net.groupfive.murderdesk.Player;
-import net.groupfive.murderdesk.JujiPlayer; //Only for testing purposes
-import net.groupfive.murderdesk.traps.TrapDoor;
+import net.groupfive.murderdesk.traps.*;
 import net.groupfive.murderdesk.ui.GameHUD;
 
 import com.badlogic.gdx.Gdx;
@@ -14,6 +13,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Array;
 
 public class GameScreen extends MurderDeskScreen {
 
@@ -24,20 +24,25 @@ public class GameScreen extends MurderDeskScreen {
 
 	private Player player;
 
-	Texture test = new Texture("textures/mousemap.png"); //Only for testing purposes
+	Texture test = new Texture("textures/mousemap.png"); // Only for testing
+														 // purposes
 
 	// Map stuff
-	private GameMap map;
+	private Array<GameMap> maps;
+	private GameMap currentMap;
 	private IsometricTiledMapRenderer renderer;
-	
+
 	// Traps
-	TrapDoor testTrap;
+	TrapDoor testTrapDoor;
+	TrapFlood testTrapFlood;
 
 	private GameHUD hud;
 
 	/** is done flag **/
-	private boolean isDone = false;
+	private boolean done = false;
 
+	private int highscore = 0;
+	private float highscoreTimer = 0f;
 
 	public GameScreen(MurderDesk game) {
 		this.game = game;
@@ -53,15 +58,16 @@ public class GameScreen extends MurderDeskScreen {
 		/*
 		 * Map Setup
 		 */
-		map = new GameMap("maps/test1.tmx");
-		System.out.println("Map BoundingBox: " + map.getBoundingBox().x + ", " + map.getBoundingBox().y + ", " + map.getBoundingBox().width + ", "
-				+ map.getBoundingBox().height);
-		
-		testTrap = new TrapDoor("trapdoor01", map);
-	
-		camera.position.set(map.getMapPixelWidth() / 2, map.getMapPixelHeight() / 2 + map.getBoundingBox().y, 0);
-		
-		renderer = new IsometricTiledMapRenderer(map.getTiledMap());
+		maps = new Array<GameMap>();
+		maps.add(new GameMap("maps/test1.tmx"));
+		maps.add(new GameMap("maps/IsoTest.tmx"));
+
+		// FIXME Has to be compatible to player and its rendering
+		setCurrentMap(0);
+
+		// TODO Has to be moved into GameMap.java
+		testTrapDoor = new TrapDoor("trapdoor01", currentMap);
+		testTrapFlood = new TrapFlood(currentMap);
 
 		hud = new GameHUD();
 
@@ -70,7 +76,8 @@ public class GameScreen extends MurderDeskScreen {
 		 */
 		player = new Player();
 
-		player.spawn(5, 6, map);
+		// TODO Check for invalid integers
+		player.spawn(5, 6, currentMap);
 
 		System.out.println("Player: " + player.getX() + ", " + player.getY());
 
@@ -80,14 +87,6 @@ public class GameScreen extends MurderDeskScreen {
 
 		System.out.println("Camera: " + camera.position.x + ", "
 				+ camera.position.y + ", " + camera.position.z);
-	}
-
-	@Override
-	public void dispose() {
-		map.getTiledMap().dispose();
-		testTrap.dispose();
-		renderer.dispose();
-		player.dispose();
 	}
 
 	@Override
@@ -113,12 +112,27 @@ public class GameScreen extends MurderDeskScreen {
 		}
 
 		// Camera Bounds
-		
+
 		// Trap Update
-		testTrap.update(player);
+		testTrapDoor.update(delta, player);
+		testTrapFlood.update(delta, player);
 
 		// Update the player object
-		player.update(delta, map);
+		player.update(delta, currentMap);
+
+		// Updates the highscore each second by the difference between the
+		// player's current pulse and the player's default pulse.
+		highscoreTimer += delta;
+
+		if (highscoreTimer >= 10) {
+			highscoreTimer = 0f;
+			highscore += Math.abs(player.getPulse() - Player.DEFAULT_PULSE);
+		}
+		
+//		//FIXME Doesn't end app but crashes for unknown reason
+//		if (player.isDead()) {
+//			done = true;
+//		}
 
 	}
 
@@ -138,29 +152,37 @@ public class GameScreen extends MurderDeskScreen {
 
 		camera.update();
 
-//		game.spriteBatch.begin();
-//		game.spriteBatch.draw(test, map.getBoundingBox().getX(), map
-//				.getBoundingBox().getY(), map.getBoundingBox().getWidth(), map
-//				.getBoundingBox().getHeight());
-//		game.spriteBatch.end();
-		
+		// game.spriteBatch.begin();
+		// game.spriteBatch.draw(test, currentMap.getBoundingBox().getX(),
+		// currentMap
+		// .getBoundingBox().getY(), currentMap.getBoundingBox().getWidth(),
+		// currentMap
+		// .getBoundingBox().getHeight());
+		// game.spriteBatch.end();
+
 		renderer.setView(camera);
 		renderer.getSpriteBatch().setProjectionMatrix(camera.combined);
-		
+
 		// Render layers below the player (NOT "WalkBehind")
-		renderer.render(map.getBelowLayers());
+		renderer.render(currentMap.getBelowLayers());
 
 		game.spriteBatch.begin();
 		game.spriteBatch.setProjectionMatrix(camera.combined);
+
+		testTrapDoor.draw(delta, game.spriteBatch);
+
+		player.draw(false, game.spriteBatch);
 		
-		testTrap.draw(game.spriteBatch);
+		// TODO A way to remove player as parameter
+		testTrapFlood.draw(delta, player, game.spriteBatch);
+
+		player.draw(true, game.spriteBatch);
 		
-		player.draw(game.spriteBatch);
 
 		game.spriteBatch.end();
 
 		// Render layers above the player ("WalkBehind")
-		renderer.render(map.getAboveLayers());
+		renderer.render(currentMap.getAboveLayers());
 
 		Gdx.gl.glViewport((int) 0, (int) 0, (int) MurderDesk.width,
 				(int) MurderDesk.height);
@@ -168,9 +190,34 @@ public class GameScreen extends MurderDeskScreen {
 
 	}
 
+	public void setCurrentMap(int mapIndex) {
+
+		currentMap = maps.get(mapIndex);
+
+		System.out.println("Map BoundingBox: " + currentMap.getBoundingBox().x
+				+ ", " + currentMap.getBoundingBox().y + ", "
+				+ currentMap.getBoundingBox().width + ", "
+				+ currentMap.getBoundingBox().height);
+
+		camera.position.set(
+				currentMap.getMapPixelWidth() / 2,
+				currentMap.getMapPixelHeight() / 2
+						+ currentMap.getBoundingBox().y, 0);
+
+		renderer = new IsometricTiledMapRenderer(currentMap.getTiledMap());
+
+	}
+
+	@Override
+	public void dispose() {
+		currentMap.getTiledMap().dispose();
+		testTrapDoor.dispose();
+		player.dispose();
+	}
+
 	@Override
 	public boolean isDone() {
-		return isDone;
+		return done;
 	}
 
 }
