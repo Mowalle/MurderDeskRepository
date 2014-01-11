@@ -4,7 +4,6 @@ import net.groupfive.murderdesk.GameMap;
 import net.groupfive.murderdesk.MurderDesk;
 import net.groupfive.murderdesk.Player;
 import net.groupfive.murderdesk.traps.*;
-import net.groupfive.murderdesk.ui.GameHUD;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -36,8 +35,6 @@ public class GameScreen extends MurderDeskScreen {
 	TrapDoor testTrapDoor;
 	TrapFlood testTrapFlood;
 
-	private GameHUD hud;
-
 	/** is done flag **/
 	private boolean done = false;
 
@@ -68,8 +65,6 @@ public class GameScreen extends MurderDeskScreen {
 		// TODO Has to be moved into GameMap.java
 		testTrapDoor = new TrapDoor("trapdoor01", currentMap);
 		testTrapFlood = new TrapFlood(currentMap);
-
-		hud = new GameHUD();
 
 		/*
 		 * Player Object Setup
@@ -186,8 +181,6 @@ public class GameScreen extends MurderDeskScreen {
 
 		Gdx.gl.glViewport((int) 0, (int) 0, (int) MurderDesk.width,
 				(int) MurderDesk.height);
-		hud.draw(delta);
-
 	}
 
 	public void setCurrentMap(int mapIndex) {
