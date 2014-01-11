@@ -9,14 +9,12 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
 import net.groupfive.murderdesk.GUI;
-import net.groupfive.murderdesk.Main;
 
 @SuppressWarnings("serial")
 public class ContentPanel extends JPanel{
 
 	public ContentPanel(String t){
 		setOpaque(false);
-		setSize(100,100);
 		setLayout(new BorderLayout());
 		
 		// some defaults to reuse

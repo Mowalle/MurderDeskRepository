@@ -1,8 +1,6 @@
 package net.groupfive.murderdesk;
 
 import java.util.Observer;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -20,7 +18,7 @@ public class Model {
 		Runnable task = new Runnable() {
 		    public void run() {
 		        createNumber();
-		        c.changeDataOnEDT(getData());
+		        c.broadcastOnEDT(new Message("int", "objectives", theData));
 		    }
 		};
 		scheduler.scheduleAtFixedRate(task, 0, 500, TimeUnit.MILLISECONDS);

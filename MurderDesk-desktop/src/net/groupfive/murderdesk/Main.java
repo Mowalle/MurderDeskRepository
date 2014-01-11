@@ -2,8 +2,6 @@ package net.groupfive.murderdesk;
 
 import javax.swing.SwingUtilities;
 
-import net.groupfive.murderdesk.gui.GamePanel;
-
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
@@ -18,27 +16,26 @@ public class Main {
 	static GUI gui;
 	static Model m, n;
 	static Controller c;
-	static DataController d;
+	public static DataController d;
 	
 	/**
 	 * Use the GUI boolean to enable or disable the three-screen UI.
 	 */
-	public final static boolean GUI = false;
+	public final static boolean GUI = true;
 		
 	public static void main (String[] args) {
-		
+		System.setProperty("awt.useSystemAAFontSettings","lcd");
+		System.setProperty("swing.aatext", "true");
 		c = new Controller();
 		
 		d = new DataController();
-		d.load();
 		d.log();
 		
 		if(GUI){
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run () {
-					
-					m = new Model(c);
+					//m = new Model(c);
 					c.addObserver(new GUI());
 				}
 			});
@@ -51,8 +48,8 @@ public class Main {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = MurderDesk.TITLE + " " + MurderDesk.VERSION;
 		cfg.useGL20 = true;
-		cfg.width = 800;
-		cfg.height = 600;
+		cfg.width = 640;
+		cfg.height = 400;
 		
 		new LwjglApplication(new MurderDesk(), cfg);
 	}
