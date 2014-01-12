@@ -12,6 +12,8 @@ import com.badlogic.gdx.math.Rectangle;
 
 public class TrapDoor extends Trap {
 
+	private static final float OPEN_DURATION = 5.0f;
+
 	/** Trapdoor's position in pixel coordinates */
 	private float x, y;
 	/** Trapdoor's position in tile coordinates */
@@ -19,27 +21,12 @@ public class TrapDoor extends Trap {
 	/** Trapdoor's width and height in pixel coordinates */
 	private float tiledWidth, tiledHeight;
 
+	private float trapOpenTimer = 0f;
+
 	/** Trapdoor's texture */
-	Texture sprite;
+	Texture spriteClosed;
+	Texture spriteOpen;
 
-	// Getters -----------
-	public float getX() {
-		return x;
-	}
-
-	public float getY() {
-		return y;
-	}
-
-	public float getTiledWidth() {
-		return tiledWidth;
-	}
-
-	public float getTiledHeight() {
-		return tiledHeight;
-	}
-	// --------------------
-	
 	/**
 	 * Creates a new Trapdoor trap. 'id' has to be the same String as defined in
 	 * the tiled map editor.
@@ -50,7 +37,8 @@ public class TrapDoor extends Trap {
 	public TrapDoor(String id, GameMap map) {
 		this.myMap = map;
 		this.id = id;
-		sprite = new Texture("textures/traps/TrapDoor.png");
+		spriteClosed = new Texture("textures/traps/TrapDoor_Closed.png");
+		spriteOpen = new Texture("textures/traps/TrapDoor_Open.png");
 		tiledWidth = tiledHeight = 2;
 
 		// If layer "Traps" exists
@@ -104,87 +92,126 @@ public class TrapDoor extends Trap {
 		}
 	}
 
-	// Override update method so that we can use checkCondition(player)
-//	@Override
-//	public void update(Player player) {
-//		if (!isActive) {
-//			if (checkCondition(player)) {
-//				activate(player);
-//			}
-//		} else {
-//			if (checkCondition(player)) {
-//				applyTrapOverTime(player);
-//			} else {
-//				deactivate(player);
-//			}
-//		}
-//	}
+	@Override
+	public void update(float delta, Player player) {
+
+		if (!isActive) {
+			if (trapOpenTimer == 0f && Gdx.input.isKeyPressed(Keys.SPACE)) {
+				activate(player);
+				trapOpenTimer += delta;
+			}
+		} else {
+			if (trapOpenTimer <= OPEN_DURATION) {
+				applyTrapOverTime(player);
+				trapOpenTimer += delta;
+			} else {
+				trapOpenTimer = 0f;
+				deactivate(player);
+			}
+		}
+	}
 
 	@Override
 	public void draw(float delta, SpriteBatch spriteBatch) {
 		if (isActive)
-			spriteBatch.draw(sprite, x, y);
-	}
-
-	protected boolean checkCondition(Player player) {
-		// Condition for the trapdoor, which is in this case whether the player
-		// stands ontop of it or not.
-		if (!player.isAnimating()) {
-			if (player.getTiledX() >= tiledX && player.getTiledX() < tiledX + tiledWidth
-					&& player.getTiledY() >= tiledY
-					&& player.getTiledY() < tiledY + tiledHeight) {
-				return true;
-			} else {
-				return false;
-			}
-		} else {
-			return false;
+			spriteBatch.draw(spriteOpen, x, y);
+		else {
+			spriteBatch.draw(spriteClosed, x, y);
 		}
 	}
 
 	@Override
 	protected boolean checkCondition() {
-		if (Gdx.input.isKeyPressed(Keys.SPACE))
+		if (trapOpenTimer == 0f && Gdx.input.isKeyPressed(Keys.SPACE))
 			return true;
 		return false;
 	}
 
+	// protected boolean checkCondition(Player player) {
+	// // Condition for the trapdoor, which is in this case whether the player
+	// // stands ontop of it or not.
+	// if (!player.isAnimating()) {
+	// if (player.getTiledX() >= tiledX
+	// && player.getTiledX() < tiledX + tiledWidth
+	// && player.getTiledY() >= tiledY
+	// && player.getTiledY() < tiledY + tiledHeight) {
+	// return true;
+	// } else {
+	// return false;
+	// }
+	// } else {
+	// return false;
+	// }
+	// }
+
 	@Override
 	protected void applyTrapOverTime(Player player) {
-
+		// Kill player is he is inside trap
+		// TODO Killing animation
+		if (player.isAnimating()) {
+			if (player.getTiledX() >= tiledX
+					&& player.getTiledX() <= tiledX + 1
+					&& player.getTiledY() >= tiledY
+					&& player.getTiledY() <= tiledY + 1) {
+				player.allowMovement(false);
+				player.setHealth(0);
+			}
+		}
 	}
 
 	@Override
 	protected void applyTrapOnActivation(Player player) {
 		// If player is close to trap, turn him and apply stat effects
-		if (player.getTiledX() >= tiledX && player.getTiledX() <= tiledX + 1 && player.getTiledY() == tiledY - 1) {
-			player.setCurrentDirection(Player.LEFT_DOWN);
-			player.setPulse(player.getPulse() + 10);
-			// TODO
-		} else if (player.getTiledX() >= tiledX && player.getTiledX() <= tiledX + 1 && player.getTiledY() == tiledY + 2) {
-			player.setCurrentDirection(Player.RIGHT_UP);
-			player.setPulse(player.getPulse() + 10);
-			// TODO
-		} else if (player.getTiledX() == tiledX - 1 && player.getTiledY() >= tiledY && player.getTiledY() <= tiledY + 1) {
-			player.setCurrentDirection(Player.RIGHT_DOWN);
-			player.setPulse(player.getPulse() + 10);
-		} else if (player.getTiledX() == tiledX + 2 && player.getTiledY() >= tiledY && player.getTiledY() <= tiledY + 1) {
-			player.setCurrentDirection(Player.LEFT_UP);
-			player.setPulse(player.getPulse() + 10);
-			
+		if (!player.isAnimating()) {
+			if (player.getTiledX() >= tiledX
+					&& player.getTiledX() <= tiledX + 1
+					&& player.getTiledY() == tiledY - 1) {
+				player.setCurrentDirection(Player.LEFT_DOWN);
+				player.setMentalPower(player.getMentalPower() - 20);
+			} else if (player.getTiledX() >= tiledX
+					&& player.getTiledX() <= tiledX + 1
+					&& player.getTiledY() == tiledY + 2) {
+				player.setCurrentDirection(Player.RIGHT_UP);
+				player.setMentalPower(player.getMentalPower() - 20);
+			} else if (player.getTiledX() == tiledX - 1
+					&& player.getTiledY() >= tiledY
+					&& player.getTiledY() <= tiledY + 1) {
+				player.setCurrentDirection(Player.RIGHT_DOWN);
+				player.setMentalPower(player.getMentalPower() - 20);
+			} else if (player.getTiledX() == tiledX + 2
+					&& player.getTiledY() >= tiledY
+					&& player.getTiledY() <= tiledY + 1) {
+				player.setCurrentDirection(Player.LEFT_UP);
+				player.setMentalPower(player.getMentalPower() - 20);
+			}
 		}
 	}
 
 	@Override
 	protected void applyTrapOnDeactivation(Player player) {
-		// TODO
 		System.out.println(id
 				+ " was deactivated: applyTrapOnDeactivation(...)");
-		System.out.println("Player: " + player.getTiledX() + ", " + player.getTiledY());
+		System.out.println("Player: " + player.getTiledX() + ", "
+				+ player.getTiledY());
 	}
 
 	public void dispose() {
-		sprite.dispose();
+		spriteOpen.dispose();
 	}
 
+	public float getX() {
+		return x;
+	}
+
+	public float getY() {
+		return y;
+	}
+
+	public float getTiledWidth() {
+		return tiledWidth;
+	}
+
+	public float getTiledHeight() {
+		return tiledHeight;
+	}
 }
