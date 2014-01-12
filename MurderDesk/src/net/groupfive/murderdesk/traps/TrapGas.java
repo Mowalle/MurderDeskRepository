@@ -34,7 +34,7 @@ public class TrapGas extends Trap {
 				activate(player);
 			}
 		} else {
-			if (!checkCondition()) {
+			if (checkDeactivationCondition()) {
 				deactivate(player);
 			} else {
 
@@ -65,6 +65,15 @@ public class TrapGas extends Trap {
 	protected boolean checkCondition() {
 		if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)) {
 			if (Gdx.input.isKeyPressed(Keys.G)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private boolean checkDeactivationCondition() {
+		if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)) {
+			if (Gdx.input.isKeyPressed(Keys.NUM_0)) {
 				return true;
 			}
 		}

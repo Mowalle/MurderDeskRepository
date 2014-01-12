@@ -94,16 +94,16 @@ public class TrapDoor extends Trap {
 
 	@Override
 	public void update(float delta, Player player) {
-
+		
 		if (!isActive) {
 			if (trapOpenTimer == 0f && Gdx.input.isKeyPressed(Keys.SPACE)) {
 				activate(player);
-				trapOpenTimer += delta;
+				//trapOpenTimer += delta;
 			}
 		} else {
 			if (trapOpenTimer <= OPEN_DURATION) {
 				applyTrapOverTime(player);
-				trapOpenTimer += delta;
+				//trapOpenTimer += delta;
 			} else {
 				trapOpenTimer = 0f;
 				deactivate(player);
