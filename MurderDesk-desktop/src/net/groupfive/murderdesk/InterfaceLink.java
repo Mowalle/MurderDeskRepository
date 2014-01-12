@@ -3,11 +3,15 @@ package net.groupfive.murderdesk;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+
 import gnu.io.CommPortIdentifier; 
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent; 
 import gnu.io.SerialPortEventListener; 
+
 import java.util.Enumeration;
+
+import net.groupfive.murderdesk.screens.GameScreen;
 
 
 public class InterfaceLink implements SerialPortEventListener {
@@ -92,7 +96,6 @@ public class InterfaceLink implements SerialPortEventListener {
 		if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
 			try {
 				String inputLine=input.readLine();
-				System.out.println(inputLine);
 				parse(inputLine);
 			} catch (Exception e) {
 				System.err.println(e.toString());
@@ -102,12 +105,26 @@ public class InterfaceLink implements SerialPortEventListener {
 	}
 	
 	private void parse(String s){
+		GameScreen screen = (GameScreen) Main.murderDesk.getScreen();
 		if(s.equals("t1")){
-			System.out.println("trap 1 activated");
+			screen.getCurrentMap().getCurrentTrap().deactivate(screen.getPlayer());
+			screen.getCurrentMap().setCurrentTrap(0);
+			System.out.println("[interface] Trap 1 activated");
 		} else if(s.equals("t2")){
-			
-		} else{
-			System.out.println("???");
+			screen.getCurrentMap().getCurrentTrap().deactivate(screen.getPlayer());
+			screen.getCurrentMap().setCurrentTrap(1);
+			System.out.println("[interface] Trap 2 activated");
+		} else if(s.equals("t3")){
+			screen.getCurrentMap().getCurrentTrap().deactivate(screen.getPlayer());
+			screen.getCurrentMap().setCurrentTrap(2);
+			System.out.println("[interface] Trap 3 activated");
+		} else if(s.equals("ton")){
+			screen.getCurrentMap().getCurrentTrap().activate(screen.getPlayer());
+		} else if(s.equals("toff")){
+			screen.getCurrentMap().getCurrentTrap().deactivate(screen.getPlayer());
+		}
+		else{
+			System.out.println("[interface] Unknown command");
 		}
 	}
 }
