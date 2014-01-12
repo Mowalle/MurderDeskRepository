@@ -90,6 +90,8 @@ public abstract class Trap {
 	 * @param player
 	 */
 	protected abstract void applyTrapOnDeactivation(Player player);
+	
+	public abstract void dispose();
 
 	/**
 	 * Returns whether this trap is active.
@@ -99,5 +101,6 @@ public abstract class Trap {
 	public boolean isActive() {
 		return isActive;
 	}
+	
 
 }

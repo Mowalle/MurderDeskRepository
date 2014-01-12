@@ -138,6 +138,11 @@ public class TrapFlood extends Trap {
 	}
 
 	@Override
+	public void dispose() {
+		spriteSheet.dispose();
+	}
+	
+	@Override
 	protected void applyTrapOnActivation(Player player) {
 		// TODO Auto-generated method stub
 
