@@ -13,13 +13,11 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
-import javax.swing.Action;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
@@ -65,7 +63,7 @@ public class MurderDeskScreen extends JFrame{
 	public void boot(){
 		JPanel bootContainer = new JPanel();
 		bootContainer.setLayout(new GridLayout(0,1));
-		bootContainer.setBackground(Color.BLACK);
+		bootContainer.setBackground(Color.BLUE);
 		mainPanel.add(bootContainer, BorderLayout.CENTER);
 		
 		final JLabel first = new JLabel(" ");
@@ -74,7 +72,7 @@ public class MurderDeskScreen extends JFrame{
 		final JLabel title = new JLabel();
 		title.setFont(GUI.ftDSTerminal.deriveFont(Font.PLAIN, 100));
 		title.setText("Murdersoft");
-		title.setForeground(new Color(0,0,blue));
+		title.setForeground(new Color(0,0,255));
 		title.setHorizontalAlignment(SwingConstants.CENTER);
 		title.setAlignmentX(Component.CENTER_ALIGNMENT);
 		bootContainer.add(title);
@@ -105,13 +103,14 @@ public class MurderDeskScreen extends JFrame{
             		((Timer) e.getSource()).stop();
             	}
             	if(blue <=255){
-            		title.setForeground(new Color(0,0,blue));
+            		title.setForeground(new Color(blue,blue,255));
             	}
             	if(blue == 200){
             		about.setText("Version " + MurderDesk.VERSION + " - (c) 2014 EGI/5");
             	}
             }
 		});
+		fadeIn.setInitialDelay(2000);
 		fadeIn.start();
 	}
 	

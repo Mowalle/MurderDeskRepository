@@ -15,7 +15,6 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -25,17 +24,15 @@ import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.BorderFactory;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.border.Border;
+import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.TabSet;
 import javax.swing.text.TabStop;
 
-import net.groupfive.murderdesk.screens.*;
 import net.groupfive.murderdesk.data.Objective;
 import net.groupfive.murderdesk.data.Subject;
 import net.groupfive.murderdesk.gui.CharacterPanel;
@@ -49,7 +46,7 @@ import net.groupfive.murderdesk.gui.NormalTextScroll;
 public class GUI implements Observer {
 	
 	public final static boolean FULLSCREEN = false;
-	public final static boolean BOOTSCREEN = false;
+	public final static boolean BOOTSCREEN = true;
 	
 	public static Font ftCamcorder, ftMinecraftia, ftDSTerminal, ftTitle1, ftTitle2, ftRegular, ftSmall;
 
@@ -59,7 +56,7 @@ public class GUI implements Observer {
 	
 	private GamePanel game;
 	
-	public GUI(){
+	public void start(){
 		// add fonts globally
 		try {
 			InputStream s1 = Main.class.getResourceAsStream("/fonts/CAMCORDER_REG.otf");
@@ -178,7 +175,7 @@ public class GUI implements Observer {
             }
 		});
        	if(BOOTSCREEN){
-       		init.setInitialDelay(5000);
+       		init.setInitialDelay(8000);
        	} else{
        		init.setInitialDelay(0);
        	}
@@ -277,6 +274,9 @@ public class GUI implements Observer {
 		txtObjectives = new NormalText();
 		pObjectives.add(new NormalTextScroll(txtObjectives), BorderLayout.CENTER);
 		txtObjectives.setSpacing(0.5f);
+		SimpleAttributeSet sas = new SimpleAttributeSet();
+		StyleConstants.setSpaceBelow(sas, 24);
+		txtObjectives.getStyledDocument().setParagraphAttributes(0, txtObjectives.getStyledDocument().getLength(), sas, false);
 		txtBalance = new NormalText();
 		Style style = txtBalance.getStyle();
 		style.addAttribute(StyleConstants.Alignment, StyleConstants.ALIGN_CENTER);
@@ -311,7 +311,7 @@ public class GUI implements Observer {
 		ArrayList<Objective> objectives = Main.d.getObjectives();
 		for(int i=0; i<objectives.size(); i++){
 			Objective o = objectives.get(i);
-			txtObjectives.append(o.getDescription() + " (+$" + o.getValue() + ")\n");
+			txtObjectives.append("* " + o.getDescription() + " (+$" + o.getValue() + ")\n");
 		}
 		
 		// subject_general
@@ -333,10 +333,10 @@ public class GUI implements Observer {
 		txtSubject_status.append("ALIVE");
 		
 		// bpm
-		pSubject_bpm.enableSound(false);
-		//int pulse = ((GameScreen)game.getGame().getScreen()).getPlayer().getPulse();
-		//pSubject_bpm.setBeat(pulse);
-		//pSubject_bpmTxt.setText(pulse + " BPM");
+		pSubject_bpm.enableSound(true);
+		int pulse = 80;
+		pSubject_bpm.setBeat(pulse);
+		pSubject_bpmTxt.setText(pulse + " BPM");
 		
 		// image
 		pSubject_img.load(Main.class.getResourceAsStream("/textures/CharacterOskar.png"), 5, 3);
@@ -366,7 +366,15 @@ public class GUI implements Observer {
 		Message m = (Message) arg;
 		
 		try{
-			txtBalance.setText("$"+m.getString());
+			if(m.getKey() == "pulse"){
+				pSubject_bpm.setBeat(m.getInt());
+				pSubject_bpmTxt.setText(m.getInt() + " BPM");
+			} else if(m.getKey() == "dead"){
+				txtSubject_status.setBackground(Color.RED);
+				txtSubject_status.setText("DEAD");
+				pSubject_bpm.kill();
+				pSubject_bpmTxt.setText(0 + " BPM");
+			}
 		} catch(Exception e){
 			e.printStackTrace();
 		}

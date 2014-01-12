@@ -246,13 +246,20 @@ public class Player {
 		if (health == 0) {
 			pulse = 0;
 			dead = true;
+			MurderDesk.controller.broadcastOnEDT(new Message("string", "dead", "dead"));
 		} else {
+			int prevpulse = pulse;
 			pulse = (int) (80 - (1 - health / 100.0) * 20 + (1 - mentalPower / 100.0) * 60);
+			if(prevpulse != pulse){
+				MurderDesk.controller.broadcastOnEDT(new Message("int", "pulse", pulse));
+				
+			}
 		}
 		
 		// Check if player is dead
 		if (pulse >= PULSE_MAXMIMUM || pulse <= PULSE_MINIMUM) {
 			dead = true;
+			MurderDesk.controller.broadcastOnEDT(new Message("string", "dead", "dead"));
 		}
 
 		// Update the regeneration timer

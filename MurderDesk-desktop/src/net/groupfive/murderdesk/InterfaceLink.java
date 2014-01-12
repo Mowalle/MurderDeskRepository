@@ -15,6 +15,7 @@ public class InterfaceLink implements SerialPortEventListener {
         /** The port we're normally going to use. */
 	private static final String PORT_NAMES[] = { 
 			"/dev/tty.usbserial-A9007UX1", // Mac OS X
+			"/dev/tty.usbmodemfd121", // Teis's Macbook Pro
 			"/dev/ttyUSB0", // Linux
 			"COM3", // Windows
 	};
@@ -92,10 +93,21 @@ public class InterfaceLink implements SerialPortEventListener {
 			try {
 				String inputLine=input.readLine();
 				System.out.println(inputLine);
+				parse(inputLine);
 			} catch (Exception e) {
 				System.err.println(e.toString());
 			}
 		}
 		// Ignore all the other eventTypes, but you should consider the other ones.
+	}
+	
+	private void parse(String s){
+		if(s.equals("t1")){
+			System.out.println("trap 1 activated");
+		} else if(s.equals("t2")){
+			
+		} else{
+			System.out.println("???");
+		}
 	}
 }

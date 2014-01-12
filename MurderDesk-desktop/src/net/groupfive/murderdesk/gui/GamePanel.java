@@ -5,6 +5,7 @@ import java.awt.geom.Rectangle2D;
 import javax.swing.JFrame;
 import javax.swing.JRootPane;
 
+import net.groupfive.murderdesk.Main;
 import net.groupfive.murderdesk.MurderDesk;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
@@ -16,12 +17,8 @@ public class GamePanel extends JFrame {
 	
 	private final static int WIDTH = 630;
 	private final static int HEIGHT = 387;
-	private final MurderDesk gamePointer;
-
 	public GamePanel() {
-		
-		gamePointer = new MurderDesk();
-		
+				
 		// configuration
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = MurderDesk.TITLE + " " + MurderDesk.VERSION;
@@ -30,7 +27,7 @@ public class GamePanel extends JFrame {
 		cfg.height = HEIGHT;
 		
 		// create canvas & add to frame
-		LwjglCanvas canvas = new LwjglCanvas(gamePointer, cfg);
+		LwjglCanvas canvas = new LwjglCanvas(Main.murderDesk, cfg);
 		canvas.getCanvas().setSize(WIDTH,HEIGHT);	
 		getContentPane().add(canvas.getCanvas());
 		
@@ -45,6 +42,6 @@ public class GamePanel extends JFrame {
 	}
 	
 	public MurderDesk getGame(){
-		return gamePointer;
+		return Main.murderDesk;
 	}
 }

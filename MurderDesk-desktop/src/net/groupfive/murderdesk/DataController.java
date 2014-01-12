@@ -35,7 +35,7 @@ public final class DataController {
 		
 		//0
 		Room r1 = new Room(1, "Basement");
-		traps = new String[] {"Open some door", "Fill with some gas", "Release the kraken"};
+		traps = new String[] {"Open trap door", "Flood the room", "Unavailable"};
 		r1.addTraps(traps);
 		rooms.add(r1);
 		
@@ -58,8 +58,10 @@ public final class DataController {
 		/*
 		 * OBJECTIVES
 		 */
-		objectives.add(new Objective("Get heartbeat to 230", 3000));
-		objectives.add(new Objective("Use some cinamon gas", 20));
+		objectives.add(new Objective("Let stones fall from above to scare the subject. Bring the pulse to 130", 500));
+		objectives.add(new Objective("Find a way to nearly kill the subject and bring his pulse at least to 140", 3000));
+		objectives.add(new Objective("Try to make the subject run around fast in the room. Use light (+2000) or sound.", 1500));
+		objectives.add(new Objective("Play with the subject! Imprison the subject in the room! Close the door when the subject is close to it.", 200));
 		
 	}
 	
