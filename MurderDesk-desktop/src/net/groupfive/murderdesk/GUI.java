@@ -2,14 +2,20 @@ package net.groupfive.murderdesk;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.DisplayMode;
 import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Point;
 import java.awt.Toolkit;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.image.BufferedImage;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -20,6 +26,7 @@ import java.util.Observer;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 import javax.swing.border.Border;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
@@ -38,9 +45,9 @@ import net.groupfive.murderdesk.gui.NormalTextScroll;
 
 public class GUI implements Observer {
 	
-	public final static boolean FULLSCREEN = false;
+	public final static boolean FULLSCREEN = true;
 	
-	public static Font ftCamcorder, ftMinecraftia, ftTitle1, ftTitle2, ftRegular, ftSmall;
+	public static Font ftCamcorder, ftMinecraftia, ftDSTerminal, ftTitle1, ftTitle2, ftRegular, ftSmall;
 
 	private NormalText txtObjectives, txtSubject_general, txtSubject_status, txtSubject_detail, txtBalance, txtTraps, txtConsole;
 	private ECDPanel pSubject_bpm;
@@ -53,8 +60,10 @@ public class GUI implements Observer {
 				try {
 					InputStream s1 = Main.class.getResourceAsStream("/fonts/CAMCORDER_REG.otf");
 					InputStream s2 = Main.class.getResourceAsStream("/fonts/Minecraftia.ttf");
+					InputStream s3 = Main.class.getResourceAsStream("/fonts/DS-TERM.TTF");
 					ftCamcorder = Font.createFont(Font.TRUETYPE_FONT, s1);
 					ftMinecraftia = Font.createFont(Font.TRUETYPE_FONT,  s2);
+					ftDSTerminal = Font.createFont(Font.TRUETYPE_FONT, s3);
 					ftTitle1 = ftCamcorder.deriveFont(Font.PLAIN, 24);
 					ftTitle2 = ftCamcorder.deriveFont(Font.PLAIN, 16);
 					ftRegular = ftMinecraftia.deriveFont(Font.PLAIN, 11);
@@ -67,30 +76,20 @@ public class GUI implements Observer {
 				//final MurderDeskScreen screen1 = new MurderDeskScreen("Map");
 				final MurderDeskScreen screen2 = new MurderDeskScreen("Active View");
 				final MurderDeskScreen screen3 = new MurderDeskScreen("Main");
-				
-				//initScreen1(screen1);
-				initScreen2(screen2);
-				initScreen3(screen3);
-				
-				// populate
-				populate();
-				
 				game = new GamePanel();
-				game.pack();
-				game.setVisible(true);
+				
+				GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
 				
 				if(FULLSCREEN){
 					
-					GraphicsEnvironment env;
 					GraphicsDevice s1;
 					GraphicsDevice s2;
 					DisplayMode s1_newMode;
 					DisplayMode s2_newMode;
 					
-					try{
-						env = GraphicsEnvironment.getLocalGraphicsEnvironment();  
-						s1 = env.getScreenDevices()[0];
-						s2 = env.getScreenDevices()[1];
+					try{  
+						s1 = env.getScreenDevices()[0]; // laptop screen
+						s2 = env.getScreenDevices()[1]; // secondary monitor
 						
 						DisplayMode s1_oldMode = s1.getDisplayMode(); 
 						DisplayMode s2_oldMode = s2.getDisplayMode();
@@ -100,34 +99,38 @@ public class GUI implements Observer {
 						
 						screen2.setUndecorated(true);
 						screen3.setUndecorated(true);
-						screen2.setResizable(true);
-						screen3.setResizable(true);
-						
-						//s1.setFullScreenWindow(screen2);
-						//s2.setFullScreenWindow(screen3);
-						
-						screen2.setSize(Toolkit.getDefaultToolkit().getScreenSize());
-						screen3.setSize(Toolkit.getDefaultToolkit().getScreenSize());
+						screen2.setResizable(false);
+						screen3.setResizable(false);
 	
 						//check low-level display changes are supported for this graphics device.
 						if(s1.isDisplayChangeSupported()){
 							try{
 								s1.setDisplayMode(s1_newMode);
-							}finally{
-								s1.setDisplayMode(null);
+								s1.setFullScreenWindow(screen3);
+							}catch(Exception e){
+								e.printStackTrace();
 							}
 						}
-						if(s1.isDisplayChangeSupported()){
-							try{
-								s2.setDisplayMode(s2_newMode);
-							}finally{
-								s2.setDisplayMode(null);
-							}
-						}
+						
 					} catch(Exception e){
 						e.printStackTrace();
 					}
+					
+					// hide cursor
+					Toolkit toolkit = Toolkit.getDefaultToolkit();
+				    Point hotSpot = new Point(0,0);
+				    BufferedImage cursorImage = new BufferedImage(1, 1, BufferedImage.TRANSLUCENT); 
+				    Cursor invisibleCursor = toolkit.createCustomCursor(cursorImage, hotSpot, "InvisibleCursor");        
+				    screen2.setCursor(invisibleCursor);
+				    screen3.setCursor(invisibleCursor);
 				}
+				
+		       	// position
+		       	if(env.getScreenDevices().length >= 2 && FULLSCREEN){
+		       		screen2.setLocation(env.getScreenDevices()[1].getDefaultConfiguration().getBounds().x, 0);
+		       	} else{
+		       		screen2.setLocation(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width - 800, 0);
+		       	}
 				
 				if(!FULLSCREEN){
 					screen2.addComponentListener(new ComponentAdapter() {
@@ -135,20 +138,43 @@ public class GUI implements Observer {
 					        game.setLocation(screen2.getX()+15, screen2.getY()+63);
 					    }
 					});
+				} else{
+					game.setLocation(screen2.getX()+15, screen2.getY()+41);
 				}
 				
 				// pack
 				//screen1.pack();
 				screen2.pack();
 				screen3.pack();
+				game.pack();
 				
 				// show
-		       	screen3.setVisible(true);
 		       	screen2.setVisible(true);
+		       	screen3.setVisible(true);
 		        //screen1.setVisible(true);
 		       	
-		       	// position
-		       	screen3.setLocation(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width - 800, 0);
+		       	// boot
+		       	screen2.boot();
+		       	screen3.boot();
+		       	
+		       	Timer init = new Timer(1000, new ActionListener() {
+		            public void actionPerformed(ActionEvent e) {
+		            	
+		            	screen2.load();
+		            	screen3.load();
+		            	
+						//initScreen1(screen1);
+						initScreen2(screen2);
+						initScreen3(screen3);
+						
+						// populate
+						populate();
+						game.setVisible(true);
+		            }
+				});
+		       	init.setInitialDelay(5000);
+		       	init.setRepeats(false);
+				init.start();
 	}
 	
 	/*
