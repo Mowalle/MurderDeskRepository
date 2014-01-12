@@ -97,4 +97,10 @@ public class TrapGas extends Trap {
 		// TODO Auto-generated method stub
 	}
 
+	@Override
+	public void dispose() {
+		spriteSheet.dispose();
+		
+	}
+
 }

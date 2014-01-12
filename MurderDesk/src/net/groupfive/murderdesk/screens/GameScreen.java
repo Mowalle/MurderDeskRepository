@@ -32,11 +32,6 @@ public class GameScreen extends MurderDeskScreen {
 	private GameMap currentMap;
 	private IsometricTiledMapRenderer renderer;
 
-	// Traps
-	TrapDoor testTrapDoor;
-	TrapFlood testTrapFlood;
-	TrapGas testTrapGas;
-
 	/** is done flag **/
 	private boolean done = false;
 
@@ -63,8 +58,9 @@ public class GameScreen extends MurderDeskScreen {
 		maps = new Array<GameMap>();
 		maps.add(new GameMap("maps/test1.tmx"));
 		maps.add(new GameMap("maps/IsoTest.tmx"));
+		
 
-		// FIXME Has to be compatible to player and its rendering
+		// FIXME Has to be compatible to multiple maps
 		setCurrentMap(0);
 
 		/*
@@ -78,9 +74,10 @@ public class GameScreen extends MurderDeskScreen {
 		System.out.println("Player: " + player.getX() + ", " + player.getY());
 
 		// TODO Has to be moved into GameMap.java
-		testTrapDoor = new TrapDoor("trapdoor01", currentMap);
-		testTrapFlood = new TrapFlood(currentMap, player);
-		testTrapGas = new TrapGas(currentMap, player);
+		currentMap.getTraps().add(new TrapDoor("trapdoor01", currentMap));
+		currentMap.getTraps().add(new TrapFlood(currentMap, player));
+		currentMap.getTraps().add(new TrapGas(currentMap, player));
+		currentMap.setCurrentTrap(0);
 	}
 
 	@Override
@@ -108,9 +105,7 @@ public class GameScreen extends MurderDeskScreen {
 		// Camera Bounds
 
 		// Trap Update
-		testTrapDoor.update(delta, player);
-		testTrapFlood.update(delta, player);
-		testTrapGas.update(delta, player);
+		currentMap.getCurrentTrap().update(delta, player);
 
 		// Update the player object
 		player.update(delta, currentMap);
@@ -164,15 +159,13 @@ public class GameScreen extends MurderDeskScreen {
 		game.spriteBatch.begin();
 		game.spriteBatch.setProjectionMatrix(camera.combined);
 
-		testTrapDoor.draw(delta, game.spriteBatch);
 
 		player.draw(false, game.spriteBatch);
 		
-		testTrapFlood.draw(delta, game.spriteBatch);
-
+		currentMap.getCurrentTrap().draw(delta, game.spriteBatch);
+		
 		player.draw(true, game.spriteBatch);
 
-		testTrapGas.draw(delta, game.spriteBatch);
 		
 
 		game.spriteBatch.end();
@@ -205,7 +198,7 @@ public class GameScreen extends MurderDeskScreen {
 	@Override
 	public void dispose() {
 		currentMap.getTiledMap().dispose();
-		testTrapDoor.dispose();
+		currentMap.getCurrentTrap().dispose();
 		player.dispose();
 	}
 

@@ -31,17 +31,17 @@ public class Main {
 		d = new DataController();
 		d.log();
 		
-//		if(GUI){
-//			SwingUtilities.invokeLater(new Runnable() {
-//				@Override
-//				public void run () {
-//					//m = new Model(c);
-//					c.addObserver(new GUI());
-//				}
-//			});
-//		} else{
+		if(GUI){
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run () {
+					//m = new Model(c);
+					c.addObserver(new GUI());
+				}
+			});
+		} else{
 			runAsSingleWindow();
-//		}
+		}
 	}
 	
 	public static void runAsSingleWindow(){

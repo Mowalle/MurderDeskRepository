@@ -196,6 +196,7 @@ public class TrapDoor extends Trap {
 				+ player.getTiledY());
 	}
 
+	@Override
 	public void dispose() {
 		spriteOpen.dispose();
 	}

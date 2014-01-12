@@ -1,5 +1,7 @@
 package net.groupfive.murderdesk;
 
+import net.groupfive.murderdesk.traps.*;
+
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -46,11 +48,17 @@ public class GameMap {
 	 */
 	private int[] belowLayers;
 
+	
+	private Array<Trap> traps;
+	private Trap currentTrap;
+	
 	public GameMap(String fileName) {
 		String[] tmp = fileName.split("/");
 		name = tmp[tmp.length - 1].substring(0, tmp[tmp.length - 1].length() - 4);
 		System.out.println(name);
 		setTiledMap(new TmxMapLoader().load(fileName));
+		
+		traps = new Array<Trap>();
 	}
 
 	/**
@@ -263,6 +271,26 @@ public class GameMap {
 				mapHeight * (tilePixelHeight / 2) * -1);
 	}
 
+	public Trap getTrap(int index) {
+		index = index % traps.size;
+		return traps.get(index);
+	}
+	
+	public Array<Trap> getTraps() {
+		return traps;
+	}
+	
+	public Trap getCurrentTrap() {
+		return currentTrap;
+	}
+	
+	public void setCurrentTrap(int index) {
+		index = index % traps.size;
+		if (traps.size != 0) {
+			currentTrap = traps.get(index);
+		}
+	}
+	
 	/**
 	 * 
 	 * @param layerIndex
