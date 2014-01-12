@@ -198,6 +198,10 @@ public class GameScreen extends MurderDeskScreen {
 		renderer = new IsometricTiledMapRenderer(currentMap.getTiledMap());
 
 	}
+	
+	public GameMap getCurrentMap(){
+		return currentMap;
+	}
 
 	@Override
 	public void dispose() {
