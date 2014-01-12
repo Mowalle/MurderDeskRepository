@@ -212,5 +212,9 @@ public class GameScreen extends MurderDeskScreen {
 	public boolean isDone() {
 		return done;
 	}
+	
+	public Player getPlayer(){
+		return player;
+	}
 
 }
