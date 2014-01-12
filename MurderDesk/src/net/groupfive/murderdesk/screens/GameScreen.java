@@ -142,8 +142,8 @@ public class GameScreen extends MurderDeskScreen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		Gdx.gl.glViewport((int) viewport.x, (int) viewport.y,
-				(int) viewport.width, (int) viewport.height);
+		//Gdx.gl.glViewport((int) viewport.x, (int) viewport.y,
+				//(int) viewport.width, (int) viewport.height);
 
 		camera.update();
 
@@ -179,8 +179,8 @@ public class GameScreen extends MurderDeskScreen {
 		// Render layers above the player ("WalkBehind")
 		renderer.render(currentMap.getAboveLayers());
 
-		Gdx.gl.glViewport((int) 0, (int) 0, (int) MurderDesk.width,
-				(int) MurderDesk.height);
+		//Gdx.gl.glViewport((int) 0, (int) 0, (int) MurderDesk.width,
+				//(int) MurderDesk.height);
 	}
 
 	public void setCurrentMap(int mapIndex) {
