@@ -58,7 +58,6 @@ public class GameScreen extends MurderDeskScreen {
 		maps = new Array<GameMap>();
 		maps.add(new GameMap("maps/test1.tmx"));
 		maps.add(new GameMap("maps/IsoTest.tmx"));
-		
 
 		// FIXME Has to be compatible to multiple maps
 		setCurrentMap(0);
@@ -102,7 +101,15 @@ public class GameScreen extends MurderDeskScreen {
 			camera.position.x += 5;
 		}
 
-		// Camera Bounds
+		if (Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT)) {
+			if (Gdx.input.isKeyPressed(Input.Keys.NUM_0)) {
+				currentMap.setCurrentTrap(0);
+			} else if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)) {
+				currentMap.setCurrentTrap(1);
+			} else if (Gdx.input.isKeyPressed(Input.Keys.NUM_2)) {
+				currentMap.setCurrentTrap(2);
+			}
+		}
 
 		// Trap Update
 		currentMap.getCurrentTrap().update(delta, player);
@@ -137,8 +144,8 @@ public class GameScreen extends MurderDeskScreen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		//Gdx.gl.glViewport((int) viewport.x, (int) viewport.y,
-				//(int) viewport.width, (int) viewport.height);
+		// Gdx.gl.glViewport((int) viewport.x, (int) viewport.y,
+		// (int) viewport.width, (int) viewport.height);
 
 		camera.update();
 
@@ -159,22 +166,19 @@ public class GameScreen extends MurderDeskScreen {
 		game.spriteBatch.begin();
 		game.spriteBatch.setProjectionMatrix(camera.combined);
 
-
 		player.draw(false, game.spriteBatch);
-		
-		currentMap.getCurrentTrap().draw(delta, game.spriteBatch);
-		
-		player.draw(true, game.spriteBatch);
 
-		
+		currentMap.getCurrentTrap().draw(delta, game.spriteBatch);
+
+		player.draw(true, game.spriteBatch);
 
 		game.spriteBatch.end();
 
 		// Render layers above the player ("WalkBehind")
 		renderer.render(currentMap.getAboveLayers());
 
-		//Gdx.gl.glViewport((int) 0, (int) 0, (int) MurderDesk.width,
-				//(int) MurderDesk.height);
+		// Gdx.gl.glViewport((int) 0, (int) 0, (int) MurderDesk.width,
+		// (int) MurderDesk.height);
 	}
 
 	public void setCurrentMap(int mapIndex) {
