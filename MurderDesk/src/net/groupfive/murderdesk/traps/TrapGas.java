@@ -71,6 +71,9 @@ public class TrapGas extends Trap {
 		return false;
 	}
 	
+	/*
+	 * TEIS added this, because the interface doesn't care about button presses
+	 */
 	private boolean checkDeactivationCondition() {
 		if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)) {
 			if (Gdx.input.isKeyPressed(Keys.NUM_0)) {
