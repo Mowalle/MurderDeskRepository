@@ -23,19 +23,19 @@ public class Player {
 	public final static int LEFT_DOWN = 3;
 
 	/** Width of the frames on the sprite sheet in pixel. */
-	private final static int FRAME_WIDTH = 64;
+	public final static int FRAME_WIDTH = 31;
 	/** Height of the frames on the sprite sheet in pixel. */
-	private final static int FRAME_HEIGHT = 64;
+	public final static int FRAME_HEIGHT = 52;
 	/**
 	 * x-Offset of where to render the player sprite in relation to the bottom
 	 * left corner of the underlying tile.
 	 */
-	private final static int SPRITE_OFFSET_X = 0;
+	private final static int SPRITE_OFFSET_X = 16;
 	/**
 	 * y-Offset of where to render the player sprite in relation to the bottom
 	 * left corner of the underlying tile.
 	 */
-	private final static int SPRITE_OFFSET_Y = 8;
+	private final static int SPRITE_OFFSET_Y = 12;
 
 	/**
 	 * The player's coordinates in tile coordinates.
@@ -106,23 +106,23 @@ public class Player {
 	private float animationStateTime;
 
 	public Player() {
-		spriteSheet = new Texture("textures/juji.png");
+		spriteSheet = new Texture("textures/SimonSprite.png");
 
 		frames = TextureRegion.split(spriteSheet, FRAME_WIDTH, FRAME_HEIGHT);
-		walkAnimationLU = new Animation(0.125f, frames[6]);
-		idleAnimationLU = new Animation(0.125f, frames[2]);
+		walkAnimationLU = new Animation(0.125f, frames[3]);
+		idleAnimationLU = new Animation(0.125f, frames[0][2]);
 
-		walkAnimationRU = new Animation(0.125f, frames[7]);
+		walkAnimationRU = new Animation(0.125f, frames[4]);
 		walkAnimationRU.setPlayMode(Animation.LOOP_PINGPONG);
-		idleAnimationRU = new Animation(0.125f, frames[3]);
+		idleAnimationRU = new Animation(0.125f, frames[0][3]);
 
-		walkAnimationRD = new Animation(0.125f, frames[5]);
+		walkAnimationRD = new Animation(0.125f, frames[2]);
 		walkAnimationRD.setPlayMode(Animation.LOOP_PINGPONG);
-		idleAnimationRD = new Animation(0.125f, frames[1]);
+		idleAnimationRD = new Animation(0.125f, frames[0][1]);
 
-		walkAnimationLD = new Animation(0.125f, frames[4]);
+		walkAnimationLD = new Animation(0.125f, frames[1]);
 		walkAnimationLD.setPlayMode(Animation.LOOP_PINGPONG);
-		idleAnimationLD = new Animation(0.125f, frames[0]);
+		idleAnimationLD = new Animation(0.125f, frames[0][0]);
 
 		currentAnimation = walkAnimationLD;
 
@@ -161,8 +161,8 @@ public class Player {
 
 					randDirection = randGenerator.nextInt(4);
 
-					// To disable random movement
-					randDirection = -1;
+//					// To disable random movement
+//					randDirection = -1;
 
 					// Moving with keys, should be replaced with AI
 					if (Gdx.input.isKeyPressed(Keys.W) || randDirection == 0) {
@@ -243,8 +243,13 @@ public class Player {
 		}
 
 		// Update the pulse
-		pulse = (int) (80 - (1 - health / 100.0) * 20 + (1 - mentalPower / 100.0) * 60);
-
+		if (health == 0) {
+			pulse = 0;
+			dead = true;
+		} else {
+			pulse = (int) (80 - (1 - health / 100.0) * 20 + (1 - mentalPower / 100.0) * 60);
+		}
+		
 		// Check if player is dead
 		if (pulse >= PULSE_MAXMIMUM || pulse <= PULSE_MINIMUM) {
 			dead = true;
@@ -271,11 +276,11 @@ public class Player {
 
 		if (topHalf) {
 			halfSprite = new TextureRegion(currentAnimation.getKeyFrame(
-					animationStateTime, true), 0, 0, 64, splitSpriteY);
-			spriteBatch.draw(halfSprite, x + SPRITE_OFFSET_X, y + SPRITE_OFFSET_Y + (64 - splitSpriteY));
+					animationStateTime, true), 0, 0, FRAME_WIDTH, splitSpriteY);
+			spriteBatch.draw(halfSprite, x + SPRITE_OFFSET_X, y + SPRITE_OFFSET_Y + (FRAME_HEIGHT - splitSpriteY));
 		} else {
 			halfSprite = new TextureRegion(currentAnimation.getKeyFrame(
-					animationStateTime, true), 0, splitSpriteY, 64, 64 - splitSpriteY);
+					animationStateTime, true), 0, splitSpriteY, FRAME_WIDTH, FRAME_HEIGHT - splitSpriteY);
 			spriteBatch.draw(halfSprite, x + SPRITE_OFFSET_X, y + SPRITE_OFFSET_Y);
 		}
 	}

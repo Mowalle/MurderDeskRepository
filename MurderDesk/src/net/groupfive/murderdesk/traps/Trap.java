@@ -12,6 +12,8 @@ public abstract class Trap {
 	protected GameMap myMap;
 
 	protected boolean isActive;
+	
+	protected float statChangeTimer = 0f;
 
 	/**
 	 * Activates this trap and calls applyTrapOnActivation(player).
@@ -48,6 +50,7 @@ public abstract class Trap {
 		} else {
 			if (checkCondition()) {
 				applyTrapOverTime(player);
+				statChangeTimer += delta;
 			} else {
 				deactivate(player);
 			}

@@ -23,6 +23,7 @@ public class GameScreen extends MurderDeskScreen {
 
 	private Player player;
 
+	// TODO Remove this
 	Texture test = new Texture("textures/mousemap.png"); // Only for testing
 														 // purposes
 
@@ -52,6 +53,9 @@ public class GameScreen extends MurderDeskScreen {
 
 		camera.update();
 
+		System.out.println("Camera: " + camera.position.x + ", "
+				+ camera.position.y + ", " + camera.position.z);
+
 		/*
 		 * Map Setup
 		 */
@@ -61,10 +65,6 @@ public class GameScreen extends MurderDeskScreen {
 
 		// FIXME Has to be compatible to player and its rendering
 		setCurrentMap(0);
-
-		// TODO Has to be moved into GameMap.java
-		testTrapDoor = new TrapDoor("trapdoor01", currentMap);
-		testTrapFlood = new TrapFlood(currentMap);
 
 		/*
 		 * Player Object Setup
@@ -76,12 +76,9 @@ public class GameScreen extends MurderDeskScreen {
 
 		System.out.println("Player: " + player.getX() + ", " + player.getY());
 
-		/*
-		 * Test Messages
-		 */
-
-		System.out.println("Camera: " + camera.position.x + ", "
-				+ camera.position.y + ", " + camera.position.z);
+		// TODO Has to be moved into GameMap.java
+		testTrapDoor = new TrapDoor("trapdoor01", currentMap);
+		testTrapFlood = new TrapFlood(currentMap, player);
 	}
 
 	@Override
@@ -168,8 +165,7 @@ public class GameScreen extends MurderDeskScreen {
 
 		player.draw(false, game.spriteBatch);
 		
-		// TODO A way to remove player as parameter
-		testTrapFlood.draw(delta, player, game.spriteBatch);
+		testTrapFlood.draw(delta, game.spriteBatch);
 
 		player.draw(true, game.spriteBatch);
 		
@@ -211,6 +207,13 @@ public class GameScreen extends MurderDeskScreen {
 	@Override
 	public boolean isDone() {
 		return done;
+	}
+
+	/**
+	 * @return the highscore
+	 */
+	public int getHighscore() {
+		return highscore;
 	}
 
 }

@@ -11,6 +11,8 @@ import com.badlogic.gdx.utils.Array;
 
 public class GameMap {
 
+	private String name;
+
 	/** Underlying tiled map. */
 	private TiledMap map;
 
@@ -45,11 +47,10 @@ public class GameMap {
 	private int[] belowLayers;
 
 	public GameMap(String fileName) {
-		this(new TmxMapLoader().load(fileName));
-	}
-
-	public GameMap(TiledMap map) {
-		setTiledMap(map);
+		String[] tmp = fileName.split("/");
+		name = tmp[tmp.length - 1].substring(0, tmp[tmp.length - 1].length() - 4);
+		System.out.println(name);
+		setTiledMap(new TmxMapLoader().load(fileName));
 	}
 
 	/**
@@ -208,7 +209,8 @@ public class GameMap {
 		Vector2 topLeft = new Vector2(pointLeft.x, pointTop.y);
 		Vector2 bottomLeft = new Vector2(pointLeft.x, pointBottom.y);
 		Vector2 bottomRight = new Vector2(pointRight.x, pointBottom.y);
-//		Vector2 topRight = new Vector2(pointRight.x, pointTop.y); //Not needed
+		// Vector2 topRight = new Vector2(pointRight.x, pointTop.y); //Not
+		// needed
 
 		boundingBox.x = bottomLeft.x;
 		boundingBox.y = bottomLeft.y;
@@ -321,5 +323,12 @@ public class GameMap {
 		}
 
 		return false;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
 	}
 }
