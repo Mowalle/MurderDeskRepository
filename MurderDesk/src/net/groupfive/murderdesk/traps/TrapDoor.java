@@ -148,11 +148,12 @@ public class TrapDoor extends Trap {
 	protected void applyTrapOverTime(Player player) {
 		// Kill player is he is inside trap
 		// TODO Killing animation
-		if (player.isAnimating()) {
-			if (player.getTiledX() >= tiledX
-					&& player.getTiledX() <= tiledX + 1
-					&& player.getTiledY() >= tiledY
-					&& player.getTiledY() <= tiledY + 1) {
+		if (player.getTiledX() >= tiledX && player.getTiledX() <= tiledX + 1
+				&& player.getTiledY() >= tiledY
+				&& player.getTiledY() <= tiledY + 1) {
+			// Keep TrapDoor open when player is about to step on it
+			trapOpenTimer = 0f;
+			if (!player.isAnimating()) {
 				player.allowMovement(false);
 				player.setHealth(0);
 			}

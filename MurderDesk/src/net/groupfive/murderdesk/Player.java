@@ -90,7 +90,7 @@ public class Player {
 
 	private TextureRegion[][] frames;
 	private TextureRegion halfSprite;
-	private int splitSpriteY = 32; // TODO Hardcoded values
+	private int splitSpriteY = FRAME_HEIGHT; // TODO Hardcoded values
 
 	private Animation walkAnimationLU; // Left Up animation
 	private Animation idleAnimationLU;
@@ -106,7 +106,7 @@ public class Player {
 	private float animationStateTime;
 
 	public Player() {
-		spriteSheet = new Texture("textures/SimonSprite.png");
+		spriteSheet = new Texture("textures/OskarSprite.png");
 
 		frames = TextureRegion.split(spriteSheet, FRAME_WIDTH, FRAME_HEIGHT);
 		walkAnimationLU = new Animation(0.125f, frames[3]);
@@ -148,12 +148,16 @@ public class Player {
 					movementTimer += delta;
 				} else {
 					movementTimer = 0f;
-					if (mentalPower >= 34) { // TODO Hardcoded value
-						waitTime = randGenerator.nextInt(4);
-						movementSpeed = 0.5f;
-					} else {
+					waitTime = randGenerator.nextInt(4);
+					movementSpeed = 0.5f;
+					
+					if (mentalPower < 34) { // TODO Hardcoded value {
 						waitTime = 0;
 						movementSpeed = 0.25f;
+					}
+					
+					if (health < 34) {
+						movementSpeed = 1f;
 					}
 
 					int newTileX = tiledX;
@@ -161,8 +165,8 @@ public class Player {
 
 					randDirection = randGenerator.nextInt(4);
 
-//					// To disable random movement
-//					randDirection = -1;
+					// // To disable random movement
+					// randDirection = -1;
 
 					// Moving with keys, should be replaced with AI
 					if (Gdx.input.isKeyPressed(Keys.W) || randDirection == 0) {
@@ -242,6 +246,14 @@ public class Player {
 			animationStateTime = 0f;
 		}
 
+		if (health < 0) {
+			health = 0;
+		}
+
+		if (mentalPower < 0) {
+			mentalPower = 0;
+		}
+
 		// Update the pulse
 		if (health == 0) {
 			pulse = 0;
@@ -249,7 +261,7 @@ public class Player {
 		} else {
 			pulse = (int) (80 - (1 - health / 100.0) * 20 + (1 - mentalPower / 100.0) * 60);
 		}
-		
+
 		// Check if player is dead
 		if (pulse >= PULSE_MAXMIMUM || pulse <= PULSE_MINIMUM) {
 			dead = true;
@@ -277,11 +289,14 @@ public class Player {
 		if (topHalf) {
 			halfSprite = new TextureRegion(currentAnimation.getKeyFrame(
 					animationStateTime, true), 0, 0, FRAME_WIDTH, splitSpriteY);
-			spriteBatch.draw(halfSprite, x + SPRITE_OFFSET_X, y + SPRITE_OFFSET_Y + (FRAME_HEIGHT - splitSpriteY));
+			spriteBatch.draw(halfSprite, x + SPRITE_OFFSET_X, y
+					+ SPRITE_OFFSET_Y + (FRAME_HEIGHT - splitSpriteY));
 		} else {
 			halfSprite = new TextureRegion(currentAnimation.getKeyFrame(
-					animationStateTime, true), 0, splitSpriteY, FRAME_WIDTH, FRAME_HEIGHT - splitSpriteY);
-			spriteBatch.draw(halfSprite, x + SPRITE_OFFSET_X, y + SPRITE_OFFSET_Y);
+					animationStateTime, true), 0, splitSpriteY, FRAME_WIDTH,
+					FRAME_HEIGHT - splitSpriteY);
+			spriteBatch.draw(halfSprite, x + SPRITE_OFFSET_X, y
+					+ SPRITE_OFFSET_Y);
 		}
 	}
 
@@ -498,11 +513,11 @@ public class Player {
 	public void setMentalPower(int mentalPower) {
 		this.mentalPower = mentalPower % 101;
 	}
-	
+
 	public int getSplitSpriteY() {
 		return splitSpriteY;
 	}
-	
+
 	public void setSplitSpriteY(int splitSpriteY) {
 		this.splitSpriteY = splitSpriteY;
 	}

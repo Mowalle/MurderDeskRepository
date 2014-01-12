@@ -35,6 +35,7 @@ public class GameScreen extends MurderDeskScreen {
 	// Traps
 	TrapDoor testTrapDoor;
 	TrapFlood testTrapFlood;
+	TrapGas testTrapGas;
 
 	/** is done flag **/
 	private boolean done = false;
@@ -79,6 +80,7 @@ public class GameScreen extends MurderDeskScreen {
 		// TODO Has to be moved into GameMap.java
 		testTrapDoor = new TrapDoor("trapdoor01", currentMap);
 		testTrapFlood = new TrapFlood(currentMap, player);
+		testTrapGas = new TrapGas(currentMap, player);
 	}
 
 	@Override
@@ -108,6 +110,7 @@ public class GameScreen extends MurderDeskScreen {
 		// Trap Update
 		testTrapDoor.update(delta, player);
 		testTrapFlood.update(delta, player);
+		testTrapGas.update(delta, player);
 
 		// Update the player object
 		player.update(delta, currentMap);
@@ -168,6 +171,8 @@ public class GameScreen extends MurderDeskScreen {
 		testTrapFlood.draw(delta, game.spriteBatch);
 
 		player.draw(true, game.spriteBatch);
+
+		testTrapGas.draw(delta, game.spriteBatch);
 		
 
 		game.spriteBatch.end();
