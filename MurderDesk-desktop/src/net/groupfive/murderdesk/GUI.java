@@ -46,7 +46,7 @@ import net.groupfive.murderdesk.gui.NormalTextScroll;
 public class GUI implements Observer {
 	
 	public final static boolean FULLSCREEN = false;
-	public final static boolean BOOTSCREEN = true;
+	public final static boolean BOOTSCREEN = false;
 	
 	public static Font ftCamcorder, ftMinecraftia, ftDSTerminal, ftTitle1, ftTitle2, ftRegular, ftSmall;
 
@@ -301,7 +301,8 @@ public class GUI implements Observer {
 		txtSubject_general = new NormalText();
 		pSubject_info.add(txtSubject_general, BorderLayout.CENTER);
 		txtSubject_detail = new NormalText();
-		pSubject_detail.add(txtSubject_detail, BorderLayout.CENTER);
+		NormalTextScroll txtSubject_detailScroll = new NormalTextScroll(txtSubject_detail);
+		pSubject_detail.add(txtSubject_detailScroll, BorderLayout.CENTER);
 		
 		s.content.add(pSubject);
 		s.content.add(pObjectives);
