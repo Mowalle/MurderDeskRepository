@@ -75,7 +75,7 @@ public class Player {
 	public static final int DEFAULT_PULSE = 60;
 
 	private static final int PULSE_MAXIMUM = 0;
-	private static int PULSE_MAXMIMUM = 150;
+	private static int PULSE_MAXMIMUM = 210;
 	private static int PULSE_MINIMUM = 30;
 
 	private int previousPulse;
@@ -105,7 +105,7 @@ public class Player {
 	private Animation currentAnimation; // Current Animation
 
 	private float animationStateTime;
-
+	
 	public Player() {
 		spriteSheet = new Texture("textures/OskarSprite.png");
 
