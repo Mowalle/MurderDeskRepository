@@ -40,7 +40,7 @@ public class ECDPanel extends JPanel implements ActionListener {
 	
 	public ECDPanel(){
 		
-		timer = new Timer (1000/60, this);
+		timer = new Timer (1, this);
 		timer.start();
 		
 		trace = new ArrayList<Point>();
@@ -68,7 +68,7 @@ public class ECDPanel extends JPanel implements ActionListener {
 	    });
 		
 		try {
-			AudioInputStream audioIn = AudioSystem.getAudioInputStream(Main.class.getResourceAsStream("/sounds/heart_beat.wav"));
+			AudioInputStream audioIn = AudioSystem.getAudioInputStream(Main.class.getResourceAsStream("/sounds/heart_beat_short.wav"));
 			clipAlive = AudioSystem.getClip();
 			clipAlive.open(audioIn);
 			 
@@ -83,6 +83,12 @@ public class ECDPanel extends JPanel implements ActionListener {
             public void actionPerformed(ActionEvent e) {
             	beating = true;
             	if(sound){
+            		/*
+            		if(sound){
+            			Thread t = new Thread(new HeartBeep());
+                    	t.start();
+            		}
+            		 */
             		clipAlive.start();
     	        	clipAlive.setFramePosition(0);
             	}
@@ -138,7 +144,7 @@ public class ECDPanel extends JPanel implements ActionListener {
 		p.setLocation(x, y);
 		trace.add(p);
 		
-		x+=2;
+		x++;
 		if(beating){
 			y = yList[y_];
 			y_++;

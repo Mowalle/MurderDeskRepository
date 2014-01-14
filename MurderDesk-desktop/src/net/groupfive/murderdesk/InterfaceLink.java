@@ -23,6 +23,8 @@ public class InterfaceLink implements SerialPortEventListener {
 			"/dev/ttyUSB0", // Linux
 			"COM3", // Windows
 	};
+	
+	boolean on = false;
 	/**
 	* A BufferedReader which will be fed by a InputStreamReader 
 	* converting the bytes into characters 
@@ -106,25 +108,31 @@ public class InterfaceLink implements SerialPortEventListener {
 	
 	private void parse(String s){
 		GameScreen screen = (GameScreen) Main.murderDesk.getScreen();
-		if(s.equals("t1")){
+		if(s.equals("t1") && on){
 			screen.getCurrentMap().getCurrentTrap().deactivate(screen.getPlayer());
 			screen.getCurrentMap().setCurrentTrap(0);
-			System.out.println("[interface] Trap 1 activated");
-		} else if(s.equals("t2")){
+			Main.gui.logToConsole("Trap 1 selected.");
+		} else if(s.equals("t2") && on){
 			screen.getCurrentMap().getCurrentTrap().deactivate(screen.getPlayer());
 			screen.getCurrentMap().setCurrentTrap(1);
-			System.out.println("[interface] Trap 2 activated");
-		} else if(s.equals("t3")){
+			Main.gui.logToConsole("Trap 2 selected.");
+		} else if(s.equals("t3") && on){
 			screen.getCurrentMap().getCurrentTrap().deactivate(screen.getPlayer());
 			screen.getCurrentMap().setCurrentTrap(2);
-			System.out.println("[interface] Trap 3 activated");
-		} else if(s.equals("ton")){
+			Main.gui.logToConsole("Trap 3 selected.");
+		} else if(s.equals("ton") && on){
 			screen.getCurrentMap().getCurrentTrap().activate(screen.getPlayer());
-		} else if(s.equals("toff")){
+			Main.gui.logToConsole("Trap activated.");
+		} else if(s.equals("toff") && on){
 			screen.getCurrentMap().getCurrentTrap().deactivate(screen.getPlayer());
+			Main.gui.logToConsole("Trap 1 deactivated.");
+		} else if(s.equals("boot")){
+			on = true;
+			Main.boot();
 		}
 		else{
 			System.out.println("[interface] Unknown command");
+			Main.gui.logToConsole("The interface received an unknown command. Please contact the system administrator.");
 		}
 	}
 }

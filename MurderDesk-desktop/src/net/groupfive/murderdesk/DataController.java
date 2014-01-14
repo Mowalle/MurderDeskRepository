@@ -49,10 +49,20 @@ public final class DataController {
 		 * PERSONAS
 		 */
 		//0
-		Subject p1 = new Subject("249-b", "Johnny", "Appleseed");
+		Subject p1 = new Subject("140113-hifi", "Micheal \"Mike\"", "Johnson", "19 october 2012", "13 january 2014");
 		p1.appendStory("This is Mike. Mike is a drug dealer. Not a biggy, but still he is doing his job good.");
 		p1.appendStory("Beneath drug dealing he had some police records going on. He stole, fought and almost killed.");
 		p1.appendStory("He is the stereotypical guy who just cause problems and cannot control his anger so he always get into bizarre, dangerous situations");
+		p1.appendStory("He does not really think of the consequences that can happen with his actions.");
+		p1.appendStory("No one really knows why he is stealing and fighting.");
+		p1.appendStory("I guess it is one of the cases where he does not know what else to do with his life.");
+		p1.appendStory(" ");
+		p1.appendStory("But that is not true. In fact, he is loving and caring for his only child.");
+		p1.appendStory("He steals money in order to buy his son books.");
+		p1.appendStory("He fights because he does not want his kid to hang out with this kind of people.");
+		p1.appendStory("He wants for his child to have a better life.");
+		p1.appendStory("As said before he does not think very much of the consequences that can occur with this behaviour.");
+		
 		subjects.add(p1);
 		
 		/*

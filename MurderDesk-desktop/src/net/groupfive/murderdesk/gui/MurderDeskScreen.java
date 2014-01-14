@@ -71,7 +71,7 @@ public class MurderDeskScreen extends JFrame{
 		
 		final JLabel title = new JLabel();
 		title.setFont(GUI.ftDSTerminal.deriveFont(Font.PLAIN, 100));
-		title.setText("Murdersoft");
+		title.setText("Controlsoft");
 		title.setForeground(new Color(0,0,255));
 		title.setHorizontalAlignment(SwingConstants.CENTER);
 		title.setAlignmentX(Component.CENTER_ALIGNMENT);

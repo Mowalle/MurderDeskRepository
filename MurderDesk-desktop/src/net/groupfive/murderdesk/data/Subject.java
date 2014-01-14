@@ -6,17 +6,29 @@ public class Subject{
 	private String id;
 	private String fName;
 	private String lName;
+	private String dObtained;
+	private String dTermination;
 	private ArrayList<String> story;
 	
-	public Subject(String id, String fName, String lName){
+	public Subject(String id, String fName, String lName, String dObtained, String dTermination){
 		this.id = id;
 		this.fName = fName;
 		this.lName = lName;
+		this.dObtained = dObtained;
+		this.dTermination = dTermination;
 		this.story = new ArrayList<String>();
 	}
 	
 	public void appendStory(String s){
 		story.add(s);
+	}
+	
+	public String getDObtained(){
+		return dObtained;
+	}
+	
+	public String getDTermination(){
+		return dTermination;
 	}
 	
 	public String getId(){
@@ -35,7 +47,7 @@ public class Subject{
 		return story.get(i);
 	}
 	
-	public ArrayList<String> getFullStory(int i){
+	public ArrayList<String> getFullStory(){
 		return story;
 	}
 }

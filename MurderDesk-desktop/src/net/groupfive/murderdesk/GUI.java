@@ -53,6 +53,7 @@ public class GUI implements Observer {
 	private NormalText txtObjectives, txtSubject_general, txtSubject_status, txtSubject_detail, txtBalance, txtTraps, txtConsole, pSubject_bpmTxt;
 	private ECDPanel pSubject_bpm;
 	private CharacterPanel pSubject_img;
+	private int story;
 	
 	private GamePanel game;
 	
@@ -112,6 +113,7 @@ public class GUI implements Observer {
 						e.printStackTrace();
 					}
 				}
+				
 				
 			} catch(Exception e){
 				e.printStackTrace();
@@ -320,12 +322,15 @@ public class GUI implements Observer {
 	    tabs[0] = new TabStop(125, TabStop.ALIGN_LEFT, TabStop.LEAD_NONE);
 	    TabSet tabset = new TabSet(tabs);
 	    Style style = txtSubject_general.getStyle();
+	    style.addAttribute(StyleConstants.SpaceAbove, 7f);
 		style.addAttribute(StyleConstants.TabSet, tabset);
 		style.addAttribute(StyleConstants.LineSpacing, 0.5f);
 		txtSubject_general.setStyle(style);
 		txtSubject_general.append("ID:\t" + s.getId() + "\n");
 		txtSubject_general.append("First Name:\t" + s.getFirstName() + "\n");
 		txtSubject_general.append("Last Name:\t" + s.getName() + "\n");
+		txtSubject_general.append("Obtained:\t" + s.getDObtained() + "\n");
+		txtSubject_general.append("Termination:\t" + s.getDTermination() + "\n");
 		
 		// subject_status
 		txtSubject_status.setOpaque(true);
@@ -334,15 +339,12 @@ public class GUI implements Observer {
 		
 		// bpm
 		pSubject_bpm.enableSound(true);
-		int pulse = 80;
-		pSubject_bpm.setBeat(pulse);
-		pSubject_bpmTxt.setText(pulse + " BPM");
 		
 		// image
 		pSubject_img.load(Main.class.getResourceAsStream("/textures/CharacterOskar.png"), 5, 3);
 		pSubject_img.setPreferredSprite(11);
 		
-		txtSubject_detail.append(Main.d.getSubject(Main.d.CURRENT_SUBJECT).getStory(0));
+		story = 0;
 		
 		// balance
 		txtBalance.append("$ 0");
@@ -374,10 +376,22 @@ public class GUI implements Observer {
 				txtSubject_status.setText("DEAD");
 				pSubject_bpm.kill();
 				pSubject_bpmTxt.setText(0 + " BPM");
+			} else if (m.getKey() == "highscore"){
+				txtBalance.setText("$" + m.getInt());
+				if(story < Main.d.getSubject(Main.d.CURRENT_SUBJECT).getFullStory().size() && Math.random() < 0.3){
+					txtSubject_detail.append(Main.d.getSubject(Main.d.CURRENT_SUBJECT).getStory(story) + "\n");
+					story ++;
+				}
 			}
 		} catch(Exception e){
 			e.printStackTrace();
 		}
 		
+	}
+	
+	public void logToConsole(String s){
+		DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+		Date date = new Date();
+		txtConsole.append("["+dateFormat.format(date)+"] " + s + "\n");
 	}
 }

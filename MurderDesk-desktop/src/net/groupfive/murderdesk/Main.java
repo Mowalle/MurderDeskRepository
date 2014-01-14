@@ -24,6 +24,7 @@ public class Main {
 	 * Use the GUI boolean to enable or disable the three-screen UI.
 	 */
 	public final static boolean GUI = true;
+	public final static boolean TESTING = true;
 		
 	public static void main (String[] args) {
 		System.setProperty("awt.useSystemAAFontSettings","lcd");
@@ -42,18 +43,12 @@ public class Main {
 		ShutdownHook shutdownHook = new ShutdownHook();
 		Runtime.getRuntime().addShutdownHook(shutdownHook);
 		
-		if(GUI){
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run () {
-					//m = new Model(c);
-					gui = new GUI();
-					gui.start();
-					c.addObserver(gui);
-				}
-			});
-		} else{
-			runAsSingleWindow();
+		if(TESTING){
+			if(GUI){
+				boot();
+			} else{
+				runAsSingleWindow();
+			}
 		}
 	}
 	
@@ -65,6 +60,18 @@ public class Main {
 		cfg.height = 400;
 		
 		new LwjglApplication(new MurderDesk(), cfg);
+	}
+	
+	public static void boot(){
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run () {
+				//m = new Model(c);
+				gui = new GUI();
+				gui.start();
+				c.addObserver(gui);
+			}
+		});
 	}
 	
 }

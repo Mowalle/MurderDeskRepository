@@ -72,15 +72,16 @@ public class Player {
 	private float movementSpeed = 0.5f; // 1 tile in ... seconds
 
 	// Stats, ...
-	public static final int DEFAULT_PULSE = 80;
+	public static final int DEFAULT_PULSE = 60;
 
 	private static final int PULSE_MAXIMUM = 0;
-	private static int PULSE_MAXMIMUM = 140;
-	private static int PULSE_MINIMUM = 60;
+	private static int PULSE_MAXMIMUM = 150;
+	private static int PULSE_MINIMUM = 30;
 
+	private int previousPulse;
 	private int pulse = DEFAULT_PULSE; // Start Value
 	private int health = 100;
-	private int mentalPower = 100;
+//	private int mentalPower = 100;
 	private float regenerationTimer = 0f;
 
 	private boolean dead = false;
@@ -151,7 +152,7 @@ public class Player {
 					waitTime = randGenerator.nextInt(4);
 					movementSpeed = 0.5f;
 					
-					if (mentalPower < 34) { // TODO Hardcoded value {
+					if (pulse >=120) { // TODO Hardcoded value {
 						waitTime = 0;
 						movementSpeed = 0.25f;
 					}
@@ -250,22 +251,16 @@ public class Player {
 			health = 0;
 		}
 
-		if (mentalPower < 0) {
-			mentalPower = 0;
-		}
-
 		// Update the pulse
 		if (health == 0) {
 			pulse = 0;
 			dead = true;
 			MurderDesk.controller.broadcastOnEDT(new Message("string", "dead", "dead"));
-		} else {
-			int prevpulse = pulse;
-			pulse = (int) (80 - (1 - health / 100.0) * 20 + (1 - mentalPower / 100.0) * 60);
-			if(prevpulse != pulse){
-				MurderDesk.controller.broadcastOnEDT(new Message("int", "pulse", pulse));
-				
-			}
+		}
+		
+		if(previousPulse != pulse && !dead){
+			MurderDesk.controller.broadcastOnEDT(new Message("int", "pulse", pulse));
+			previousPulse = pulse;
 		}
 
 		// Check if player is dead
@@ -279,14 +274,15 @@ public class Player {
 
 		// If there has not been a regeneration tick for 1 second
 		if (regenerationTimer >= 1f) {
-			System.out.println(health + "||" + mentalPower + "||" + pulse);
+			System.out.println(health + "||" + pulse);
 			if (health < 100) {
 				health++;
 			}
-			if (mentalPower < 100) {
-				mentalPower++;
+			if(pulse > DEFAULT_PULSE){
+				pulse--;
+			} else if(pulse < DEFAULT_PULSE){
+				pulse++;
 			}
-
 			regenerationTimer = 0f;
 		}
 	}
@@ -504,21 +500,6 @@ public class Player {
 	 */
 	public void setHealth(int health) {
 		this.health = health % 101;
-	}
-
-	/**
-	 * @return the mentalPower
-	 */
-	public int getMentalPower() {
-		return mentalPower;
-	}
-
-	/**
-	 * @param mentalPower
-	 *            the mentalPower to set
-	 */
-	public void setMentalPower(int mentalPower) {
-		this.mentalPower = mentalPower % 101;
 	}
 
 	public int getSplitSpriteY() {

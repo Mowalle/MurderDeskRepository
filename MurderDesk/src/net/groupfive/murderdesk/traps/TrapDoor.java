@@ -168,22 +168,22 @@ public class TrapDoor extends Trap {
 					&& player.getTiledX() <= tiledX + 1
 					&& player.getTiledY() == tiledY - 1) {
 				player.setCurrentDirection(Player.LEFT_DOWN);
-				player.setMentalPower(player.getMentalPower() - 20);
+				player.setPulse(player.getPulse() + 20);
 			} else if (player.getTiledX() >= tiledX
 					&& player.getTiledX() <= tiledX + 1
 					&& player.getTiledY() == tiledY + 2) {
 				player.setCurrentDirection(Player.RIGHT_UP);
-				player.setMentalPower(player.getMentalPower() - 20);
+				player.setPulse(player.getPulse() + 20);
 			} else if (player.getTiledX() == tiledX - 1
 					&& player.getTiledY() >= tiledY
 					&& player.getTiledY() <= tiledY + 1) {
 				player.setCurrentDirection(Player.RIGHT_DOWN);
-				player.setMentalPower(player.getMentalPower() - 20);
+				player.setPulse(player.getPulse() + 20);
 			} else if (player.getTiledX() == tiledX + 2
 					&& player.getTiledY() >= tiledY
 					&& player.getTiledY() <= tiledY + 1) {
 				player.setCurrentDirection(Player.LEFT_UP);
-				player.setMentalPower(player.getMentalPower() - 20);
+				player.setPulse(player.getPulse() + 20);
 			}
 		}
 	}

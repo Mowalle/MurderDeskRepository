@@ -88,12 +88,12 @@ public class TrapGas extends Trap {
 
 		if (suffocating) {
 			suffocating = false;
-			player.setHealth(player.getHealth() - 5);
+			player.setHealth(player.getHealth() - 15);
 		}
 
 		if (statChangeTimer >= 2.0f) {
 			statChangeTimer = 0f;
-			player.setMentalPower(player.getMentalPower() - 5);
+			player.setPulse(player.getPulse() + 20);
 		}
 
 	}
