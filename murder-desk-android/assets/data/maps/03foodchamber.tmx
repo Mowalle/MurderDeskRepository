@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="isometric" width="15" height="15" tilewidth="64" tileheight="32">
+ <tileset firstgid="1" name="SpriteSheetRoom3" tilewidth="64" tileheight="32">
+  <image source="tilesets/SpriteSheetRoom3.png" width="576" height="544"/>
+ </tileset>
+ <tileset firstgid="154" name="SpriteSheetRoom3" tilewidth="64" tileheight="32">
+  <image source="tilesets/SpriteSheetRoom3.png" width="576" height="544"/>
+ </tileset>
+ <layer name="Base" width="15" height="15">
+  <data encoding="base64" compression="zlib">
+   eJxjYBjaYDYQz0Kj56HxlyPxkQG6PkI0LnvR7cNGE2PvchzmEfIvLnoeml5C7lzOQJy9uNxJqn9JDWdC7kW3dwMJ7qVmOBOjHpkPAJcTV3E=
+  </data>
+ </layer>
+ <layer name="Collision" width="15" height="15">
+  <data encoding="base64" compression="zlib">
+   eJxjYKAOMEajSdVLCBsisdHtJAcg603FgwnpJcfeFChbggj1yGqQ9VJiLzl6sQFi3E+tOCIVGA6QveToBQA2Swli
+  </data>
+ </layer>
+ <layer name="Collison" width="15" height="15">
+  <data encoding="base64" compression="zlib">
+   eJxjYKAMHIbiY3jYR4D4IJIYsl5ywTEK9FJiL0jvFzL1HqNALyX2DsVw3k+B3iMU6KXEzeQCAHarFfY=
+  </data>
+ </layer>
+ <layer name="Collision" width="15" height="15">
+  <data encoding="base64" compression="zlib">
+   eJzbxcDAsIsA3g3EO5D4MIDMJhUMpN7XQ1AvuWCg9G6jQO9uCvRS4uaBAgAZsBTo
+  </data>
+ </layer>
+ <layer name="Walking Behind" width="15" height="15">
+  <data encoding="base64" compression="zlib">
+   eJxjYBh48AYPJgZ8xYNpCVZQSc1AgcHstpEEABh3DyA=
+  </data>
+ </layer>
+ <layer name="rain" width="15" height="15" visible="0">
+  <data encoding="base64" compression="zlib">
+   eJylj0EOwCAIBPf/f7TqobH2FfXQTZAqSkqywYPDAPCvQktyRNbx8tn4n1WXLHmLlamCjYY/4+u9lZczwoSR75F3tL/HywT4vRH9/Qm2Nxoz6F95Z1379b0ent4VIzt5enf3lv6Kvq6WstnPlgfKQKZ+
+  </data>
+ </layer>
+ <layer name="rain2" width="15" height="15" visible="0">
+  <data encoding="base64" compression="zlib">
+   eJylkdsKwCAMQ+06//9zve1hFlaMpRvKhKCCp2lqCP9W7ro2hKtu8s2wpYtonT1pZusHH2lmo8OKknnfTI033/IoQ/0GZ61nfZVnGvmRwwzWV3TQ6F39bWYvL3pLDSZ/fl5e9GXw93hvVl9CHlmV9WPoQ6TzV9b7J+/f9J4MG2A+K7v0fwNPl4y/
+  </data>
+ </layer>
+ <layer name="blood2" width="15" height="15" visible="0">
+  <data encoding="base64" compression="zlib">
+   eJxjYMANZiLRM5H4xKonRi82daToJRUPpF5y9FGilxL3DkU3D5RebP4lxSwAuPlqYw==
+  </data>
+ </layer>
+ <layer name="blood3" width="15" height="15" visible="0">
+  <data encoding="base64" compression="zlib">
+   eJxjYBhYMIEEPKp3VC899NIbAAA2zEQR
+  </data>
+ </layer>
+ <layer name="blood" width="15" height="15" visible="0">
+  <data encoding="base64" compression="zlib">
+   eJxjYBg6oIdCvVNH9Y7qJUJvHQm4Cou97STgZiAGAOTbGKA=
+  </data>
+ </layer>
+ <layer name="freeze" width="15" height="15" visible="0">
+  <data encoding="base64" compression="zlib">
+   eJxjYKAMqJKALSnU60ShXu9RvSNCrwUJ2BxNLwg4koAd0PSCgBcJ2BOIAU44IyE=
+  </data>
+ </layer>
+</map>
