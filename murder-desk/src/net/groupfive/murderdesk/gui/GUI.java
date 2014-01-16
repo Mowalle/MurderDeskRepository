@@ -30,6 +30,8 @@ import javax.swing.border.Border;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
+import javax.swing.text.TabSet;
+import javax.swing.text.TabStop;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
@@ -332,21 +334,20 @@ public class GUI {
 //			txtObjectives.append("* " + o.getDescription() + " (+$" + o.getValue() + ")\n");
 //		}
 		
-//		// subject_general
-//		Subject s = Main.d.getSubject(Main.d.CURRENT_SUBJECT);
-//		TabStop[] tabs = new TabStop[1];
-//	    tabs[0] = new TabStop(125, TabStop.ALIGN_LEFT, TabStop.LEAD_NONE);
-//	    TabSet tabset = new TabSet(tabs);
-//	    Style style = txtSubject_general.getStyle();
-//	    style.addAttribute(StyleConstants.SpaceAbove, 7f);
-//		style.addAttribute(StyleConstants.TabSet, tabset);
-//		style.addAttribute(StyleConstants.LineSpacing, 0.5f);
-//		txtSubject_general.setStyle(style);
-//		txtSubject_general.append("ID:\t" + s.getId() + "\n");
-//		txtSubject_general.append("First Name:\t" + s.getFirstName() + "\n");
-//		txtSubject_general.append("Last Name:\t" + s.getName() + "\n");
-//		txtSubject_general.append("Obtained:\t" + s.getDObtained() + "\n");
-//		txtSubject_general.append("Termination:\t" + s.getDTermination() + "\n");
+		// subject_general
+		TabStop[] tabs = new TabStop[1];
+	    tabs[0] = new TabStop(125, TabStop.ALIGN_LEFT, TabStop.LEAD_NONE);
+	    TabSet tabset = new TabSet(tabs);
+	    Style style = txtSubject_general.getStyle();
+	    style.addAttribute(StyleConstants.SpaceAbove, 7f);
+		style.addAttribute(StyleConstants.TabSet, tabset);
+		style.addAttribute(StyleConstants.LineSpacing, 0.5f);
+		txtSubject_general.setStyle(style);
+		txtSubject_general.append("ID:\t666-kanel\n");
+		txtSubject_general.append("First Name:\tSamson\n");
+		txtSubject_general.append("Last Name:\tNiederland\n");
+		txtSubject_general.append("Obtained:\t15 October 2013\n");
+		txtSubject_general.append("Termination:\t17 January 2014\n");
 		
 		// subject_status
 		txtSubject_status.setOpaque(true);
@@ -376,10 +377,31 @@ public class GUI {
 		Date date = new Date();
 		System.out.println(dateFormat.format(date));
 		txtConsole.append("["+dateFormat.format(date)+"] Application initialized\n");
+		
+		// room name
+		GameScreen screen = ((GameScreen) Main.murderDesk.getScreen());
+		String name = screen.getWorld().getCurrentRoom().getName();
+		game.setRoom(1, name);
 	}
 	
-	public void changeRoom(){
-		
+	public void changeRoom(final int id){
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run () {
+				GameScreen screen = ((GameScreen) Main.murderDesk.getScreen());
+				String name = screen.getWorld().getRooms().get(id).getName();
+				game.setRoom(id+1, name);
+			}
+		});
+	}
+	
+	public void setBalance(final int i){
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run () {
+				txtBalance.setText("$ " + i);
+			}
+		});
 	}
 	
 	public void logToConsole(String s){

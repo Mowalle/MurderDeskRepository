@@ -1,5 +1,6 @@
 package net.groupfive.murderdesk.gdx.screens;
 
+import net.groupfive.murderdesk.Main;
 import net.groupfive.murderdesk.gdx.controller.CameraController;
 import net.groupfive.murderdesk.gdx.controller.PlayerController;
 import net.groupfive.murderdesk.gdx.controller.RoomController;
@@ -55,6 +56,9 @@ public class GameScreen implements Screen, InputProcessor {
 				highscoreTimer = 0f;
 				highscore += Math.abs(Player.PULSE_DEFAULT
 						- world.getPlayer().getPulse());
+				if(Main.gui != null){
+					Main.gui.setBalance(highscore);
+				}
 			}
 		}
 

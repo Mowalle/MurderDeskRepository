@@ -146,12 +146,15 @@ public class InterfaceLink implements SerialPortEventListener{
 					break;
 				case "cam1":
 					screen.getWorld().setCurrentRoom(0);
+					Main.gui.changeRoom(0);
 					break;
 				case "cam2":
 					screen.getWorld().setCurrentRoom(1);
+					Main.gui.changeRoom(1);
 					break;
 				case "cam3":
 					screen.getWorld().setCurrentRoom(2);
+					Main.gui.changeRoom(2);
 					break;
 				case "door0":
 					screen.getWorld().getCurrentRoom().getDoors().get(0).setOpened(false);
