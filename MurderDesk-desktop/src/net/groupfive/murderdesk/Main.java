@@ -21,10 +21,12 @@ public class Main {
 	protected static InterfaceLink il;
 	
 	/**
-	 * Use the GUI boolean to enable or disable the three-screen UI.
+	 * Some booleans to change the behavior
 	 */
 	public final static boolean GUI = true;
-	public final static boolean TESTING = true;
+	public final static boolean INTERFACE = false;
+	public final static boolean FULLSCREEN = false;
+	public final static boolean BOOTSCREEN = false;
 		
 	public static void main (String[] args) {
 		System.setProperty("awt.useSystemAAFontSettings","lcd");
@@ -43,12 +45,21 @@ public class Main {
 		ShutdownHook shutdownHook = new ShutdownHook();
 		Runtime.getRuntime().addShutdownHook(shutdownHook);
 		
-		if(TESTING){
-			if(GUI){
-				boot();
-			} else{
-				runAsSingleWindow();
-			}
+		if(GUI){
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run () {
+					gui = new GUI();
+					gui.init();
+					gui.show();
+					if(!INTERFACE){
+						boot();
+					}
+					//c.addObserver(gui);
+				}
+			});
+		} else{
+			runAsSingleWindow();
 		}
 	}
 	
@@ -63,15 +74,7 @@ public class Main {
 	}
 	
 	public static void boot(){
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run () {
-				//m = new Model(c);
-				gui = new GUI();
-				gui.start();
-				c.addObserver(gui);
-			}
-		});
+		gui.boot(BOOTSCREEN);
 	}
 	
 }

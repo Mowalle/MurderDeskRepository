@@ -45,9 +45,6 @@ import net.groupfive.murderdesk.gui.NormalTextScroll;
 
 public class GUI implements Observer {
 	
-	public final static boolean FULLSCREEN = false;
-	public final static boolean BOOTSCREEN = false;
-	
 	public static Font ftCamcorder, ftMinecraftia, ftDSTerminal, ftTitle1, ftTitle2, ftRegular, ftSmall;
 
 	private NormalText txtObjectives, txtSubject_general, txtSubject_status, txtSubject_detail, txtBalance, txtTraps, txtConsole, pSubject_bpmTxt;
@@ -56,8 +53,9 @@ public class GUI implements Observer {
 	private int story;
 	
 	private GamePanel game;
+	private MurderDeskScreen screen2, screen3;
 	
-	public void start(){
+	public void init(){
 		// add fonts globally
 		try {
 			InputStream s1 = Main.class.getResourceAsStream("/fonts/CAMCORDER_REG.otf");
@@ -75,14 +73,13 @@ public class GUI implements Observer {
 		}
 		
 		// create 3 windows for the game
-		//final MurderDeskScreen screen1 = new MurderDeskScreen("Map");
-		final MurderDeskScreen screen2 = new MurderDeskScreen("Active View");
-		final MurderDeskScreen screen3 = new MurderDeskScreen("Main");
+		screen2 = new MurderDeskScreen("Active View");
+		screen3 = new MurderDeskScreen("Main");
 		game = new GamePanel();
 		
 		GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		
-		if(FULLSCREEN){
+		if(Main.FULLSCREEN && env.getScreenDevices().length > 1){
 			
 			GraphicsDevice s1;
 			GraphicsDevice s2;
@@ -129,13 +126,13 @@ public class GUI implements Observer {
 		}
 		
        	// position
-       	if(env.getScreenDevices().length >= 2 && FULLSCREEN){
+       	if(env.getScreenDevices().length >= 2 && Main.FULLSCREEN){
        		screen2.setLocation(env.getScreenDevices()[1].getDefaultConfiguration().getBounds().x, 0);
        	} else{
        		screen2.setLocation(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width - 800, 0);
        	}
 		
-		if(!FULLSCREEN){
+		if(!Main.FULLSCREEN){
 			screen2.addComponentListener(new ComponentAdapter() {
 			    public void componentMoved(ComponentEvent e) {
 			        game.setLocation(screen2.getX()+15, screen2.getY()+63);
@@ -143,21 +140,22 @@ public class GUI implements Observer {
 			});
 		} else{
 			game.setLocation(screen2.getX()+15, screen2.getY()+41);
-		}
-		
+		}		
+	}
+	
+	public void show(){
 		// pack
-		//screen1.pack();
 		screen2.pack();
 		screen3.pack();
-		game.pack();
-		
+				
 		// show
        	screen2.setVisible(true);
        	screen3.setVisible(true);
-        //screen1.setVisible(true);
-       	
-       	// boot
-       	if(BOOTSCREEN){
+	}
+	
+	public void boot(boolean bootscreen){
+		// boot
+       	if(bootscreen){
        		screen2.boot();
        		screen3.boot();
        	}
@@ -173,23 +171,20 @@ public class GUI implements Observer {
 				
 				// populate
 				populate();
+				
+				// show camera view
+				game.pack();
 				game.setVisible(true);
             }
 		});
-       	if(BOOTSCREEN){
+       	if(bootscreen){
        		init.setInitialDelay(8000);
        	} else{
        		init.setInitialDelay(0);
        	}
        	init.setRepeats(false);
 		init.start();
-				
 	}
-	
-	/*
-	private void initScreen1(MurderDeskScreen s){
-	}
-	*/
 	
 	private void initScreen2(final MurderDeskScreen s){
 		ContentPanel pCamera = new ContentPanel("Camera");
