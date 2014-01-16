@@ -1,6 +1,7 @@
 package net.groupfive.murderdesk.screens;
 
 import net.groupfive.murderdesk.GameMap;
+import net.groupfive.murderdesk.Message;
 import net.groupfive.murderdesk.MurderDesk;
 import net.groupfive.murderdesk.Player;
 import net.groupfive.murderdesk.traps.*;
@@ -124,6 +125,8 @@ public class GameScreen extends MurderDeskScreen {
 		if (highscoreTimer >= 10) {
 			highscoreTimer = 0f;
 			highscore += Math.abs(player.getPulse() - Player.DEFAULT_PULSE);
+			MurderDesk.controller.broadcastOnEDT(new Message("int", "highscore", highscore));
+			System.out.println("highscore: " + highscore);
 		}
 		
 //		//FIXME Doesn't end app but crashes for unknown reason
@@ -198,6 +201,10 @@ public class GameScreen extends MurderDeskScreen {
 		renderer = new IsometricTiledMapRenderer(currentMap.getTiledMap());
 
 	}
+	
+	public GameMap getCurrentMap(){
+		return currentMap;
+	}
 
 	@Override
 	public void dispose() {
@@ -209,6 +216,10 @@ public class GameScreen extends MurderDeskScreen {
 	@Override
 	public boolean isDone() {
 		return done;
+	}
+	
+	public Player getPlayer(){
+		return player;
 	}
 
 	/**

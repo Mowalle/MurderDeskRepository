@@ -18,6 +18,7 @@ public class NormalText extends JTextPane {
 	Style s;
 	
 	public NormalText(){
+		setHighlighter(null);
 		setOpaque(false);
 		setMargin(new Insets(5,10,10,10));
 		// style

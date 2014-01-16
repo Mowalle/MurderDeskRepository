@@ -18,7 +18,9 @@ public class MurderDesk extends Game {
 
 	public SpriteBatch spriteBatch;
 	public BitmapFont font;
-
+	
+	public static Controller controller; // allows to broadcast data to the GUI, without forcing the GUI to update all the time
+	
 	@Override
 	public void render() {
 
@@ -85,5 +87,20 @@ public class MurderDesk extends Game {
 	public MurderDeskScreen getScreen() {
 		return (MurderDeskScreen) super.getScreen();
 	}
-
+	
+	/**
+	 * 
+	 * @param c The controller
+	 */
+	public void setController(Controller c){
+		this.controller = c;
+	}
+	
+	/**
+	 * 
+	 * @return The controller object
+	 */
+	public Controller getController(){
+		return controller;
+	}
 }

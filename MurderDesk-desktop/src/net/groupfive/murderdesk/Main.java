@@ -17,11 +17,14 @@ public class Main {
 	static Model m, n;
 	static Controller c;
 	public static DataController d;
+	public static MurderDesk murderDesk;
+	protected static InterfaceLink il;
 	
 	/**
 	 * Use the GUI boolean to enable or disable the three-screen UI.
 	 */
 	public final static boolean GUI = true;
+	public final static boolean TESTING = true;
 		
 	public static void main (String[] args) {
 		System.setProperty("awt.useSystemAAFontSettings","lcd");
@@ -31,16 +34,21 @@ public class Main {
 		d = new DataController();
 		d.log();
 		
-		if(GUI){
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run () {
-					//m = new Model(c);
-					c.addObserver(new GUI());
-				}
-			});
-		} else{
-			runAsSingleWindow();
+		murderDesk = new MurderDesk();
+		murderDesk.setController(c);
+		
+		il = new InterfaceLink();
+		il.initialize();
+		
+		ShutdownHook shutdownHook = new ShutdownHook();
+		Runtime.getRuntime().addShutdownHook(shutdownHook);
+		
+		if(TESTING){
+			if(GUI){
+				boot();
+			} else{
+				runAsSingleWindow();
+			}
 		}
 	}
 	
@@ -54,4 +62,27 @@ public class Main {
 		new LwjglApplication(new MurderDesk(), cfg);
 	}
 	
+	public static void boot(){
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run () {
+				//m = new Model(c);
+				gui = new GUI();
+				gui.start();
+				c.addObserver(gui);
+			}
+		});
+	}
+	
+}
+
+class ShutdownHook extends Thread {
+    public void run() {
+        System.out.println("Shutting down");
+        try{
+        	Main.il.close();
+        } catch (Exception e){
+        	e.printStackTrace();
+        }
+    }
 }

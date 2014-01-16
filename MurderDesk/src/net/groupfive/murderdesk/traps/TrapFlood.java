@@ -131,8 +131,8 @@ public class TrapFlood extends Trap {
 
 		if (statChangeTimer >= 2.0f) {
 			statChangeTimer = 0f;
-			player.setMentalPower(player.getMentalPower() - (waterLevel + 1)
-					* 2);
+			player.setPulse(player.getPulse() + (waterLevel + 1)
+					* 4);
 		}
 
 	}

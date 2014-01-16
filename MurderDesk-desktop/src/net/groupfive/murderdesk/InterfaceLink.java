@@ -3,11 +3,15 @@ package net.groupfive.murderdesk;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+
 import gnu.io.CommPortIdentifier; 
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent; 
 import gnu.io.SerialPortEventListener; 
+
 import java.util.Enumeration;
+
+import net.groupfive.murderdesk.screens.GameScreen;
 
 
 public class InterfaceLink implements SerialPortEventListener {
@@ -15,9 +19,12 @@ public class InterfaceLink implements SerialPortEventListener {
         /** The port we're normally going to use. */
 	private static final String PORT_NAMES[] = { 
 			"/dev/tty.usbserial-A9007UX1", // Mac OS X
+			"/dev/tty.usbmodemfd121", // Teis's Macbook Pro
 			"/dev/ttyUSB0", // Linux
 			"COM3", // Windows
 	};
+	
+	boolean on = false;
 	/**
 	* A BufferedReader which will be fed by a InputStreamReader 
 	* converting the bytes into characters 
@@ -91,11 +98,41 @@ public class InterfaceLink implements SerialPortEventListener {
 		if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
 			try {
 				String inputLine=input.readLine();
-				System.out.println(inputLine);
+				parse(inputLine);
 			} catch (Exception e) {
 				System.err.println(e.toString());
 			}
 		}
 		// Ignore all the other eventTypes, but you should consider the other ones.
+	}
+	
+	private void parse(String s){
+		GameScreen screen = (GameScreen) Main.murderDesk.getScreen();
+		if(s.equals("t1") && on){
+			screen.getCurrentMap().getCurrentTrap().deactivate(screen.getPlayer());
+			screen.getCurrentMap().setCurrentTrap(0);
+			Main.gui.logToConsole("Trap 1 selected.");
+		} else if(s.equals("t2") && on){
+			screen.getCurrentMap().getCurrentTrap().deactivate(screen.getPlayer());
+			screen.getCurrentMap().setCurrentTrap(1);
+			Main.gui.logToConsole("Trap 2 selected.");
+		} else if(s.equals("t3") && on){
+			screen.getCurrentMap().getCurrentTrap().deactivate(screen.getPlayer());
+			screen.getCurrentMap().setCurrentTrap(2);
+			Main.gui.logToConsole("Trap 3 selected.");
+		} else if(s.equals("ton") && on){
+			screen.getCurrentMap().getCurrentTrap().activate(screen.getPlayer());
+			Main.gui.logToConsole("Trap activated.");
+		} else if(s.equals("toff") && on){
+			screen.getCurrentMap().getCurrentTrap().deactivate(screen.getPlayer());
+			Main.gui.logToConsole("Trap 1 deactivated.");
+		} else if(s.equals("boot")){
+			on = true;
+			Main.boot();
+		}
+		else{
+			System.out.println("[interface] Unknown command");
+			Main.gui.logToConsole("The interface received an unknown command. Please contact the system administrator.");
+		}
 	}
 }

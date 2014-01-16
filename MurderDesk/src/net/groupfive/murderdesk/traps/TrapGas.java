@@ -34,7 +34,7 @@ public class TrapGas extends Trap {
 				activate(player);
 			}
 		} else {
-			if (!checkCondition()) {
+			if (checkDeactivationCondition()) {
 				deactivate(player);
 			} else {
 
@@ -70,18 +70,30 @@ public class TrapGas extends Trap {
 		}
 		return false;
 	}
+	
+	/*
+	 * TEIS added this, because the interface doesn't care about button presses
+	 */
+	private boolean checkDeactivationCondition() {
+		if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)) {
+			if (Gdx.input.isKeyPressed(Keys.NUM_0)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	@Override
 	protected void applyTrapOverTime(Player player) {
 
 		if (suffocating) {
 			suffocating = false;
-			player.setHealth(player.getHealth() - 5);
+			player.setHealth(player.getHealth() - 15);
 		}
 
 		if (statChangeTimer >= 2.0f) {
 			statChangeTimer = 0f;
-			player.setMentalPower(player.getMentalPower() - 5);
+			player.setPulse(player.getPulse() + 20);
 		}
 
 	}
