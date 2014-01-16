@@ -38,14 +38,14 @@ public class MurderDeskScreen extends JFrame{
 		super(title);
 		this.title = title;
 		setResizable(false);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		mainPanel = new JPanel();
 		init();		
 		instance ++;
 	}
 	
 	private void init(){
 		// add the main panel (with title and border)
-		mainPanel = new JPanel();
 		mainPanel.setPreferredSize(new Dimension(800,600));
 		mainPanel.setBackground(Color.BLACK);
 		mainPanel.setLayout(new BorderLayout());
@@ -84,6 +84,8 @@ public class MurderDeskScreen extends JFrame{
 		title.setAlignmentX(Component.CENTER_ALIGNMENT);
 		bootContainer.add(about);
 			
+		pack();
+		
 		try {
 			AudioInputStream audioIn = AudioSystem.getAudioInputStream(Main.class.getResourceAsStream("/sounds/startup.wav"));
 			clip = AudioSystem.getClip();

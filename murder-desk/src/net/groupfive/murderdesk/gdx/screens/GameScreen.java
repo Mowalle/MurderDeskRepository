@@ -243,5 +243,9 @@ public class GameScreen implements Screen, InputProcessor {
 	public World getWorld(){
 		return world;
 	}
+	
+	public WorldRenderer getWorldRenderer(){
+		return renderer;
+	}
 
 }

@@ -1,6 +1,7 @@
 package net.groupfive.murderdesk.tangible;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 
@@ -16,18 +17,11 @@ import javax.swing.SwingUtilities;
 import com.badlogic.gdx.Input.Keys;
 
 import net.groupfive.murderdesk.Main;
-import net.groupfive.murderdesk.gdx.model.World;
 import net.groupfive.murderdesk.gdx.screens.GameScreen;
 
 public class InterfaceLink implements SerialPortEventListener{
 	SerialPort serialPort;
         /** The port we're normally going to use. */
-	private static final String PORT_NAMES[] = { 
-			"/dev/tty.usbserial-A9007UX1", // Mac OS X
-			"/dev/tty.usbmodemfa121", // Teis's Macbook Pro
-			"/dev/ttyUSB0", // Linux
-			"COM3", // Windows
-	};
 	
 	boolean on = false;
 	/**
@@ -91,6 +85,12 @@ public class InterfaceLink implements SerialPortEventListener{
 		if (serialPort != null) {
 			serialPort.removeEventListener();
 			serialPort.close();
+			try {
+				input.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -110,25 +110,128 @@ public class InterfaceLink implements SerialPortEventListener{
 	}
 	
 	private void parse(String s){
+		
+		String[] split = s.split(":");
+		GameScreen screen = ((GameScreen) Main.murderDesk.getScreen());
+		
+		if(on){
+			if(split[0].equals("intensity")){
+				// TODO
+			} else if(split[0].equals("light")){
+				screen.getWorldRenderer().setLight(Float.parseFloat(split[1])/100);
+			} else{
+				switch(s){
+				case "t1":
+					screen.getWorld().getCurrentRoom().getCurrentTrap().deactivate();
+					screen.getWorld().getCurrentRoom().setCurrentTrap(0);
+					Main.gui.logToConsole("Trap 1 selected.");
+					break;
+				case "t2":
+					screen.getWorld().getCurrentRoom().getCurrentTrap().deactivate();
+					screen.getWorld().getCurrentRoom().setCurrentTrap(1);
+					Main.gui.logToConsole("Trap 2 selected.");
+					break;
+				case "t3":
+					screen.getWorld().getCurrentRoom().getCurrentTrap().deactivate();
+					screen.getWorld().getCurrentRoom().setCurrentTrap(2);
+					Main.gui.logToConsole("Trap 3 selected.");
+					break;
+				case "ton":
+					screen.getWorld().getCurrentRoom().getCurrentTrap().activate();
+					Main.gui.logToConsole("Trap activated.");
+					break;
+				case "toff":
+					screen.getWorld().getCurrentRoom().getCurrentTrap().deactivate();
+					Main.gui.logToConsole("Trap deactivated.");
+					break;
+				case "cam1":
+					screen.getWorld().setCurrentRoom(0);
+					break;
+				case "cam2":
+					screen.getWorld().setCurrentRoom(1);
+					break;
+				case "cam3":
+					screen.getWorld().setCurrentRoom(2);
+					break;
+				case "door0":
+					screen.getWorld().getCurrentRoom().getDoors().get(0).setOpened(false);
+					screen.getWorld().getCurrentRoom().getDoors().get(1).setOpened(false);
+					break;
+				case "door1":
+					screen.getWorld().getCurrentRoom().getDoors().get(0).setOpened(true);
+					screen.getWorld().getCurrentRoom().getDoors().get(1).setOpened(false);
+					break;
+				case "door2":
+					screen.getWorld().getCurrentRoom().getDoors().get(0).setOpened(false);
+					screen.getWorld().getCurrentRoom().getDoors().get(1).setOpened(true);
+					break;
+				case "up":
+					screen.keyDown(Keys.UP);
+					break;
+				case "down":
+					screen.keyDown(Keys.DOWN);
+					break;
+				case "left":
+					screen.keyDown(Keys.LEFT);
+					break;
+				case "right":
+					screen.keyDown(Keys.RIGHT);
+					break;
+				case "center":
+					screen.keyUp(Keys.UP);
+					screen.keyUp(Keys.DOWN);
+					screen.keyUp(Keys.LEFT);
+					screen.keyUp(Keys.RIGHT);
+					break;
+				case "boom":
+					// TODO
+					break;
+				case "shutdown":
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run () {
+							Main.gui.shutDown();
+						}
+					});
+				default:
+					System.out.println("[interface] Unknown command");
+					Main.gui.logToConsole("The interface received an unknown command. Please contact the system administrator.");
+					break;
+				}
+			}
+		} else{
+			if(s.equals("boot")){
+				System.out.println("[interface] Commence booting" );
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run () {
+						Main.boot();
+					}
+				});
+				on = true;
+			}
+		}
+		
+		/*
 		try{
-			World world = ((GameScreen) Main.murderDesk.getScreen()).getWorld();
+			GameScreen screen = ((GameScreen) Main.murderDesk.getScreen());
 			if(s.equals("t1") && on){
-				world.getCurrentRoom().getCurrentTrap().deactivate();
-				world.getCurrentRoom().setCurrentTrap(0);
+				screen.getWorld().getCurrentRoom().getCurrentTrap().deactivate();
+				screen.getWorld().getCurrentRoom().setCurrentTrap(0);
 				Main.gui.logToConsole("Trap 1 selected.");
 			} else if(s.equals("t2") && on){
-				world.getCurrentRoom().getCurrentTrap().deactivate();
-				world.getCurrentRoom().setCurrentTrap(1);
+				screen.getWorld().getCurrentRoom().getCurrentTrap().deactivate();
+				screen.getWorld().getCurrentRoom().setCurrentTrap(1);
 				Main.gui.logToConsole("Trap 2 selected.");
 			} else if(s.equals("t3") && on){
-				world.getCurrentRoom().getCurrentTrap().deactivate();
-				world.getCurrentRoom().setCurrentTrap(2);
+				screen.getWorld().getCurrentRoom().getCurrentTrap().deactivate();
+				screen.getWorld().getCurrentRoom().setCurrentTrap(2);
 				Main.gui.logToConsole("Trap 3 selected.");
 			} else if(s.equals("ton") && on){
-				world.getCurrentRoom().getCurrentTrap().activate();
+				screen.getWorld().getCurrentRoom().getCurrentTrap().activate();
 				Main.gui.logToConsole("Trap activated.");
 			} else if(s.equals("toff") && on){
-				world.getCurrentRoom().getCurrentTrap().deactivate();
+				screen.getWorld().getCurrentRoom().getCurrentTrap().deactivate();
 				Main.gui.logToConsole("Trap deactivated.");
 			} else if(s.equals("boot") && !on){
 				System.out.println("[interface] Commence booting" );
@@ -146,37 +249,37 @@ public class InterfaceLink implements SerialPortEventListener{
 			} else if(s.equals("boom") && on){
 				// TODO Missile switch
 			} else if(s.equals("cam1") && on){
-				world.setCurrentRoom(0);
+				screen.getWorld().setCurrentRoom(0);
 			} else if(s.equals("cam2") && on){
-				world.setCurrentRoom(1);
+				screen.getWorld().setCurrentRoom(1);
 			} else if(s.equals("cam3") && on){
-				world.setCurrentRoom(2);
+				screen.getWorld().setCurrentRoom(2);
 			} else if(s.equals("door0") && on){
-				world.getCurrentRoom().getDoors().get(0).setOpened(false);
-				world.getCurrentRoom().getDoors().get(1).setOpened(false);
+				screen.getWorld().getCurrentRoom().getDoors().get(0).setOpened(false);
+				screen.getWorld().getCurrentRoom().getDoors().get(1).setOpened(false);
 			} else if(s.equals("door1") && on){
-				world.getCurrentRoom().getDoors().get(0).setOpened(true);
-				world.getCurrentRoom().getDoors().get(1).setOpened(false);
+				screen.getWorld().getCurrentRoom().getDoors().get(0).setOpened(true);
+				screen.getWorld().getCurrentRoom().getDoors().get(1).setOpened(false);
 			} else if(s.equals("door2") && on){
-				world.getCurrentRoom().getDoors().get(0).setOpened(false);
-				world.getCurrentRoom().getDoors().get(1).setOpened(true);
+				screen.getWorld().getCurrentRoom().getDoors().get(0).setOpened(false);
+				screen.getWorld().getCurrentRoom().getDoors().get(1).setOpened(true);
 			} else if(s.equals("up") && on){
-				((GameScreen)Main.murderDesk.getScreen()).keyDown(Keys.UP);
+				screen.keyDown(Keys.UP);
 			} else if(s.equals("down") && on){
-				((GameScreen)Main.murderDesk.getScreen()).keyDown(Keys.DOWN);
+				screen.keyDown(Keys.DOWN);
 			} else if(s.equals("left") && on){
-				((GameScreen)Main.murderDesk.getScreen()).keyDown(Keys.LEFT);
+				screen.keyDown(Keys.LEFT);
 			} else if(s.equals("right") && on){
-				((GameScreen)Main.murderDesk.getScreen()).keyDown(Keys.RIGHT);
+				screen.keyDown(Keys.RIGHT);
 			} else if(s.equals("center") && on){
-				((GameScreen)Main.murderDesk.getScreen()).keyUp(Keys.UP);
-				((GameScreen)Main.murderDesk.getScreen()).keyUp(Keys.DOWN);
-				((GameScreen)Main.murderDesk.getScreen()).keyUp(Keys.LEFT);
-				((GameScreen)Main.murderDesk.getScreen()).keyUp(Keys.RIGHT);
+				screen.keyUp(Keys.UP);
+				screen.keyUp(Keys.DOWN);
+				screen.keyUp(Keys.LEFT);
+				screen.keyUp(Keys.RIGHT);
 			} else if((s.split(":")[0]).equals("intensity")){
 				// TODO set intensity
 			} else if((s.split(":")[0]).equals("light")){
-				// TODO set light
+				screen.getWorldRenderer().setLight(Float.parseFloat(s.split(":")[1])/100);
 			}
 			else{
 				if(on){
@@ -187,5 +290,6 @@ public class InterfaceLink implements SerialPortEventListener{
 		} catch(Exception e){
 			e.printStackTrace();
 		}
+		*/
 	}
 }

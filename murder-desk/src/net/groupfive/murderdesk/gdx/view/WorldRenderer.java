@@ -10,6 +10,7 @@ import net.groupfive.murderdesk.gdx.model.Player.State;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -60,7 +61,11 @@ public class WorldRenderer {
 	private Animation walkLeftUpAnimation;
 	private Animation walkRightDownAnimation;
 	private Animation walkRightUpAnimation;
-
+	
+	/** Overlay **/
+	private ShapeRenderer light;
+	private float lightIntensity = 1.0f;
+	
 	private SpriteBatch spriteBatch;
 	private boolean debug = false;
 
@@ -139,7 +144,9 @@ public class WorldRenderer {
 				Gdx.files.internal("textures/TrapdoorTrap.png"));
 		trapdoorClosed = new TextureRegion(trapdoorTrapSprite, 0, 0, 128, 64);
 		trapdoorOpened = new TextureRegion(trapdoorTrapSprite, 0, 64, 128, 64);
-
+		
+		// Light //
+		light = new ShapeRenderer();
 	}
 
 	public void render() {
@@ -168,7 +175,15 @@ public class WorldRenderer {
 
 		// False because layers over player
 		drawRoom(false);
-
+		
+		Gdx.gl.glEnable(GL10.GL_BLEND);
+	    Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		light.begin(ShapeType.Filled);
+		light.setColor(0,0,0,1-lightIntensity);
+		light.rect(0, 0, width, height);
+		light.end();
+		Gdx.gl.glDisable(GL10.GL_BLEND);
+		
 		if (debug) {
 			drawDebug();
 		}
@@ -318,6 +333,10 @@ public class WorldRenderer {
 
 	public OrthographicCamera getCamera() {
 		return cam;
+	}
+	
+	public void setLight(float intensity){
+		this.lightIntensity = intensity;
 	}
 
 }

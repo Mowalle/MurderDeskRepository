@@ -30,6 +30,10 @@ public class GamePanel extends JFrame implements Runnable {
 	JLabel number;
 	JLabel name;
 	
+	public GamePanel(){
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	}
+	
 	public MurderDesk getGame(){
 		return Main.murderDesk;
 	}
@@ -42,6 +46,7 @@ public class GamePanel extends JFrame implements Runnable {
 	@Override
 	public void run() {
 		// configuration
+		
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.useGL20 = true;
 		cfg.width = WIDTH;

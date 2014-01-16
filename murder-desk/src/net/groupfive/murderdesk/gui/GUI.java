@@ -170,6 +170,7 @@ public class GUI {
        	
        	Timer init = new Timer(1000, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+            	System.out.println("[init] timer ran");
             	screen2.load();
             	screen3.load();
             	
@@ -196,8 +197,12 @@ public class GUI {
 	public void shutDown(){
 		// does not work properly
 		// TODO: make a proper shutdown
-		//screen2.removeAll();
-		//screen3.removeAll();
+		System.out.println("Manual shutdown initialized");
+		screen2.setVisible(false);
+		screen3.setVisible(false);
+		game.setVisible(false);
+		game.getGame().dispose();
+		Runtime.getRuntime().exit(0);
 	}
 	
 	private void initScreen2(final MurderDeskScreen s){
@@ -232,6 +237,7 @@ public class GUI {
 	}
 
 	private void initScreen3(MurderDeskScreen s){
+		System.out.println("[init] Screen 3");
 		ContentPanel pSubject = new ContentPanel("Subject");
 		ContentPanel pObjectives = new ContentPanel("Objectives");
 		ContentPanel pBalance = new ContentPanel("Balance");
@@ -369,7 +375,7 @@ public class GUI {
 		DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 		Date date = new Date();
 		System.out.println(dateFormat.format(date));
-		txtConsole.append("["+dateFormat.format(date)+"] Application initialized");
+		txtConsole.append("["+dateFormat.format(date)+"] Application initialized\n");
 	}
 	
 	public void changeRoom(){

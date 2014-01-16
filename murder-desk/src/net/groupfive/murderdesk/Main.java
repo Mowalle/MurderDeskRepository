@@ -29,23 +29,23 @@ public class Main {
 	 * Some booleans to change the behavior
 	 */
 	public final static boolean GUI = true;
-	public final static boolean INTERFACE = true;
+	public final static boolean INTERFACE = false;
 	public final static boolean FULLSCREEN = false;
 	public final static boolean BOOTSCREEN = false;
 		
 	public static void main (String[] args) {
 		System.setProperty("awt.useSystemAAFontSettings","lcd");
 		System.setProperty("swing.aatext", "true");
-		//c = new Controller();
+				
+		if(GUI){
+			gui = new GUI();
+			murderDesk = new MurderDesk();
+		}
 		
-		//d = new DataController();
-		//d.log();
-		
-		murderDesk = new MurderDesk();
-		//murderDesk.setController(c);
-		
-		il = new InterfaceLink();
-		il.initialize();
+		if(INTERFACE){
+			il = new InterfaceLink();
+			il.initialize();
+		}
 		
 		ShutdownHook shutdownHook = new ShutdownHook();
 		Runtime.getRuntime().addShutdownHook(shutdownHook);
@@ -54,13 +54,10 @@ public class Main {
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run () {
-					gui = new GUI();
 					gui.init();
 					if(!INTERFACE){
 						boot();
-					} else{
 					}
-					//c.addObserver(gui);
 				}
 			});
 		} else{
