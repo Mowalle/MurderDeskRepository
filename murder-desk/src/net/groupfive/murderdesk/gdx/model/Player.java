@@ -1,4 +1,4 @@
-package net.goupfive.murderdesk.model;
+package net.groupfive.murderdesk.gdx.model;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -102,8 +102,8 @@ public class Player {
 				regenerationTimer = 0f;
 			}
 		} else {
-			System.out.println("Health: " + health + " || Pulse: " + pulse
-					+ " || State: " + state + " || Condition: " + condition);
+			//System.out.println("Health: " + health + " || Pulse: " + pulse
+				//	+ " || State: " + state + " || Condition: " + condition);
 		}
 	}
 

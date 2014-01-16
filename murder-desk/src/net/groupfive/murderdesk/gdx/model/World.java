@@ -1,4 +1,4 @@
-package net.goupfive.murderdesk.model;
+package net.groupfive.murderdesk.gdx.model;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;

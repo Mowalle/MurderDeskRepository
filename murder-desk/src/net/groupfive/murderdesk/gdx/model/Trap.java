@@ -1,4 +1,4 @@
-package net.goupfive.murderdesk.model;
+package net.groupfive.murderdesk.gdx.model;
 
 public abstract class Trap {
 

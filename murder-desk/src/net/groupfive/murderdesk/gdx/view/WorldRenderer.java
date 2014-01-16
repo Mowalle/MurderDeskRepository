@@ -1,12 +1,12 @@
-package net.groupfive.murderdesk.view;
+package net.groupfive.murderdesk.gdx.view;
 
-import net.goupfive.murderdesk.model.Door;
-import net.goupfive.murderdesk.model.Player;
-import net.goupfive.murderdesk.model.Player.State;
-import net.goupfive.murderdesk.model.Room;
-import net.goupfive.murderdesk.model.Trap;
-import net.goupfive.murderdesk.model.TrapdoorTrap;
-import net.goupfive.murderdesk.model.World;
+import net.groupfive.murderdesk.gdx.model.Door;
+import net.groupfive.murderdesk.gdx.model.Player;
+import net.groupfive.murderdesk.gdx.model.Room;
+import net.groupfive.murderdesk.gdx.model.Trap;
+import net.groupfive.murderdesk.gdx.model.TrapdoorTrap;
+import net.groupfive.murderdesk.gdx.model.World;
+import net.groupfive.murderdesk.gdx.model.Player.State;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;

@@ -1,6 +1,6 @@
-package net.groupfive.murderdesk;
+package net.groupfive.murderdesk.gdx;
 
-import net.groupfive.murderdesk.screens.GameScreen;
+import net.groupfive.murderdesk.gdx.screens.GameScreen;
 
 import com.badlogic.gdx.Game;
 
