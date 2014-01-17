@@ -96,6 +96,10 @@ public class GameScreen implements Screen, InputProcessor {
 	public int getHighscore() {
 		return highscore;
 	}
+	
+	public void setHighscore(int highscore){
+		this.highscore = highscore;
+	}
 
 	// * InputProcessor methods ***************************//
 

@@ -1,5 +1,7 @@
 package net.groupfive.murderdesk.gdx.model;
 
+import net.groupfive.murderdesk.Main;
+
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
@@ -12,7 +14,11 @@ public class Player {
 	public enum Condition {
 		NORMAL, PANIC, HURT
 	}
-
+	
+	public enum HealthState {
+		NORMAL, HURT1, HURT2, HURT3, DEAD
+	}
+	
 	public static final float SIZE_X = 31f / 64f; // Frame Width of Sprite /Tile
 												  // Width of Map
 	public static final float SIZE_Y = 52f / 32f; // two units high
@@ -24,6 +30,7 @@ public class Player {
 	private int pulse = PULSE_DEFAULT;
 	private int health = 100;
 	private float regenerationTimer = 0f;
+	private int previousPulse = pulse;
 
 	private float speed = 0.5f;
 
@@ -31,6 +38,8 @@ public class Player {
 	Rectangle bounds = new Rectangle();
 	State state = State.IDLE;
 	Condition condition = Condition.NORMAL;
+	HealthState healthState = HealthState.HURT1;
+	HealthState previousHealthState = healthState;
 	boolean facingLeft = true;
 	boolean facingDown = true;
 	float stateTime = 0f;
@@ -64,7 +73,20 @@ public class Player {
 		} else {
 			condition = Condition.NORMAL;
 		}
-
+		
+		// keep the hurt state stored, independent of the state
+		if(health > 75){
+			healthState = HealthState.NORMAL;
+		} else if(health > 50 && health <= 75){
+			healthState = HealthState.HURT1;
+		} else if(health > 25 && health <= 50){
+			healthState = HealthState.HURT2;
+		} else if(health > 0 && health <= 25){
+			healthState = HealthState.HURT3;
+		} else{
+			healthState = HealthState.DEAD;
+		}
+		
 		// Apply Condition effects
 		switch (condition) {
 		case HURT:
@@ -101,9 +123,23 @@ public class Player {
 
 				regenerationTimer = 0f;
 			}
+			
+			/* update the gui */
+			if(Main.gui != null){
+				if(healthState != previousHealthState){
+					Main.gui.setHealth(healthState.ordinal());
+					previousHealthState = healthState;
+				}
+				if(pulse != previousPulse){
+					Main.gui.setHeartRate(pulse);
+					previousPulse = pulse;
+				}
+			}
+			
 		} else {
-			//System.out.println("Health: " + health + " || Pulse: " + pulse
-				//	+ " || State: " + state + " || Condition: " + condition);
+			if(Main.gui != null){
+				Main.gui.kill();
+			}
 		}
 	}
 

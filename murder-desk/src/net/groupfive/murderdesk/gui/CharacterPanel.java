@@ -12,16 +12,11 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 @SuppressWarnings("serial")
-public class CharacterPanel extends JPanel implements ActionListener {
+public class CharacterPanel extends JPanel {
 	
 	private BufferedImage[] sprites;
 	int pref = 0;
 	int sprite;
-	Timer timer;
-	
-	public CharacterPanel(){
-		timer = new Timer (500, this);
-	}
 	
 	public void load(InputStream s, int rows, int cols){
 		try {
@@ -47,18 +42,10 @@ public class CharacterPanel extends JPanel implements ActionListener {
 		}
 	}
 	
-	public void animate(boolean animate){
-		if(animate){
-			timer.start();
-		} else {
-			timer.stop();
-			sprite = pref;
-		}
-	}
-	
-	public void setPreferredSprite(int i){
+	public void setSprite(int i){
 		this.pref = i;
 		this.sprite = i;
+		repaint();
 	}
 	
 	@Override
@@ -67,14 +54,5 @@ public class CharacterPanel extends JPanel implements ActionListener {
 	    if(sprites != null){
 	    	g.drawImage(sprites[sprite],0,0,sprites[sprite].getWidth()*(getHeight()/sprites[sprite].getHeight()),getHeight(),null);
 	    }
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if(sprite >= sprites.length - 1){
-			sprite = 0;
-		}
-		repaint();
-		sprite++;
 	}
 }

@@ -116,7 +116,16 @@ public class InterfaceLink implements SerialPortEventListener{
 		
 		if(on){
 			if(split[0].equals("intensity")){
-				// TODO
+				if(screen.getWorld().getCurrentRoom().getName().toLowerCase().equals("basement")){
+				} else if(screen.getWorld().getCurrentRoom().getName().toLowerCase().equals("corridor")){
+					
+				} else if(screen.getWorld().getCurrentRoom().getName().toLowerCase().equals("foodchamber")){
+					
+				}
+				// or
+				if(screen.getWorld().getCurrentRoom().getCurrentTrap().getName().equals("test")){
+					
+				}
 			} else if(split[0].equals("light")){
 				screen.getWorldRenderer().setLight(Float.parseFloat(split[1])/100);
 			} else{
@@ -214,85 +223,5 @@ public class InterfaceLink implements SerialPortEventListener{
 				on = true;
 			}
 		}
-		
-		/*
-		try{
-			GameScreen screen = ((GameScreen) Main.murderDesk.getScreen());
-			if(s.equals("t1") && on){
-				screen.getWorld().getCurrentRoom().getCurrentTrap().deactivate();
-				screen.getWorld().getCurrentRoom().setCurrentTrap(0);
-				Main.gui.logToConsole("Trap 1 selected.");
-			} else if(s.equals("t2") && on){
-				screen.getWorld().getCurrentRoom().getCurrentTrap().deactivate();
-				screen.getWorld().getCurrentRoom().setCurrentTrap(1);
-				Main.gui.logToConsole("Trap 2 selected.");
-			} else if(s.equals("t3") && on){
-				screen.getWorld().getCurrentRoom().getCurrentTrap().deactivate();
-				screen.getWorld().getCurrentRoom().setCurrentTrap(2);
-				Main.gui.logToConsole("Trap 3 selected.");
-			} else if(s.equals("ton") && on){
-				screen.getWorld().getCurrentRoom().getCurrentTrap().activate();
-				Main.gui.logToConsole("Trap activated.");
-			} else if(s.equals("toff") && on){
-				screen.getWorld().getCurrentRoom().getCurrentTrap().deactivate();
-				Main.gui.logToConsole("Trap deactivated.");
-			} else if(s.equals("boot") && !on){
-				System.out.println("[interface] Commence booting" );
-				SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run () {
-						Main.boot();
-					}
-				});
-				System.out.println("[interface] Boot succesfull");
-				on = true;
-			} else if(s.equals("shutdown") && on){
-				on = false;
-			//	Main.gui.shutDown();
-			} else if(s.equals("boom") && on){
-				// TODO Missile switch
-			} else if(s.equals("cam1") && on){
-				screen.getWorld().setCurrentRoom(0);
-			} else if(s.equals("cam2") && on){
-				screen.getWorld().setCurrentRoom(1);
-			} else if(s.equals("cam3") && on){
-				screen.getWorld().setCurrentRoom(2);
-			} else if(s.equals("door0") && on){
-				screen.getWorld().getCurrentRoom().getDoors().get(0).setOpened(false);
-				screen.getWorld().getCurrentRoom().getDoors().get(1).setOpened(false);
-			} else if(s.equals("door1") && on){
-				screen.getWorld().getCurrentRoom().getDoors().get(0).setOpened(true);
-				screen.getWorld().getCurrentRoom().getDoors().get(1).setOpened(false);
-			} else if(s.equals("door2") && on){
-				screen.getWorld().getCurrentRoom().getDoors().get(0).setOpened(false);
-				screen.getWorld().getCurrentRoom().getDoors().get(1).setOpened(true);
-			} else if(s.equals("up") && on){
-				screen.keyDown(Keys.UP);
-			} else if(s.equals("down") && on){
-				screen.keyDown(Keys.DOWN);
-			} else if(s.equals("left") && on){
-				screen.keyDown(Keys.LEFT);
-			} else if(s.equals("right") && on){
-				screen.keyDown(Keys.RIGHT);
-			} else if(s.equals("center") && on){
-				screen.keyUp(Keys.UP);
-				screen.keyUp(Keys.DOWN);
-				screen.keyUp(Keys.LEFT);
-				screen.keyUp(Keys.RIGHT);
-			} else if((s.split(":")[0]).equals("intensity")){
-				// TODO set intensity
-			} else if((s.split(":")[0]).equals("light")){
-				screen.getWorldRenderer().setLight(Float.parseFloat(s.split(":")[1])/100);
-			}
-			else{
-				if(on){
-					System.out.println("[interface] Unknown command");
-					Main.gui.logToConsole("The interface received an unknown command. Please contact the system administrator.");
-				}
-			}
-		} catch(Exception e){
-			e.printStackTrace();
-		}
-		*/
 	}
 }

@@ -29,6 +29,7 @@ public class GamePanel extends JFrame implements Runnable {
 	
 	JLabel number;
 	JLabel name;
+	public JFrame label;
 	
 	public GamePanel(){
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -69,7 +70,8 @@ public class GamePanel extends JFrame implements Runnable {
 		/*
 		 * CODE FOR THE LABEL ON TOP OF THE FRAME
 		 */
-		final JFrame label = new JFrame();
+		label = new JFrame();
+		label.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		label.setLayout(new FlowLayout(FlowLayout.LEFT));
 		
 		number = new JLabel();
