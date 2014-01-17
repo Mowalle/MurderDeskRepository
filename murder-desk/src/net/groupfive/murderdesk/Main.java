@@ -27,7 +27,7 @@ public class Main {
 	/**
 	 * Some booleans to change the behavior
 	 */
-	public final static boolean GUI = false;
+	public final static boolean GUI = true;
 	public final static boolean INTERFACE = false;
 	public final static boolean FULLSCREEN = false;
 	public final static boolean BOOTSCREEN = false;
