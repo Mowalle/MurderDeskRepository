@@ -15,7 +15,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import net.groupfive.murderdesk.Main;
-import net.groupfive.murderdesk.gdx.*;
+import net.groupfive.murderdesk.MurderDesk;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
@@ -92,7 +92,6 @@ public class GamePanel extends JFrame implements Runnable {
 		label.setBackground(new Color(1.0f,1.0f,1.0f,0.0f));
 		
 		label.pack();
-		label.setVisible(true);
 		
 		// move label to postition of main frame
 		addComponentListener(new ComponentAdapter() {

@@ -1,14 +1,14 @@
-package net.groupfive.murderdesk.gdx.controller;
+package net.groupfive.murderdesk.controller;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.math.Vector2;
 
-import net.groupfive.murderdesk.gdx.model.Player;
-import net.groupfive.murderdesk.gdx.model.Room;
-import net.groupfive.murderdesk.gdx.model.World;
-import net.groupfive.murderdesk.gdx.model.Player.State;
+import net.groupfive.murderdesk.model.Player;
+import net.groupfive.murderdesk.model.Room;
+import net.groupfive.murderdesk.model.World;
+import net.groupfive.murderdesk.model.Player.State;
 
 public class PlayerController {
 

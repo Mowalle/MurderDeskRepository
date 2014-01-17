@@ -1,11 +1,11 @@
-package net.groupfive.murderdesk.gdx.controller;
+package net.groupfive.murderdesk.controller;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import net.groupfive.murderdesk.gdx.model.Trap;
-import net.groupfive.murderdesk.gdx.model.TrapdoorTrap;
-import net.groupfive.murderdesk.gdx.model.World;
+import net.groupfive.murderdesk.model.Trap;
+import net.groupfive.murderdesk.model.TrapdoorTrap;
+import net.groupfive.murderdesk.model.World;
 
 public class RoomController {
 

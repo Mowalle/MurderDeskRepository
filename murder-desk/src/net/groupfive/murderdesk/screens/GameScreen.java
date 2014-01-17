@@ -1,12 +1,12 @@
-package net.groupfive.murderdesk.gdx.screens;
+package net.groupfive.murderdesk.screens;
 
 import net.groupfive.murderdesk.Main;
-import net.groupfive.murderdesk.gdx.controller.CameraController;
-import net.groupfive.murderdesk.gdx.controller.PlayerController;
-import net.groupfive.murderdesk.gdx.controller.RoomController;
-import net.groupfive.murderdesk.gdx.model.Player;
-import net.groupfive.murderdesk.gdx.model.World;
-import net.groupfive.murderdesk.gdx.view.WorldRenderer;
+import net.groupfive.murderdesk.controller.CameraController;
+import net.groupfive.murderdesk.controller.PlayerController;
+import net.groupfive.murderdesk.controller.RoomController;
+import net.groupfive.murderdesk.model.Player;
+import net.groupfive.murderdesk.model.World;
+import net.groupfive.murderdesk.view.WorldRenderer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;

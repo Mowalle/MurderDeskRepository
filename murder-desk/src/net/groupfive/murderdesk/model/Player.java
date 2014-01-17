@@ -1,4 +1,4 @@
-package net.groupfive.murderdesk.gdx.model;
+package net.groupfive.murderdesk.model;
 
 import net.groupfive.murderdesk.Main;
 

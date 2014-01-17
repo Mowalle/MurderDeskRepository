@@ -1,4 +1,4 @@
-package net.groupfive.murderdesk.gdx.controller;
+package net.groupfive.murderdesk.controller;
 
 import java.util.HashMap;
 import java.util.Map;

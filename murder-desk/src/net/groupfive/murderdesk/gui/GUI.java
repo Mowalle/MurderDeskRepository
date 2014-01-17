@@ -36,12 +36,10 @@ import javax.swing.text.TabSet;
 import javax.swing.text.TabStop;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 import net.groupfive.murderdesk.Main;
-import net.groupfive.murderdesk.gdx.model.Trap;
-import net.groupfive.murderdesk.gdx.model.World;
-import net.groupfive.murderdesk.gdx.screens.*;
 import net.groupfive.murderdesk.gui.CharacterPanel;
 import net.groupfive.murderdesk.gui.ContentPanel;
 import net.groupfive.murderdesk.gui.ECDPanel;
@@ -49,6 +47,9 @@ import net.groupfive.murderdesk.gui.GamePanel;
 import net.groupfive.murderdesk.gui.MurderDeskScreen;
 import net.groupfive.murderdesk.gui.NormalText;
 import net.groupfive.murderdesk.gui.NormalTextScroll;
+import net.groupfive.murderdesk.model.Trap;
+import net.groupfive.murderdesk.model.World;
+import net.groupfive.murderdesk.screens.*;
 
 @SuppressWarnings("unused")
 public class GUI {
@@ -189,6 +190,7 @@ public class GUI {
 				
 				// show camera view
 				game.setVisible(true);
+				game.label.setVisible(true);
             }
 		});
        	if(bootscreen){
@@ -422,6 +424,12 @@ public class GUI {
 		}
 	}
 	
+	public void boom(){
+		World world = ((GameScreen) Main.murderDesk.getScreen()).getWorld();
+		world.getPlayer().setPosition(new Vector2(-999.0f, -999.0f));
+		kill();
+	}
+	
 	public void changeRoom(final int id){
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
@@ -444,7 +452,9 @@ public class GUI {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run () {
-				txtBalance.setText("$ " + i);
+				if(txtBalance != null){
+					txtBalance.setText("$ " + i);
+				}
 			}
 		});
 	}

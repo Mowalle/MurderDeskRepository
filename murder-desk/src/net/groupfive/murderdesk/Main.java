@@ -5,7 +5,6 @@ import javax.swing.SwingUtilities;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
-import net.groupfive.murderdesk.gdx.MurderDesk;
 import net.groupfive.murderdesk.gui.GUI;
 import net.groupfive.murderdesk.tangible.InterfaceLink;
 
@@ -29,9 +28,9 @@ public class Main {
 	 * Some booleans to change the behavior
 	 */
 	public final static boolean GUI = true;
-	public final static boolean INTERFACE = false;
+	public final static boolean INTERFACE = true;
 	public final static boolean FULLSCREEN = false;
-	public final static boolean BOOTSCREEN = false;
+	public final static boolean BOOTSCREEN = true;
 		
 	public static void main (String[] args) {
 		System.setProperty("awt.useSystemAAFontSettings","lcd");

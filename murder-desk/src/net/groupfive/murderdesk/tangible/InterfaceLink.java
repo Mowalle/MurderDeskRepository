@@ -17,7 +17,7 @@ import javax.swing.SwingUtilities;
 import com.badlogic.gdx.Input.Keys;
 
 import net.groupfive.murderdesk.Main;
-import net.groupfive.murderdesk.gdx.screens.GameScreen;
+import net.groupfive.murderdesk.screens.GameScreen;
 
 public class InterfaceLink implements SerialPortEventListener{
 	SerialPort serialPort;
