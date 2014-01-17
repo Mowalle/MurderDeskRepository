@@ -1,16 +1,22 @@
 package net.groupfive.murderdesk.model;
 
+import net.groupfive.murderdesk.model.Player.DeathType;
+
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public class Player {
 
 	public enum State {
-		IDLE, WALKING, DEAD, DEAD_GORE, DEAD_TRAPDOOR, DEAD_ELECTROCUTION
+		IDLE, WALKING, DEAD
 	}
 
 	public enum Condition {
 		NORMAL, PANIC, HURT
+	}
+	
+	public enum DeathType {
+		NORMAL, BLOODY, TRAPDOOR, ELECTROCUTION
 	}
 
 	public static final float SIZE_X = 31f / 64f; // Frame Width of Sprite /Tile
@@ -30,6 +36,7 @@ public class Player {
 	Rectangle bounds = new Rectangle();
 	State state = State.IDLE;
 	Condition condition = Condition.NORMAL;
+	DeathType deathType = DeathType.NORMAL;
 	boolean facingLeft = true;
 	boolean facingDown = true;
 	float stateTime = 0f;
@@ -86,9 +93,7 @@ public class Player {
 			break;
 		}
 
-		if (!state.equals(State.DEAD) && !state.equals(State.DEAD_GORE)
-				&& !state.equals(State.DEAD_TRAPDOOR)
-				&& !state.equals(State.DEAD_ELECTROCUTION)) {
+		if (!state.equals(State.DEAD)) {
 			// Restore Health and Pulse every second
 			regenerationTimer += delta;
 
@@ -179,6 +184,7 @@ public class Player {
 
 	public void setState(State newState) {
 		this.state = newState;
+		this.stateTime = 0;
 	}
 
 	public Condition getCondition() {
@@ -203,6 +209,14 @@ public class Player {
 
 	public void setSpeed(float speed) {
 		this.speed = speed;
+	}
+
+	public void setDeathType(DeathType deathType) {
+		this.deathType = deathType;
+	}
+
+	public DeathType getDeathType() {
+		return this.deathType;
 	}
 
 }

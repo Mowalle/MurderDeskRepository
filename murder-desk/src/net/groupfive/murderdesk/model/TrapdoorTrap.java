@@ -80,6 +80,27 @@ public class TrapdoorTrap extends Trap {
 					&& target.getPosition().y >= position.y - 0.5f
 					&& target.getPosition().y <= position.y + 0.5f) {
 				target.setState(Player.State.DEAD);
+				target.setDeathType(Player.DeathType.TRAPDOOR);
+
+				Vector2 trapTile = this.myRoom
+						.convertToMapCoordinates(this.position);
+				Vector2 playerTile = target.getMyRoom()
+						.convertToMapCoordinates(target.getPosition());
+
+				if (playerTile.x == trapTile.x
+						&& playerTile.y == trapTile.y - 1) {
+					target.setFacingLeft(true);
+					target.setFacingDown(false);
+				} else {
+					if (playerTile.x == trapTile.x) {
+						target.setFacingLeft(true);
+						target.setFacingDown(true);
+					} else {
+						target.setFacingLeft(false);
+						target.setFacingDown(true);
+					}
+				}
+
 			}
 		}
 	}

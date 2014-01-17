@@ -7,6 +7,7 @@ import net.groupfive.murderdesk.model.FloodTrap;
 import net.groupfive.murderdesk.model.FreezeTrap;
 import net.groupfive.murderdesk.model.GasTrap;
 import net.groupfive.murderdesk.model.Player;
+import net.groupfive.murderdesk.model.Player.DeathType;
 import net.groupfive.murderdesk.model.Room;
 import net.groupfive.murderdesk.model.SpikeTrap;
 import net.groupfive.murderdesk.model.Trap;
@@ -32,7 +33,7 @@ public class WorldRenderer {
 	private static final float CAMERA_WIDTH = 10f;
 	private static final float CAMERA_HEIGHT = 12.5f;
 	private static final float WALKING_FRAME_DURATION = 0.1f;
-	private static final float DEATH_FRAME_DURATION = 0.5f;
+	private static final float DEATH_FRAME_DURATION = 1f;
 
 	private static final float PLAYER_OFFSET_X = (1f - Player.SIZE_X) / 2f;
 	private static final float PLAYER_OFFSET_Y = (2f - Player.SIZE_Y) / 2f;
@@ -62,6 +63,19 @@ public class WorldRenderer {
 	private TextureRegion deathHangingLeftUp;
 	private TextureRegion deathHangingRightDown;
 	private TextureRegion deathHangingRightUp;
+
+	private TextureRegion[] deathElecLeft;
+	private TextureRegion[] deathElecRight;
+
+	private TextureRegion[] deathLeftDownFrames;
+	private TextureRegion[] deathLeftUpFrames;
+	private TextureRegion[] deathRightDownFrames;
+	private TextureRegion[] deathRightUpFrames;
+	
+	private TextureRegion[] deathGoreLeftDownFrames;
+	private TextureRegion[] deathGoreLeftUpFrames;
+	private TextureRegion[] deathGoreRightDownFrames;
+	private TextureRegion[] deathGoreRightUpFrames;
 
 	private TextureRegion playerFrame;
 	private TextureRegion playerFrameTop;
@@ -115,17 +129,16 @@ public class WorldRenderer {
 	private Animation deathGoreRightDownAnimation;
 	private Animation deathGoreRightUpAnimation;
 
-	private Animation deathElectrocuteLeftAnimation;
-	private Animation deathElectrocuteRightAnimation;
+	private Animation deathElecLeftAnimation;
+	private Animation deathElecRightAnimation;
 
 	private Animation bloodRainAnimation;
 	private Animation electroFieldAnimation;
 
-	
 	/** Overlay **/
 	private ShapeRenderer light;
 	private float lightIntensity = 1.0f;
-	
+
 	private SpriteBatch spriteBatch;
 	private boolean debug = false;
 
@@ -202,39 +215,93 @@ public class WorldRenderer {
 		deathHangingRightDown = frames[5][1];
 		deathHangingRightUp = frames[5][3];
 
-		TextureRegion[] deathRightDownFrames = new TextureRegion[2];
-		deathRightDownFrames[0] = frames[6][1];
-		deathRightDownFrames[1] = frames[6][2];
-		deathRightDownFrames[1].setRegionWidth(62);
-		deathRightDownAnimation = new Animation(DEATH_FRAME_DURATION,
-				deathRightDownFrames);
-
-		TextureRegion[] deathLeftDownFrames = new TextureRegion[2];
+		deathLeftDownFrames = new TextureRegion[2];
 		deathLeftDownFrames[0] = frames[7][1];
+		frames[7][2] = new TextureRegion(playerSpriteSheet,
+				frames[7][2].getRegionX(), frames[7][2].getRegionY(),
+				frames[7][2].getRegionWidth() * 2,
+				frames[7][2].getRegionHeight());
 		deathLeftDownFrames[1] = frames[7][2];
-		deathLeftDownFrames[1].setRegionWidth(62);
-		deathLeftDownAnimation = new Animation(DEATH_FRAME_DURATION,
-				deathLeftDownFrames);
+		deathLeftDownAnimation = new Animation(DEATH_FRAME_DURATION, deathLeftDownFrames);
 
-		TextureRegion[] deathRightUpFrames = new TextureRegion[2];
+		deathLeftUpFrames = new TextureRegion[2];
+		deathLeftUpFrames[0] = frames[9][1];
+		frames[9][2] = new TextureRegion(playerSpriteSheet,
+				frames[9][2].getRegionX(), frames[9][2].getRegionY(),
+				frames[9][2].getRegionWidth() * 2,
+				frames[9][2].getRegionHeight());
+		deathLeftUpFrames[1] = frames[9][2];
+		deathLeftUpAnimation = new Animation(DEATH_FRAME_DURATION, deathLeftUpFrames);
+
+		deathRightDownFrames = new TextureRegion[2];
+		deathRightDownFrames[0] = frames[6][1];
+		frames[6][2] = new TextureRegion(playerSpriteSheet,
+				frames[6][2].getRegionX(), frames[6][2].getRegionY(),
+				frames[6][2].getRegionWidth() * 2,
+				frames[6][2].getRegionHeight());
+		deathRightDownFrames[1] = frames[6][2];
+		deathRightDownAnimation = new Animation(DEATH_FRAME_DURATION, deathRightDownFrames);
+
+		deathRightUpFrames = new TextureRegion[2];
 		deathRightUpFrames[0] = frames[8][1];
+		frames[8][2] = new TextureRegion(playerSpriteSheet,
+				frames[8][2].getRegionX(), frames[8][2].getRegionY(),
+				frames[8][2].getRegionWidth() * 2,
+				frames[8][2].getRegionHeight());
 		deathRightUpFrames[1] = frames[8][2];
-		deathRightUpFrames[1].setRegionWidth(62);
-		deathRightUpAnimation = new Animation(DEATH_FRAME_DURATION,
-				deathRightUpFrames);
+		deathRightUpAnimation = new Animation(DEATH_FRAME_DURATION, deathRightUpFrames);
+		
+		deathGoreLeftDownFrames = new TextureRegion[2];
+		deathGoreLeftDownFrames[0] = frames[11][1];
+		frames[11][2] = new TextureRegion(playerSpriteSheet,
+				frames[11][2].getRegionX(), frames[11][2].getRegionY(),
+				frames[11][2].getRegionWidth() * 2,
+				frames[11][2].getRegionHeight());
+		deathGoreLeftDownFrames[1] = frames[11][2];
+		deathGoreLeftDownAnimation = new Animation(DEATH_FRAME_DURATION, deathGoreLeftDownFrames);
 
-		TextureRegion[] deathLeftUpFrames = new TextureRegion[2];
-		deathLeftUpFrames[0] = frames[6][1];
-		deathLeftUpFrames[1] = frames[6][2];
-		deathLeftUpFrames[1].setRegionWidth(62);
-		deathLeftUpAnimation = new Animation(DEATH_FRAME_DURATION,
-				deathLeftUpFrames);
+		deathGoreLeftUpFrames = new TextureRegion[2];
+		deathGoreLeftUpFrames[0] = frames[13][1];
+		frames[13][2] = new TextureRegion(playerSpriteSheet,
+				frames[13][2].getRegionX(), frames[13][2].getRegionY(),
+				frames[13][2].getRegionWidth() * 2,
+				frames[13][2].getRegionHeight());
+		deathGoreLeftUpFrames[1] = frames[13][2];
+		deathGoreLeftUpAnimation = new Animation(DEATH_FRAME_DURATION, deathGoreLeftUpFrames);
+
+		deathGoreRightDownFrames = new TextureRegion[2];
+		deathGoreRightDownFrames[0] = frames[10][1];
+		frames[10][2] = new TextureRegion(playerSpriteSheet,
+				frames[10][2].getRegionX(), frames[10][2].getRegionY(),
+				frames[10][2].getRegionWidth() * 2,
+				frames[10][2].getRegionHeight());
+		deathGoreRightDownFrames[1] = frames[10][2];
+		deathGoreRightDownAnimation = new Animation(DEATH_FRAME_DURATION, deathGoreRightDownFrames);
+
+		deathGoreRightUpFrames = new TextureRegion[2];
+		deathGoreRightUpFrames[0] = frames[12][1];
+		frames[12][2] = new TextureRegion(playerSpriteSheet,
+				frames[12][2].getRegionX(), frames[12][2].getRegionY(),
+				frames[12][2].getRegionWidth() * 2,
+				frames[12][2].getRegionHeight());
+		deathGoreRightUpFrames[1] = frames[12][2];
+		deathGoreRightUpAnimation = new Animation(DEATH_FRAME_DURATION, deathGoreRightUpFrames);
+
+		deathElecLeft = new TextureRegion[2];
+		deathElecLeft[0] = frames[14][0];
+		deathElecLeft[1] = frames[14][1];
+		deathElecLeftAnimation = new Animation(DEATH_FRAME_DURATION, deathElecLeft);
+
+		deathElecRight = new TextureRegion[2];
+		deathElecRight[0] = frames[14][2];
+		deathElecRight[1] = frames[14][3];
+		deathElecRightAnimation = new Animation(DEATH_FRAME_DURATION, deathElecRight);
 
 		// * Trap textures ***************************//
 		trapdoorTrapSprite = new Texture(
 				Gdx.files.internal("textures/TrapDoor.png"));
 		trapdoorClosed = new TextureRegion(trapdoorTrapSprite, 0, 0, 128, 64);
-		trapdoorOpened = new TextureRegion(trapdoorTrapSprite, 128, 0, 128, 64);
+		trapdoorOpened = new TextureRegion(trapdoorTrapSprite, 0, 64, 128, 64);
 
 		floodTrapSprite = new Texture(
 				Gdx.files.internal("textures/floodTrap.png"));
@@ -289,7 +356,7 @@ public class WorldRenderer {
 		doorDefault = new TextureRegion(doorSprite, 108, 0, 108, 73);
 		doorMetal = new TextureRegion(doorSprite, 216, 0, 108, 73);
 		trapdoorOpened = new TextureRegion(trapdoorTrapSprite, 0, 64, 128, 64);
-		
+
 		// Light //
 		light = new ShapeRenderer();
 	}
@@ -310,13 +377,15 @@ public class WorldRenderer {
 		Trap trap = null;
 		if (world.getCurrentRoom().hasTraps()) {
 			trap = world.getCurrentRoom().getCurrentTrap();
-			
+
 			splitYHalf = (52f / 32f);
-			
+
 			if (trap instanceof FloodTrap) {
-				splitYHalf = (52f / 32f) * (1 - ((FloodTrap)trap).getWaterLevel() / 4f);
+				splitYHalf = (52f / 32f)
+						* (1 - ((FloodTrap) trap).getWaterLevel() / 4f);
 			} else if (trap instanceof BloodTrap) {
-				splitYHalf = (52f / 32f) * (1 - ((BloodTrap)trap).getBloodLevel() / 4f);
+				splitYHalf = (52f / 32f)
+						* (1 - ((BloodTrap) trap).getBloodLevel() / 4f);
 			} else if (trap instanceof GasTrap || trap instanceof FreezeTrap) {
 				splitYHalf = 0f;
 			}
@@ -342,15 +411,15 @@ public class WorldRenderer {
 
 		// False because layers over player
 		drawRoom(false);
-		
+
 		Gdx.gl.glEnable(GL10.GL_BLEND);
-	    Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		light.begin(ShapeType.Filled);
-		light.setColor(0,0,0,1-lightIntensity);
+		light.setColor(0, 0, 0, 1 - lightIntensity);
 		light.rect(0, 0, width, height);
 		light.end();
 		Gdx.gl.glDisable(GL10.GL_BLEND);
-		
+
 		if (debug) {
 			drawDebug();
 		}
@@ -624,96 +693,130 @@ public class WorldRenderer {
 				}
 			}
 		}
+
+		float deathOffsetX = 0;
+		float deathOffsetY = 0;
 		// Normal Death Animation
 		if (player.getState().equals(State.DEAD)) {
-//			if (player.isFacingLeft()) {
-//				if (player.isFacingDown()) {
-//					playerFrame = deathLeftDownAnimation.getKeyFrame(
-//							player.getStateTime(), false);
-//				} else {
-//					playerFrame = deathLeftUpAnimation.getKeyFrame(
-//							player.getStateTime(), false);
-//				}
-//			} else {
-//				if (player.isFacingDown()) {
-//					playerFrame = deathRightDownAnimation.getKeyFrame(
-//							player.getStateTime(), false);
-//				} else {
-//					playerFrame = deathRightUpAnimation.getKeyFrame(
-//							player.getStateTime(), false);
-//				}
-//			}
-		}
-		// Trapdoor Death Animation
-		if (player.getState().equals(State.DEAD_TRAPDOOR)) {
-			if (player.isFacingLeft()) {
-				if (player.isFacingDown()) {
 
+			if (player.getDeathType().equals(DeathType.NORMAL)) {
+
+				if (player.isFacingLeft()) {
+					if (player.isFacingDown()) {
+						playerFrame = deathLeftDownAnimation.getKeyFrame(
+								player.getStateTime(), false);
+					} else {
+						playerFrame = deathLeftUpAnimation.getKeyFrame(
+								player.getStateTime(), false);
+					}
 				} else {
-
+					if (player.isFacingDown()) {
+						playerFrame = deathRightDownAnimation.getKeyFrame(
+								player.getStateTime(), false);
+					} else {
+						playerFrame = deathRightUpAnimation.getKeyFrame(
+								player.getStateTime(), false);
+					}
 				}
-			} else {
-				if (player.isFacingDown()) {
+				deathOffsetX = -PLAYER_OFFSET_X + 0.5f;
+				deathOffsetY = -PLAYER_OFFSET_Y - 0.5f;
 
+			}
+			
+			if (player.getDeathType().equals(DeathType.BLOODY)) {
+
+				if (player.isFacingLeft()) {
+					if (player.isFacingDown()) {
+						playerFrame = deathGoreLeftDownAnimation.getKeyFrame(
+								player.getStateTime(), false);
+					} else {
+						playerFrame = deathGoreLeftUpAnimation.getKeyFrame(
+								player.getStateTime(), false);
+					}
 				} else {
+					if (player.isFacingDown()) {
+						playerFrame = deathGoreRightDownAnimation.getKeyFrame(
+								player.getStateTime(), false);
+					} else {
+						playerFrame = deathGoreRightUpAnimation.getKeyFrame(
+								player.getStateTime(), false);
+					}
+				}
+				deathOffsetX = -PLAYER_OFFSET_X + 0.5f;
+				deathOffsetY = -PLAYER_OFFSET_Y - 0.5f;
 
+			}
+			
+			if (player.getDeathType().equals(DeathType.TRAPDOOR)) {
+
+				if (player.isFacingLeft()) {
+					if (player.isFacingDown()) {
+						playerFrame = deathHangingLeftDown;
+					} else {
+						playerFrame = deathHangingLeftUp;
+					}
+				} else {
+					if (player.isFacingDown()) {
+						playerFrame = deathHangingRightDown;
+					} else {
+						playerFrame = deathHangingRightUp;
+					}
+				}
+				deathOffsetX = -PLAYER_OFFSET_X + 0.5f;
+				deathOffsetY = -PLAYER_OFFSET_Y - 0.5f;
+
+			}
+
+			if (player.getDeathType().equals(DeathType.ELECTROCUTION)) {
+
+				if (!player.isFacingLeft()) {
+					playerFrame = deathElecLeftAnimation.getKeyFrame(
+							player.getStateTime(), true);
+				} else {
+					playerFrame = deathElecRightAnimation.getKeyFrame(
+							player.getStateTime(), true);
 				}
 			}
 		}
-		// Gore Death Animation
-		if (player.getState().equals(State.DEAD_GORE)) {
-			if (player.isFacingLeft()) {
-				if (player.isFacingDown()) {
 
-				} else {
-
-				}
-			} else {
-				if (player.isFacingDown()) {
-
-				} else {
-
-				}
-			}
-		}
-		// Electrocution Death Animation
-		if (player.getState().equals(State.DEAD_ELECTROCUTION)) {
-			if (player.isFacingLeft()) {
-				if (player.isFacingDown()) {
-
-				} else {
-
-				}
-			} else {
-				if (player.isFacingDown()) {
-
-				} else {
-
-				}
-			}
-		}
+		// if (player.isFacingLeft()) {
+		// if (player.isFacingDown()) {
+		// playerFrame = deathLeftDownAnimation.getKeyFrame(
+		// player.getStateTime(), false);
+		// } else {
+		// playerFrame = deathLeftUpAnimation.getKeyFrame(
+		// player.getStateTime(), false);
+		// }
+		// } else {
+		// if (player.isFacingDown()) {
+		// playerFrame = deathRightDownAnimation.getKeyFrame(
+		// player.getStateTime(), false);
+		// } else {
+		// playerFrame = deathRightUpAnimation.getKeyFrame(
+		// player.getStateTime(), false);
+		// }
+		// }
 
 		if (topHalf) {
 			playerFrameTop = new TextureRegion(playerFrame, 0, 0,
-					(int) (Player.SIZE_X * 64f), (int) (splitYHalf * 32f));
+					(int) playerFrame.getRegionWidth(),
+					(int) (splitYHalf * 32f));
 
 			spriteBatch.draw(playerFrameTop, player.getPosition().x
-					+ PLAYER_OFFSET_X, player.getPosition().y + PLAYER_OFFSET_Y
+					+ PLAYER_OFFSET_X + deathOffsetX, player.getPosition().y
+					+ PLAYER_OFFSET_Y + deathOffsetY
 					+ (Player.SIZE_Y - splitYHalf),
 					playerFrameTop.getRegionWidth() / 64f,
 					playerFrameTop.getRegionHeight() / 32f);
-			System.out.println("1:" + playerFrameTop.getRegionWidth() + ", "
-					+ playerFrameTop.getRegionHeight());
 		} else {
 			playerFrameBottom = new TextureRegion(playerFrame, 0,
-					(int) (splitYHalf * 32f), (int) (Player.SIZE_X * 64),
+					(int) (splitYHalf * 32f),
+					(int) playerFrame.getRegionWidth(),
 					(int) (Player.SIZE_Y * 32f - splitYHalf * 32f));
 
-			System.out.println("2:" + playerFrameBottom.getRegionWidth() + ", "
-					+ playerFrameBottom.getRegionHeight());
 			spriteBatch.draw(playerFrameBottom, player.getPosition().x
-					+ PLAYER_OFFSET_X,
-					player.getPosition().y + PLAYER_OFFSET_Y,
+					+ PLAYER_OFFSET_X + deathOffsetX, player.getPosition().y
+					+ PLAYER_OFFSET_Y + deathOffsetY,
 					playerFrameBottom.getRegionWidth() / 64f,
 					playerFrameBottom.getRegionHeight() / 32f);
 		}
@@ -755,8 +858,8 @@ public class WorldRenderer {
 	public OrthographicCamera getCamera() {
 		return cam;
 	}
-	
-	public void setLight(float intensity){
+
+	public void setLight(float intensity) {
 		this.lightIntensity = intensity;
 	}
 

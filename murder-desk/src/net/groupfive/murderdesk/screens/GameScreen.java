@@ -35,7 +35,7 @@ public class GameScreen implements Screen, InputProcessor {
 
 		camController = new CameraController(renderer.getCamera());
 		playerController = new PlayerController(world);
-		playerController.setMovingRandom(false);
+		playerController.setMovingRandom(true);
 		roomController = new RoomController(world);
 		Gdx.input.setInputProcessor(this);
 	}
@@ -151,6 +151,8 @@ public class GameScreen implements Screen, InputProcessor {
 		if (keycode == Keys.NUM_3)
 			roomController.trapThreePressed(); // trap 3
 		
+		if (keycode == Keys.END)
+			roomController.trapFinalPressed();
 		if (keycode == Keys.SPACE)
 			roomController.trapTooglePressed(); // trap toggle
 		if (keycode == Keys.PLUS)
@@ -208,6 +210,8 @@ public class GameScreen implements Screen, InputProcessor {
 		if (keycode == Keys.NUM_3)
 			roomController.trapThreeReleased(); // trap 3
 		
+		if (keycode == Keys.END)
+			roomController.trapFinalReleased();
 		if (keycode == Keys.SPACE)
 			roomController.trapToggleReleased(); // trrap toggle
 		if (keycode == Keys.PLUS)

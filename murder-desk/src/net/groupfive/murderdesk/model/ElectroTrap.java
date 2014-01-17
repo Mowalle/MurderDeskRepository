@@ -2,6 +2,8 @@ package net.groupfive.murderdesk.model;
 
 import java.util.Random;
 
+import net.groupfive.murderdesk.model.Player.DeathType;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
@@ -68,7 +70,6 @@ public class ElectroTrap extends Trap {
 					&& target.getPosition().x == electroField.x
 					&& target.getPosition().y == electroField.y) {
 				target.setPulse(target.getPulse() + 30);
-				target.setHealth(target.getHealth() - 30);
 			}
 		}
 	}
@@ -81,14 +82,18 @@ public class ElectroTrap extends Trap {
 
 	@Override
 	protected void applyTrapOverTime() {
-		if (stateTime >= 3) {
+		if (stateTime >= 0.5f) {
 			stateTime = 0;
 			for (Vector2 electroField : electroFields) {
 				if (target.getState().equals(Player.State.IDLE)
 						&& target.getPosition().x == electroField.x
 						&& target.getPosition().y == electroField.y) {
-					target.setPulse(target.getPulse() + 10);
-					target.setHealth(target.getHealth() - 10);
+					target.setPulse(target.getPulse() + 15);
+					target.setHealth(target.getHealth() - 15);
+				}
+				if (target.getHealth() <= 0) {
+					target.setState(Player.State.DEAD);
+					target.setDeathType(DeathType.ELECTROCUTION);
 				}
 			}
 		}
