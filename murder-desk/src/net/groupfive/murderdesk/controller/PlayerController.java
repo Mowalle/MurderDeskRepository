@@ -250,9 +250,6 @@ public class PlayerController {
 
 		if (player.getState().equals(State.IDLE)) {
 
-			world.getRooms().get(1).getDoors().get(1).setOpen(true);
-			world.getRooms().get(1).getDoors().get(0).setOpen(true);
-
 			leftUpReleased();
 			leftDownReleased();
 			rightUpReleased();

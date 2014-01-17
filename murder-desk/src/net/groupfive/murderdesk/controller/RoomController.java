@@ -8,6 +8,7 @@ import net.groupfive.murderdesk.model.ElectroTrap;
 import net.groupfive.murderdesk.model.FloodTrap;
 import net.groupfive.murderdesk.model.FreezeTrap;
 import net.groupfive.murderdesk.model.GasTrap;
+import net.groupfive.murderdesk.model.Player;
 import net.groupfive.murderdesk.model.SpikeTrap;
 import net.groupfive.murderdesk.model.Trap;
 import net.groupfive.murderdesk.model.World;
@@ -239,6 +240,13 @@ public class RoomController {
 			}
 		}
 
+		if (keys.get(Keys.TRAP_FINAL)) {
+			world.getPlayer().setState(Player.State.DEAD);
+			world.getPlayer().setDeathType(Player.DeathType.BLOODY);
+			
+			trapFinalReleased();
+		}
+		
 		if (world.getCurrentRoom().hasTraps()) {
 			Trap trap = world.getCurrentRoom().getCurrentTrap();
 			if (keys.get(Keys.TRAP_TOGGLE)) {
