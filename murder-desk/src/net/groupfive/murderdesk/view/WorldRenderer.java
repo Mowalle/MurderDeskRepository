@@ -1,6 +1,10 @@
 package net.groupfive.murderdesk.view;
 
+import net.goupfive.murderdesk.model.BloodTrap;
 import net.goupfive.murderdesk.model.Door;
+import net.goupfive.murderdesk.model.FloodTrap;
+import net.goupfive.murderdesk.model.FreezeTrap;
+import net.goupfive.murderdesk.model.GasTrap;
 import net.goupfive.murderdesk.model.Player;
 import net.goupfive.murderdesk.model.Player.State;
 import net.goupfive.murderdesk.model.Room;
@@ -24,6 +28,7 @@ public class WorldRenderer {
 	private static final float CAMERA_WIDTH = 10f;
 	private static final float CAMERA_HEIGHT = 12.5f;
 	private static final float WALKING_FRAME_DURATION = 0.1f;
+	private static final float DEATH_FRAME_DURATION = 0.5f;
 
 	private static final float PLAYER_OFFSET_X = (1f - Player.SIZE_X) / 2f;
 	private static final float PLAYER_OFFSET_Y = (2f - Player.SIZE_Y) / 2f;
@@ -38,7 +43,7 @@ public class WorldRenderer {
 	ShapeRenderer debugRenderer = new ShapeRenderer();
 
 	/** Custom renderer for map rendering **/
-	IsometricScaledTiledMapRenderer isoRenderer;
+	CustomIsometricTiledMapRenderer isoRenderer;
 
 	/** Textures **/
 	private Texture playerSpriteSheet;
@@ -46,20 +51,60 @@ public class WorldRenderer {
 	private TextureRegion playerIdleLeftUp;
 	private TextureRegion playerIdleRightDown;
 	private TextureRegion playerIdleRightUp;
+
+	private TextureRegion deathHangingLeftDown;
+	private TextureRegion deathHangingLeftUp;
+	private TextureRegion deathHangingRightDown;
+	private TextureRegion deathHangingRightUp;
+
 	private TextureRegion playerFrame;
 
 	private Texture trapdoorTrapSprite;
 	private TextureRegion trapdoorClosed;
 	private TextureRegion trapdoorOpened;
 
+	private Texture floodTrapSprite;
+	private TextureRegion[] floodTrapFrames;
+
+	private Texture bloodTrapSprite;
+	private TextureRegion[] bloodTrapFrames;
+	
+	private Texture bloodRainSprite;
+	private TextureRegion[] bloodRainFrames;
+
+	private Texture gasTrapSprite;
+	private Texture freezeTrapSprite;
+
 	// General container for current trap frame
-	private TextureRegion trapFrame;
+	private TextureRegion trapFrame = new TextureRegion();
+
+	private Texture doorSprite;
+	TextureRegion doorExit;
+	TextureRegion doorDefault;
+	TextureRegion doorMetal;
+
+	private TextureRegion doorFrame = new TextureRegion();
 
 	/** Animations **/
 	private Animation walkLeftDownAnimation;
 	private Animation walkLeftUpAnimation;
 	private Animation walkRightDownAnimation;
 	private Animation walkRightUpAnimation;
+
+	private Animation deathLeftDownAnimation;
+	private Animation deathLeftUpAnimation;
+	private Animation deathRightDownAnimation;
+	private Animation deathRightUpAnimation;
+
+	private Animation deathGoreLeftDownAnimation;
+	private Animation deathGoreLeftUpAnimation;
+	private Animation deathGoreRightDownAnimation;
+	private Animation deathGoreRightUpAnimation;
+
+	private Animation deathElectrocuteLeftAnimation;
+	private Animation deathElectrocuteRightAnimation;
+	
+	private Animation bloodRainAnimation;
 
 	private SpriteBatch spriteBatch;
 	private boolean debug = false;
@@ -84,7 +129,7 @@ public class WorldRenderer {
 		this.debug = debug;
 		spriteBatch = new SpriteBatch();
 		// TODO Maybe use ppuX and ppuY instead?
-		isoRenderer = new IsometricScaledTiledMapRenderer(world
+		isoRenderer = new CustomIsometricTiledMapRenderer(world
 				.getCurrentRoom().getTiledMap(), 1 / (float) Room.TILE_WIDTH,
 				1 / (float) Room.TILE_HEIGHT);
 		loadTextures();
@@ -99,8 +144,6 @@ public class WorldRenderer {
 		playerIdleLeftUp = frames[0][2];
 		playerIdleRightDown = frames[0][1];
 		playerIdleRightUp = frames[0][3];
-
-		// TODO Load other textures and animations (for traps etc...)
 
 		TextureRegion[] walkLeftDownFrames = new TextureRegion[4];
 		for (int i = 0; i < 4; i++) {
@@ -134,12 +177,78 @@ public class WorldRenderer {
 		walkRightUpAnimation = new Animation(WALKING_FRAME_DURATION,
 				walkRightUpFrames);
 
+		deathHangingLeftDown = frames[5][0];
+		deathHangingLeftUp = frames[5][2];
+		deathHangingRightDown = frames[5][1];
+		deathHangingRightUp = frames[5][3];
+
+		TextureRegion[] deathRightDownFrames = new TextureRegion[2];
+		deathRightDownFrames[0] = frames[6][1];
+		deathRightDownFrames[1] = frames[6][2];
+		deathRightDownFrames[1].setRegionWidth(62);
+		deathRightDownAnimation = new Animation(DEATH_FRAME_DURATION,
+				deathRightDownFrames);
+
+		TextureRegion[] deathLeftDownFrames = new TextureRegion[2];
+		deathLeftDownFrames[0] = frames[7][1];
+		deathLeftDownFrames[1] = frames[7][2];
+		deathLeftDownFrames[1].setRegionWidth(62);
+		deathLeftDownAnimation = new Animation(DEATH_FRAME_DURATION,
+				deathLeftDownFrames);
+
+		TextureRegion[] deathRightUpFrames = new TextureRegion[2];
+		deathRightUpFrames[0] = frames[8][1];
+		deathRightUpFrames[1] = frames[8][2];
+		deathRightUpFrames[1].setRegionWidth(62);
+		deathRightUpAnimation = new Animation(DEATH_FRAME_DURATION,
+				deathRightUpFrames);
+
+		TextureRegion[] deathLeftUpFrames = new TextureRegion[2];
+		deathLeftUpFrames[0] = frames[6][1];
+		deathLeftUpFrames[1] = frames[6][2];
+		deathLeftUpFrames[1].setRegionWidth(62);
+		deathLeftUpAnimation = new Animation(DEATH_FRAME_DURATION,
+				deathLeftUpFrames);
+
 		// * Trap textures ***************************//
 		trapdoorTrapSprite = new Texture(
-				Gdx.files.internal("textures/TrapdoorTrap.png"));
+				Gdx.files.internal("textures/TrapDoor.png"));
 		trapdoorClosed = new TextureRegion(trapdoorTrapSprite, 0, 0, 128, 64);
-		trapdoorOpened = new TextureRegion(trapdoorTrapSprite, 0, 64, 128, 64);
+		trapdoorOpened = new TextureRegion(trapdoorTrapSprite, 128, 0, 128, 64);
 
+		floodTrapSprite = new Texture(
+				Gdx.files.internal("textures/floodTrap.png"));
+		floodTrapFrames = new TextureRegion[5];
+		for (int i = 0; i < 5; i++) {
+			floodTrapFrames[i] = new TextureRegion(floodTrapSprite, 0, 480 * i,
+					960, 480);
+		}
+		bloodTrapSprite = new Texture(
+				Gdx.files.internal("textures/bloodTrap.png"));
+		bloodTrapFrames = new TextureRegion[5];
+		for (int i = 0; i < 5; i++) {
+			bloodTrapFrames[i] = new TextureRegion(bloodTrapSprite, 0, 480 * i,
+					960, 480);
+		}
+		
+		bloodRainSprite = new Texture(
+				Gdx.files.internal("textures/bloodRain.png"));
+		bloodRainFrames = new TextureRegion[2];
+		bloodRainFrames[0] = new TextureRegion(bloodRainSprite, 0, 0, 960, 480);
+		bloodRainFrames[1] = new TextureRegion(bloodRainSprite, 0, 480, 960, 480);
+		
+		bloodRainAnimation = new Animation(0.25f, bloodRainFrames);
+
+		gasTrapSprite = new Texture(Gdx.files.internal("textures/GasTrap.png"));
+
+		freezeTrapSprite = new Texture(
+				Gdx.files.internal("textures/FreezeTrap.png"));
+
+		// * Door textures ***************************//
+		doorSprite = new Texture(Gdx.files.internal("textures/doorSprites.png"));
+		doorExit = new TextureRegion(doorSprite, 0, 0, 108, 73);
+		doorDefault = new TextureRegion(doorSprite, 108, 0, 108, 73);
+		doorMetal = new TextureRegion(doorSprite, 216, 0, 108, 73);
 	}
 
 	public void render() {
@@ -149,15 +258,14 @@ public class WorldRenderer {
 		// True because player over layers
 		drawRoom(true);
 
-		// FIXME Has to be moved into spriteBatch when use of real sprites
-		if (world.getCurrentRoom().getDoors().size > 0) {
-			drawDoor();
-		}
-
 		spriteBatch.setProjectionMatrix(cam.combined);
 		spriteBatch.begin();
 
-		if (world.getCurrentRoom().getTraps().size > 0)
+		if (world.getCurrentRoom().hasDoors())
+			drawDoor();
+
+		// FIXME Draw some traps over walkBehind, some under player
+		if (world.getCurrentRoom().hasTraps())
 			drawTrap();
 
 		// Player should only be rendered if he is inside the room that is
@@ -199,9 +307,10 @@ public class WorldRenderer {
 
 		if (playerAboveLayer) {
 			for (int i = 0; i < map.getLayers().getCount(); i++) {
+				// TODO Hardcoded value
 				if (!map.getLayers().get(i).getName()
-						.equalsIgnoreCase("WalkBehind") && map.getLayers().get(i).isVisible()) { // TODO Hardcoded
-														   // value
+						.equalsIgnoreCase("WalkBehind")
+						&& map.getLayers().get(i).isVisible()) {
 					isoRenderer.renderTileLayer((TiledMapTileLayer) map
 							.getLayers().get(i));
 				}
@@ -209,7 +318,8 @@ public class WorldRenderer {
 		} else {
 			for (int i = 0; i < map.getLayers().getCount(); i++) {
 				if (map.getLayers().get(i).getName()
-						.equalsIgnoreCase("WalkBehind") && map.getLayers().get(i).isVisible()) {
+						.equalsIgnoreCase("WalkBehind")
+						&& map.getLayers().get(i).isVisible()) {
 					isoRenderer.renderTileLayer((TiledMapTileLayer) map
 							.getLayers().get(i));
 				}
@@ -218,24 +328,86 @@ public class WorldRenderer {
 		isoRenderer.getSpriteBatch().end();
 	}
 
-	// TODO Should be moved into drawRoom()
 	private void drawDoor() {
-		debugRenderer.setProjectionMatrix(cam.combined);
-		debugRenderer.begin(ShapeType.Line);
 
-		// Render Player Box
+		float doorOffsetX = 0f;
+		float doorOffsetY = 0f;
 
 		for (Door door : world.getCurrentRoom().getDoors()) {
-			if (!door.isOpened()) {
-				debugRenderer.setColor(new Color(0.5f, 0.5f, 0, 1));
-			} else {
-				debugRenderer.setColor(new Color(1f, 1f, 0, 1));
+
+			if (door.getType().equals(Door.Type.DEFAULT)) {
+				if (!door.isOpen()) {
+					if (door.isFacingLeft()) {
+						doorFrame.setRegion(doorDefault, 0, 0, 27, 73);
+						doorOffsetX = 4f / 64f;
+						doorOffsetY = 3f / 64f;
+					} else {
+						doorFrame.setRegion(doorDefault, 27, 0, 27, 73);
+						doorOffsetX = 0.5f + 2f / 64f;
+						doorOffsetY = 0f + 2f / 64f;
+					}
+				} else {
+					if (door.isFacingLeft()) {
+						doorFrame.setRegion(doorDefault, 54, 0, 27, 73);
+						doorOffsetX = 4f / 64f;
+						doorOffsetY = 3f / 64f;
+					} else {
+						doorFrame.setRegion(doorDefault, 81, 0, 27, 73);
+						doorOffsetX = 0.5f + 2f / 64f;
+						doorOffsetY = 0f + 2f / 64f;
+					}
+				}
+			} else if (door.getType().equals(Door.Type.EXIT)) {
+				if (!door.isOpen()) {
+					if (door.isFacingLeft()) {
+						doorFrame.setRegion(doorExit, 0, 0, 27, 73);
+						doorOffsetX = 4f / 64f;
+						doorOffsetY = 3f / 64f;
+					} else {
+						doorFrame.setRegion(doorExit, 27, 0, 27, 73);
+						doorOffsetX = 0.5f + 2f / 64f;
+						doorOffsetY = 0f + 2f / 64f;
+					}
+				} else {
+					if (door.isFacingLeft()) {
+						doorFrame.setRegion(doorExit, 54, 0, 27, 73);
+						doorOffsetX = 4f / 64f;
+						doorOffsetY = 3f / 64f;
+					} else {
+						doorFrame.setRegion(doorExit, 81, 0, 27, 73);
+						doorOffsetX = 0.5f + 2f / 64f;
+						doorOffsetY = 0f + 2f / 64f;
+					}
+				}
+			} else if (door.getType().equals(Door.Type.METAL)) {
+				if (!door.isOpen()) {
+					if (door.isFacingLeft()) {
+						doorFrame.setRegion(doorMetal, 54, 0, 27, 73);
+						doorOffsetX = 3f / 64f;
+						doorOffsetY = 5f / 64f;
+					} else {
+						doorFrame.setRegion(doorMetal, 81, 0, 27, 73);
+						doorOffsetX = 0.5f + 2f / 64f;
+						doorOffsetY = 0f + 4f / 64f;
+					}
+				} else {
+					if (door.isFacingLeft()) {
+						doorFrame.setRegion(doorMetal, 0, 0, 27, 73);
+						doorOffsetX = 2f / 64f;
+						doorOffsetY = 3f / 64f;
+					} else {
+						doorFrame.setRegion(doorMetal, 27, 0, 27, 73);
+						doorOffsetX = 0.5f + 2f / 64f;
+						doorOffsetY = 0f + 4f / 64f;
+					}
+				}
 			}
-			debugRenderer.rect(door.getPosition().x, door.getPosition().y,
-					Door.SIZE_X, Door.SIZE_Y);
+
+			// TODO Hardcoded values
+			spriteBatch.draw(doorFrame, door.getPosition().x + doorOffsetX,
+					door.getPosition().y + doorOffsetY, 27f / 64f, 73f / 32f);
 		}
 
-		debugRenderer.end();
 	}
 
 	private void drawTrap() {
@@ -250,6 +422,62 @@ public class WorldRenderer {
 			spriteBatch.draw(trapFrame, ((TrapdoorTrap) trap).getPosition().x
 					+ TRAP_OFFSET_X, ((TrapdoorTrap) trap).getPosition().y
 					+ TRAP_OFFSET_Y, TrapdoorTrap.SIZE_X, TrapdoorTrap.SIZE_Y);
+
+		} else if (trap instanceof FloodTrap) {
+			if (trap.isActive()) {
+				trapFrame = floodTrapFrames[((FloodTrap) trap).getWaterLevel()];
+
+				spriteBatch.draw(trapFrame,
+						trap.getMyRoom().getBoundingBox().x, trap.getMyRoom()
+								.getBoundingBox().y, trap.getMyRoom()
+								.getBoundingBox().width, trap.getMyRoom()
+								.getBoundingBox().height);
+			}
+		} else if (trap instanceof BloodTrap) {
+			if (trap.isActive()) {
+				trapFrame = bloodTrapFrames[((BloodTrap) trap).getBloodLevel()];
+
+				spriteBatch.draw(trapFrame,
+						trap.getMyRoom().getBoundingBox().x, trap.getMyRoom()
+								.getBoundingBox().y, trap.getMyRoom()
+								.getBoundingBox().width, trap.getMyRoom()
+								.getBoundingBox().height);
+				
+				trapFrame = bloodRainAnimation.getKeyFrame(trap.getStateTime(), true);
+				spriteBatch.draw(trapFrame,
+						trap.getMyRoom().getBoundingBox().x, trap.getMyRoom()
+						.getBoundingBox().y, trap.getMyRoom()
+						.getBoundingBox().width, trap.getMyRoom()
+						.getBoundingBox().height);
+			}
+		} else if (trap instanceof GasTrap) {
+			if (trap.isActive()) {
+				trapFrame = new TextureRegion(gasTrapSprite);
+
+				Color tmp = spriteBatch.getColor();
+				spriteBatch.setColor(tmp.r, tmp.g, tmp.b,
+						((GasTrap) trap).getGasLevel() / 10f);
+				spriteBatch.draw(trapFrame,
+						trap.getMyRoom().getBoundingBox().x, trap.getMyRoom()
+								.getBoundingBox().y, trap.getMyRoom()
+								.getBoundingBox().width, trap.getMyRoom()
+								.getBoundingBox().height);
+				spriteBatch.setColor(tmp);
+			}
+		} else if (trap instanceof FreezeTrap) {
+			if (trap.isActive()) {
+				trapFrame = new TextureRegion(freezeTrapSprite);
+
+				Color tmp = spriteBatch.getColor();
+				spriteBatch.setColor(tmp.r, tmp.g, tmp.b,
+						((FreezeTrap) trap).getFreezeLevel() / 10f);
+				spriteBatch.draw(trapFrame,
+						trap.getMyRoom().getBoundingBox().x, trap.getMyRoom()
+								.getBoundingBox().y, trap.getMyRoom()
+								.getBoundingBox().width, trap.getMyRoom()
+								.getBoundingBox().height);
+				spriteBatch.setColor(tmp);
+			}
 		}
 	}
 
@@ -291,6 +519,74 @@ public class WorldRenderer {
 				}
 			}
 		}
+		// Normal Death Animation
+		if (player.getState().equals(State.DEAD)) {
+			if (player.isFacingLeft()) {
+				if (player.isFacingDown()) {
+					playerFrame = deathLeftDownAnimation.getKeyFrame(
+							player.getStateTime(), false);
+				} else {
+					playerFrame = deathLeftUpAnimation.getKeyFrame(
+							player.getStateTime(), false);
+				}
+			} else {
+				if (player.isFacingDown()) {
+					playerFrame = deathRightDownAnimation.getKeyFrame(
+							player.getStateTime(), false);
+				} else {
+					playerFrame = deathRightUpAnimation.getKeyFrame(
+							player.getStateTime(), false);
+				}
+			}
+		}
+		// Trapdoor Death Animation
+		if (player.getState().equals(State.DEAD_TRAPDOOR)) {
+			if (player.isFacingLeft()) {
+				if (player.isFacingDown()) {
+
+				} else {
+
+				}
+			} else {
+				if (player.isFacingDown()) {
+
+				} else {
+
+				}
+			}
+		}
+		// Gore Death Animation
+		if (player.getState().equals(State.DEAD_GORE)) {
+			if (player.isFacingLeft()) {
+				if (player.isFacingDown()) {
+
+				} else {
+
+				}
+			} else {
+				if (player.isFacingDown()) {
+
+				} else {
+
+				}
+			}
+		}
+		// Electrocution Death Animation
+		if (player.getState().equals(State.DEAD_ELECTROCUTION)) {
+			if (player.isFacingLeft()) {
+				if (player.isFacingDown()) {
+
+				} else {
+
+				}
+			} else {
+				if (player.isFacingDown()) {
+
+				} else {
+
+				}
+			}
+		}
 
 		spriteBatch.draw(playerFrame, player.getPosition().x + PLAYER_OFFSET_X,
 				player.getPosition().y + PLAYER_OFFSET_Y, Player.SIZE_X,
@@ -313,6 +609,19 @@ public class WorldRenderer {
 					1f, 2f);
 			debugRenderer.setColor(new Color(0, 1, 1, 1));
 		}
+
+		if (world.getCurrentRoom().hasDoors()) {
+			for (Door door : world.getCurrentRoom().getDoors()) {
+				if (!door.isOpen()) {
+					debugRenderer.setColor(new Color(0.5f, 0.5f, 0, 1));
+				} else {
+					debugRenderer.setColor(new Color(1f, 1f, 0, 1));
+				}
+				debugRenderer.rect(door.getPosition().x, door.getPosition().y,
+						Door.SIZE_X, Door.SIZE_Y);
+			}
+		}
+
 		debugRenderer.end();
 	}
 

@@ -34,6 +34,7 @@ public class GameScreen implements Screen, InputProcessor {
 
 		camController = new CameraController(renderer.getCamera());
 		playerController = new PlayerController(world);
+		playerController.setMovingRandom(false);
 		roomController = new RoomController(world);
 		Gdx.input.setInputProcessor(this);
 	}
@@ -46,8 +47,9 @@ public class GameScreen implements Screen, InputProcessor {
 		camController.update(delta);
 		playerController.update(delta);
 		roomController.update(delta);
+		
 		renderer.render();
-
+		
 		if (!world.getPlayer().getState().equals(Player.State.DEAD)) {
 			highscoreTimer += delta;
 
@@ -107,15 +109,17 @@ public class GameScreen implements Screen, InputProcessor {
 		if (keycode == Keys.RIGHT)
 			camController.rightPressed();
 
-		// Player controls
-		if (keycode == Keys.W)
-			playerController.leftUpPressed();
-		if (keycode == Keys.A)
-			playerController.leftDownPressed();
-		if (keycode == Keys.S)
-			playerController.rightDownPressed();
-		if (keycode == Keys.D)
-			playerController.rightUpPressed();
+		if (!playerController.isMovingRandom()) {
+			// Player controls
+			if (keycode == Keys.W)
+				playerController.leftUpPressed();
+			if (keycode == Keys.A)
+				playerController.leftDownPressed();
+			if (keycode == Keys.S)
+				playerController.rightDownPressed();
+			if (keycode == Keys.D)
+				playerController.rightUpPressed();
+		}
 
 		// Room controls
 		if (keycode == Keys.NUMPAD_1) 
@@ -163,14 +167,16 @@ public class GameScreen implements Screen, InputProcessor {
 
 		// Player
 		//TODO Ranodmize player movement
-		if (keycode == Keys.W)
-			playerController.leftUpReleased();
-		if (keycode == Keys.A)
-			playerController.leftDownReleased();
-		if (keycode == Keys.S)
-			playerController.rightDownReleased();
-		if (keycode == Keys.D)
-			playerController.rightUpReleased();
+		if (!playerController.isMovingRandom()) {
+			if (keycode == Keys.W)
+				playerController.leftUpReleased();
+			if (keycode == Keys.A)
+				playerController.leftDownReleased();
+			if (keycode == Keys.S)
+				playerController.rightDownReleased();
+			if (keycode == Keys.D)
+				playerController.rightUpReleased();
+		}
 
 		// Room
 		if (keycode == Keys.NUMPAD_1)

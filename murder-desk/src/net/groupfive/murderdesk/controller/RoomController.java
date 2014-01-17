@@ -3,8 +3,11 @@ package net.groupfive.murderdesk.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.goupfive.murderdesk.model.BloodTrap;
+import net.goupfive.murderdesk.model.FloodTrap;
+import net.goupfive.murderdesk.model.FreezeTrap;
+import net.goupfive.murderdesk.model.GasTrap;
 import net.goupfive.murderdesk.model.Trap;
-import net.goupfive.murderdesk.model.TrapdoorTrap;
 import net.goupfive.murderdesk.model.World;
 
 public class RoomController {
@@ -86,7 +89,7 @@ public class RoomController {
 	public void doorNoneReleased() {
 		keys.get(keys.put(Keys.DOOR_NONE, false));
 	}
-	
+
 	public void trapOnePressed() {
 		keys.get(keys.put(Keys.TRAP_ONE, true));
 	}
@@ -94,7 +97,7 @@ public class RoomController {
 	public void trapOneReleased() {
 		keys.get(keys.put(Keys.TRAP_ONE, false));
 	}
-	
+
 	public void trapTwoPressed() {
 		keys.get(keys.put(Keys.TRAP_TWO, true));
 	}
@@ -102,7 +105,7 @@ public class RoomController {
 	public void trapTwoReleased() {
 		keys.get(keys.put(Keys.TRAP_TWO, false));
 	}
-	
+
 	public void trapThreePressed() {
 		keys.get(keys.put(Keys.TRAP_THREE, true));
 	}
@@ -134,11 +137,11 @@ public class RoomController {
 	public void trapDecreaseReleased() {
 		keys.get(keys.put(Keys.TRAP_DECREASE, false));
 	}
-	
+
 	public void trapFinalPressed() {
 		keys.get(keys.put(Keys.TRAP_FINAL, true));
 	}
-	
+
 	public void trapFinalReleased() {
 		keys.get(keys.put(Keys.TRAP_FINAL, false));
 	}
@@ -148,8 +151,8 @@ public class RoomController {
 		// Processing the input - setting the states of Player
 		processInput();
 
-		// simply updates the state time
-		if (world.getCurrentRoom().getTraps().size > 0) {
+		// updates traps
+		if (world.getCurrentRoom().hasTraps()) {
 			Trap trap = world.getCurrentRoom().getCurrentTrap();
 			trap.update(delta);
 		}
@@ -164,7 +167,7 @@ public class RoomController {
 				// If current room is different then pressed key
 				if (!world.getCurrentRoom().equals(world.getRooms().get(0))) {
 					// If world has at least one trap
-					if (world.getCurrentRoom().getTraps().size > 0) {
+					if (world.getCurrentRoom().hasTraps()) {
 						// If current trap is deactivated
 						if (!world.getCurrentRoom().getCurrentTrap().isActive())
 							world.setCurrentRoom(0);
@@ -180,7 +183,7 @@ public class RoomController {
 				// If current room is different then pressed key
 				if (!world.getCurrentRoom().equals(world.getRooms().get(1))) {
 					// If world has at least one trap
-					if (world.getCurrentRoom().getTraps().size > 0) {
+					if (world.getCurrentRoom().hasTraps()) {
 						// If current trap is deactivated
 						if (!world.getCurrentRoom().getCurrentTrap().isActive())
 							world.setCurrentRoom(1);
@@ -196,7 +199,7 @@ public class RoomController {
 				// If current room is different then pressed key
 				if (!world.getCurrentRoom().equals(world.getRooms().get(2))) {
 					// If world has at least one trap
-					if (world.getCurrentRoom().getTraps().size > 0) {
+					if (world.getCurrentRoom().hasTraps()) {
 						// If current trap is deactivated
 						if (!world.getCurrentRoom().getCurrentTrap().isActive())
 							world.setCurrentRoom(2);
@@ -208,26 +211,74 @@ public class RoomController {
 			}
 		}
 
-		if (world.getCurrentRoom().getTraps().size > 0) {
-			Trap trap = world.getCurrentRoom().getCurrentTrap();
+		if (keys.get(Keys.TRAP_ONE)) {
+			// If there is a defined room
+			if (world.getCurrentRoom().getTraps().size >= 1) {
+				if (!world.getCurrentRoom().getCurrentTrap().isActive()) {
+					world.getCurrentRoom().setCurrentTrap(0);
+					trapOneReleased();
+				}
+			}
+		} else if (keys.get(Keys.TRAP_TWO)) {
+			// If there is a defined room
+			if (world.getCurrentRoom().getTraps().size >= 2) {
+				if (!world.getCurrentRoom().getCurrentTrap().isActive()) {
+					world.getCurrentRoom().setCurrentTrap(1);
+					trapTwoReleased();
+				}
+			}
+		} else if (keys.get(Keys.TRAP_THREE)) {
+			// If there is a defined room
+			if (world.getCurrentRoom().getTraps().size >= 3) {
+				if (!world.getCurrentRoom().getCurrentTrap().isActive()) {
+					world.getCurrentRoom().setCurrentTrap(2);
+					trapThreeReleased();
+				}
+			}
+		}
 
+		if (world.getCurrentRoom().hasTraps()) {
+			Trap trap = world.getCurrentRoom().getCurrentTrap();
+			System.out.println(trap.getName());
 			if (keys.get(Keys.TRAP_TOGGLE)) {
-				if (trap instanceof TrapdoorTrap) {
-					if (!trap.isActive()) {
-						trap.activate();
-						System.out
-								.println(world.getCurrentRoom().getName()
-										+ ", "
-										+ world.getCurrentRoom().getTraps().size);
-						trapToggleReleased(); // To limit input triggering
-					} else if (trap.isActive()) {
-						trap.deactivate();
-						trapToggleReleased(); // To limit input triggering
+				// Trap activation and deactivation
+				if (!trap.isActive()) {
+					trap.activate();
+					trapToggleReleased(); // To limit input triggering
+				} else if (trap.isActive()) {
+					trap.deactivate();
+					trapToggleReleased(); // To limit input triggering
+				}
+			}
+
+			if (keys.get(Keys.TRAP_INCREASE)) {
+				if (trap.isActive()) {
+					if (trap instanceof FloodTrap) {
+						((FloodTrap) trap).increaseWaterLevel();
+					} else if (trap instanceof BloodTrap) {
+						((BloodTrap) trap).increaseBloodLevel();
+					} else if (trap instanceof GasTrap) {
+						((GasTrap) trap).increaseGasLevel();
+					} else if (trap instanceof FreezeTrap) {
+						((FreezeTrap) trap).increaseFreezeLevel();
 					}
 				}
+				trapIncreaseReleased();
+			} else if (keys.get(Keys.TRAP_DECREASE)) {
+				if (trap.isActive()) {
+					if (trap instanceof FloodTrap) {
+						((FloodTrap) trap).decreaseWaterLevel();
+					} else if (trap instanceof BloodTrap) {
+						((BloodTrap) trap).decreaseBloodLevel();
+					} else if (trap instanceof GasTrap) {
+						((GasTrap) trap).decreaseGasLevel();
+					} else if (trap instanceof FreezeTrap) {
+						((FreezeTrap) trap).decreaseFreezeLevel();
+					}
+				}
+				trapDecreaseReleased();
 			}
 		}
 		return false;
 	}
-
 }

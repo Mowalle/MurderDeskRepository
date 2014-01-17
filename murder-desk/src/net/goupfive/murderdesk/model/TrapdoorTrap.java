@@ -38,7 +38,6 @@ public class TrapdoorTrap extends Trap {
 				target.setFacingLeft(true);
 				target.setFacingDown(true);
 				target.setPulse(target.getPulse() + 20);
-				System.out.println("Case 1");
 			} else if (target.getPosition().x >= position.x + 1f
 					&& target.getPosition().x <= position.x + 1.5f
 					&& target.getPosition().y >= position.y - 1f
@@ -46,14 +45,12 @@ public class TrapdoorTrap extends Trap {
 				target.setFacingLeft(true);
 				target.setFacingDown(false);
 				target.setPulse(target.getPulse() + 20);
-				System.out.println("Case 2");
 			} else if (target.getPosition().x >= position.x - 0.5f
 					&& target.getPosition().x <= position.x
 					&& target.getPosition().y >= position.y - 1f
 					&& target.getPosition().y <= position.y - 0.5f) {
 				target.setFacingLeft(false);
 				target.setFacingDown(false);
-				System.out.println("Case 3");
 				target.setPulse(target.getPulse() + 20);
 			} else if (target.getPosition().x >= position.x - 0.5f
 					&& target.getPosition().x <= position.x
@@ -62,7 +59,6 @@ public class TrapdoorTrap extends Trap {
 				target.setFacingLeft(false);
 				target.setFacingDown(true);
 				target.setPulse(target.getPulse() + 20);
-				System.out.println("Case 4");
 			}
 		}
 	}
@@ -83,7 +79,7 @@ public class TrapdoorTrap extends Trap {
 					&& target.getPosition().x <= position.x + 1f
 					&& target.getPosition().y >= position.y - 0.5f
 					&& target.getPosition().y <= position.y + 0.5f) {
-				target.setHealth(0);
+				target.setState(Player.State.DEAD);
 			}
 		}
 	}

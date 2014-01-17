@@ -5,7 +5,7 @@
  </tileset>
  <layer name="Base" width="15" height="15">
   <data encoding="base64" compression="zlib">
-   eJxjYBhYwEgGRtYrgSTOjKYOxufHoZcJh/ncRNiLC6O7AYR5qOhfYt2KTS8/mhy6W3nQwoRSN8PYuMKZGL24MDcW/6DrhaUNdH9RM45gdhDSiy+eACE+AX4=
+   eJxjYBhYwEgGRtYrgSTOjKYOxufHoZcJh/ncRNiLC6O7AYR5qOhfYt2KTS8/mhy6W3nQwoRabsYVzuT4F9nf6P7BlTbQ/UXNOILZQUgvvngCAB56AXs=
   </data>
  </layer>
  <layer name="Collision" width="15" height="15">
@@ -23,9 +23,19 @@
    eJyTZ2BgkCcCyyKxYQCZTSoY1Tu89XIOkL2U6B0oAAArmALw
   </data>
  </layer>
- <layer name="Walking Behind" width="15" height="15">
+ <layer name="WalkBehind" width="15" height="15">
   <data encoding="base64" compression="zlib">
    eJxjYBgFo2AUDCQAAAOEAAE=
+  </data>
+ </layer>
+ <layer name="flood electric" width="15" height="15" visible="0">
+  <data encoding="base64" compression="zlib">
+   eJxjYBjagI1EPKp3VO9g0wsAtUADYQ==
+  </data>
+ </layer>
+ <layer name="electric" width="15" height="15" visible="0">
+  <data encoding="base64" compression="zlib">
+   eJxjYBjagA8LZsUhzoemlxVJPboeViwYXS8hjM9eUjAu/7IyYLqXkH+paS++8KOFvdjihRT/khK/xNoJ41PiXwDQqgSu
   </data>
  </layer>
 </map>

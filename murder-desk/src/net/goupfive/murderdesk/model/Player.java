@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 public class Player {
 
 	public enum State {
-		IDLE, WALKING, DEAD
+		IDLE, WALKING, DEAD, DEAD_GORE, DEAD_TRAPDOOR, DEAD_ELECTROCUTION
 	}
 
 	public enum Condition {
@@ -21,7 +21,7 @@ public class Player {
 	public static final int PULSE_MAXIMUM = 210;
 	public static final int PULSE_MINIMUM = 30;
 
-	private int pulse = PULSE_DEFAULT;
+	private int pulse = 80;
 	private int health = 100;
 	private float regenerationTimer = 0f;
 
@@ -34,8 +34,11 @@ public class Player {
 	boolean facingLeft = true;
 	boolean facingDown = true;
 	float stateTime = 0f;
-	
-	/** Reference to the room the player currently is in. Might be different then world.currentRoom. **/
+
+	/**
+	 * Reference to the room the player currently is in. Might be different then
+	 * world.currentRoom.
+	 **/
 	private Room myRoom;
 
 	public Player(Room initRoom, Vector2 position) {
@@ -45,6 +48,10 @@ public class Player {
 		this.bounds.y = position.y;
 		this.bounds.width = SIZE_X;
 		this.bounds.height = SIZE_Y;
+
+		// TODO Can actually be removed if player is spawned with normal pulse
+		update(0f);
+
 	}
 
 	public void update(float delta) {
@@ -80,15 +87,16 @@ public class Player {
 			break;
 		}
 
-		if (!state.equals(State.DEAD)) {
+		if (!state.equals(State.DEAD) && !state.equals(State.DEAD_GORE)
+				&& !state.equals(State.DEAD_TRAPDOOR)
+				&& !state.equals(State.DEAD_ELECTROCUTION)) {
 			// Restore Health and Pulse every second
 			regenerationTimer += delta;
 
 			if (regenerationTimer >= 1f) {
-				System.out
-						.println("Health: " + health + " || Pulse: " + pulse
-								+ " || State: " + state + " || Condition: "
-								+ condition);
+				System.out.println("Health:\t" + health + "\t||\tPulse:\t"
+						+ pulse + "\t||\tState:\t" + state
+						+ "\t||\tCondition:\t" + condition);
 
 				if (health < 100) {
 					health++;
@@ -102,8 +110,9 @@ public class Player {
 				regenerationTimer = 0f;
 			}
 		} else {
-			System.out.println("Health: " + health + " || Pulse: " + pulse
-					+ " || State: " + state + " || Condition: " + condition);
+			System.out.println("Health:\t" + health + "\t||\tPulse:\t" + pulse
+					+ "\t||\tState:\t" + state + "\t||\tCondition:\t"
+					+ condition);
 		}
 	}
 
@@ -126,11 +135,11 @@ public class Player {
 	public Room getMyRoom() {
 		return myRoom;
 	}
-	
+
 	public void setMyRoom(Room room) {
 		this.myRoom = room;
 	}
-	
+
 	public Vector2 getPosition() {
 		return position;
 	}
@@ -171,6 +180,14 @@ public class Player {
 
 	public void setState(State newState) {
 		this.state = newState;
+	}
+
+	public Condition getCondition() {
+		return condition;
+	}
+
+	public void setCondition(Condition condition) {
+		this.condition = condition;
 	}
 
 	public float getStateTime() {

@@ -4,6 +4,7 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
@@ -24,8 +25,6 @@ public class Room {
 
 	/** Array containing the room's doors. **/
 	private Array<Door> doors = new Array<Door>();
-	/** Currently activated door. **/
-	private Door currentDoor;
 
 	/** Array containing the room#s traps. */
 	private Array<Trap> traps = new Array<Trap>();
@@ -89,7 +88,7 @@ public class Room {
 		return false;
 	}
 
-	private int getTileId(int layerIndex, int tileX, int tileY) {
+	public int getTileId(int layerIndex, int tileX, int tileY) {
 
 		TiledMapTileLayer tileLayer = (TiledMapTileLayer) map.getLayers().get(
 				layerIndex);
@@ -123,7 +122,16 @@ public class Room {
 
 		return result;
 	}
-
+	
+	public Vector2 convertToMapCoordinates(Vector2 v) {
+		Vector2 result = new Vector2();
+		
+		result.x = v.x - v.y;
+		result.y = -v.x - v.y + (this.height - 1);
+		
+		return result;
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -155,19 +163,11 @@ public class Room {
 			doors.add(door);
 		}
 	}
-
-	public Door getCurrentDoor() {
-		return currentDoor;
-	}
-
-	public void setCurrentDoor(int index) {
-		if (index < 0) {
-			currentDoor = null;
-		} else if (index < doors.size) {
-			currentDoor = doors.get(index);
-		} else {
-			currentDoor = doors.get(doors.size - 1);
-		}
+	
+	public boolean hasDoors() {
+		if (doors.size > 0)
+			return true;
+		return false;
 	}
 
 	public Array<Trap> getTraps() {
@@ -182,6 +182,12 @@ public class Room {
 				currentTrap = traps.get(0);
 			}
 		}
+	}
+	
+	public boolean hasTraps() {
+		if (traps.size > 0)
+			return true;
+		return false;
 	}
 
 	public Trap getCurrentTrap() {
@@ -214,6 +220,26 @@ public class Room {
 		}
 	}
 
+	public Rectangle getBoundingBox() {
+		Rectangle boundingBox = new Rectangle();
+		
+		Vector2 pointLeft = new Vector2 (0, 0.5f);
+		Vector2 pointTop = new Vector2(0.5f * height, (height + 1) * 0.5f);
+		Vector2 pointBottom = new Vector2(0.5f * width, (width - 1) * 0.5f * -1);
+		Vector2 pointRight = new Vector2((width + height) * 0.5f, height * 0.5f * -1);
+		
+		Vector2 topLeft = new Vector2(pointLeft.x, pointTop.y);
+		Vector2 bottomLeft = new Vector2(pointLeft.x, pointBottom.y);
+		Vector2 bottomRight = new Vector2(pointRight.x, pointBottom.y);
+		
+		boundingBox.x = bottomLeft.x;
+		boundingBox.y = bottomLeft.y;
+		boundingBox.width = bottomRight.x - bottomLeft.x;
+		boundingBox.height = topLeft.y - bottomLeft.y;
+		
+		return boundingBox;
+	}
+	
 	/**
 	 * Two rooms are considered equal when their name is the same.
 	 * 

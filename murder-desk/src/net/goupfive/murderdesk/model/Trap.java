@@ -58,6 +58,14 @@ public abstract class Trap {
 	public String getDescription() {
 		return description;
 	}
+	
+	public Room getMyRoom() {
+		return myRoom;
+	}
+	
+	public float getStateTime() {
+		return stateTime;
+	}
 
 	protected abstract void applyTrapOnActivation();
 

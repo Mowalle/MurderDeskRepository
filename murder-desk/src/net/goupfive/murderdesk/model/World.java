@@ -76,8 +76,11 @@ public class World {
 		foodchamber.addDoor(new Door(foodChamberDoorLeft, false, foodchamber));
 		foodchamber.addDoor(new Door(foodChamberDoorRight, true, foodchamber));
 		
-		basement.getDoors().get(0).connectTo(corridor.getDoors().get(1));
-		corridor.getDoors().get(0).connectTo(foodchamber.getDoors().get(1));
+		basement.getDoors().get(0).setType(Door.Type.METAL);
+		foodchamber.getDoors().get(1).setType(Door.Type.EXIT);
+		
+		basement.getDoors().get(1).connectTo(corridor.getDoors().get(0));
+		corridor.getDoors().get(1).connectTo(foodchamber.getDoors().get(0));
 		
 		// Add Rooms to world
 		addRoom(basement);
@@ -88,7 +91,7 @@ public class World {
 		setCurrentRoom(0);
 		
 		// ** Player Spawn ******************* //
-		Vector2 spawn = new Vector2(4, 4); // This is the spawn point.
+		Vector2 spawn = new Vector2(14, 3); // This is the spawn point.
 										   // Coordinates correspond to
 										   // coordinates in Tiled Map Editor.
 
@@ -97,10 +100,17 @@ public class World {
 		// ** Trap Creation ******************* //
 		
 		// Add Traps (max. 3 per room)
-		basement.addTrap(new TrapdoorTrap(player, basement, new Vector2(6, 10)));
+		basement.addTrap(new FloodTrap(player, basement));
+		basement.addTrap(new GasTrap(player, basement));
+		basement.addTrap(new ElectroTrap(player, basement));
+		
+		corridor.addTrap(new TrapdoorTrap(player, basement, new Vector2(11, 12)));
+		
+		foodchamber.addTrap(new FreezeTrap(player, foodchamber));
+		foodchamber.addTrap(new BloodTrap(player, foodchamber));
 		
 		// Set current trap
-		currentRoom.setCurrentTrap(1);
+		currentRoom.setCurrentTrap(0);
 		
 		System.out.println("Player spawned: Spawn " + spawn + "--->"
 				+ player.getPosition() + "(Screen)");
