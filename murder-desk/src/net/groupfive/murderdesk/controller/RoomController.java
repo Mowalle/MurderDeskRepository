@@ -4,9 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.goupfive.murderdesk.model.BloodTrap;
+import net.goupfive.murderdesk.model.ElectroTrap;
 import net.goupfive.murderdesk.model.FloodTrap;
 import net.goupfive.murderdesk.model.FreezeTrap;
 import net.goupfive.murderdesk.model.GasTrap;
+import net.goupfive.murderdesk.model.SpikeTrap;
 import net.goupfive.murderdesk.model.Trap;
 import net.goupfive.murderdesk.model.World;
 
@@ -239,7 +241,6 @@ public class RoomController {
 
 		if (world.getCurrentRoom().hasTraps()) {
 			Trap trap = world.getCurrentRoom().getCurrentTrap();
-			System.out.println(trap.getName());
 			if (keys.get(Keys.TRAP_TOGGLE)) {
 				// Trap activation and deactivation
 				if (!trap.isActive()) {
@@ -263,6 +264,12 @@ public class RoomController {
 						((FreezeTrap) trap).increaseFreezeLevel();
 					}
 				}
+				if (trap instanceof ElectroTrap) {
+					((ElectroTrap) trap).increase();
+				} else if (trap instanceof SpikeTrap) {
+					((SpikeTrap) trap).increase();
+				}
+
 				trapIncreaseReleased();
 			} else if (keys.get(Keys.TRAP_DECREASE)) {
 				if (trap.isActive()) {
@@ -275,6 +282,11 @@ public class RoomController {
 					} else if (trap instanceof FreezeTrap) {
 						((FreezeTrap) trap).decreaseFreezeLevel();
 					}
+				}
+				if (trap instanceof ElectroTrap) {
+					((ElectroTrap) trap).decrease();
+				} else if (trap instanceof SpikeTrap) {
+					((SpikeTrap) trap).decrease();
 				}
 				trapDecreaseReleased();
 			}

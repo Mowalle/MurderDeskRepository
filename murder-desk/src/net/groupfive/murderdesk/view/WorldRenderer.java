@@ -2,12 +2,14 @@ package net.groupfive.murderdesk.view;
 
 import net.goupfive.murderdesk.model.BloodTrap;
 import net.goupfive.murderdesk.model.Door;
+import net.goupfive.murderdesk.model.ElectroTrap;
 import net.goupfive.murderdesk.model.FloodTrap;
 import net.goupfive.murderdesk.model.FreezeTrap;
 import net.goupfive.murderdesk.model.GasTrap;
 import net.goupfive.murderdesk.model.Player;
 import net.goupfive.murderdesk.model.Player.State;
 import net.goupfive.murderdesk.model.Room;
+import net.goupfive.murderdesk.model.SpikeTrap;
 import net.goupfive.murderdesk.model.Trap;
 import net.goupfive.murderdesk.model.TrapdoorTrap;
 import net.goupfive.murderdesk.model.World;
@@ -22,6 +24,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.math.Vector2;
 
 public class WorldRenderer {
 
@@ -35,6 +38,8 @@ public class WorldRenderer {
 
 	private static final float TRAP_OFFSET_X = 0f;
 	private static final float TRAP_OFFSET_Y = -0.5f;
+
+	private float splitYHalf = (52f / 32f);
 
 	private World world;
 	private OrthographicCamera cam;
@@ -58,6 +63,8 @@ public class WorldRenderer {
 	private TextureRegion deathHangingRightUp;
 
 	private TextureRegion playerFrame;
+	private TextureRegion playerFrameTop;
+	private TextureRegion playerFrameBottom;
 
 	private Texture trapdoorTrapSprite;
 	private TextureRegion trapdoorClosed;
@@ -68,9 +75,15 @@ public class WorldRenderer {
 
 	private Texture bloodTrapSprite;
 	private TextureRegion[] bloodTrapFrames;
-	
 	private Texture bloodRainSprite;
 	private TextureRegion[] bloodRainFrames;
+
+	private Texture electroTrapSprite;
+	private Texture electroTrapBase;
+	private TextureRegion[] electroFieldFrames;
+
+	private Texture spikeTrapSprite;
+	private TextureRegion[] spikeTrapFrames;
 
 	private Texture gasTrapSprite;
 	private Texture freezeTrapSprite;
@@ -103,8 +116,9 @@ public class WorldRenderer {
 
 	private Animation deathElectrocuteLeftAnimation;
 	private Animation deathElectrocuteRightAnimation;
-	
+
 	private Animation bloodRainAnimation;
+	private Animation electroFieldAnimation;
 
 	private SpriteBatch spriteBatch;
 	private boolean debug = false;
@@ -230,19 +244,38 @@ public class WorldRenderer {
 			bloodTrapFrames[i] = new TextureRegion(bloodTrapSprite, 0, 480 * i,
 					960, 480);
 		}
-		
+
 		bloodRainSprite = new Texture(
 				Gdx.files.internal("textures/bloodRain.png"));
 		bloodRainFrames = new TextureRegion[2];
 		bloodRainFrames[0] = new TextureRegion(bloodRainSprite, 0, 0, 960, 480);
-		bloodRainFrames[1] = new TextureRegion(bloodRainSprite, 0, 480, 960, 480);
-		
+		bloodRainFrames[1] = new TextureRegion(bloodRainSprite, 0, 480, 960,
+				480);
+
 		bloodRainAnimation = new Animation(0.25f, bloodRainFrames);
 
 		gasTrapSprite = new Texture(Gdx.files.internal("textures/GasTrap.png"));
 
 		freezeTrapSprite = new Texture(
 				Gdx.files.internal("textures/FreezeTrap.png"));
+
+		electroTrapSprite = new Texture(
+				Gdx.files.internal("textures/electroTrap.png"));
+		electroTrapBase = new Texture(
+				Gdx.files.internal("textures/electricTrapBase.png"));
+		electroFieldFrames = new TextureRegion[2];
+		electroFieldFrames[0] = new TextureRegion(electroTrapSprite, 0, 0, 64,
+				32);
+		electroFieldFrames[1] = new TextureRegion(electroTrapSprite, 0, 32, 64,
+				32);
+
+		electroFieldAnimation = new Animation(0.25f, electroFieldFrames);
+
+		spikeTrapSprite = new Texture(
+				Gdx.files.internal("textures/SpikeTrap.png"));
+		spikeTrapFrames = new TextureRegion[2];
+		spikeTrapFrames[0] = new TextureRegion(spikeTrapSprite, 0, 0, 64, 37);
+		spikeTrapFrames[1] = new TextureRegion(spikeTrapSprite, 64, 0, 64, 37);
 
 		// * Door textures ***************************//
 		doorSprite = new Texture(Gdx.files.internal("textures/doorSprites.png"));
@@ -264,14 +297,37 @@ public class WorldRenderer {
 		if (world.getCurrentRoom().hasDoors())
 			drawDoor();
 
+		Trap trap = null;
+		if (world.getCurrentRoom().hasTraps()) {
+			trap = world.getCurrentRoom().getCurrentTrap();
+			
+			splitYHalf = (52f / 32f);
+			
+			if (trap instanceof FloodTrap) {
+				splitYHalf = (52f / 32f) * (1 - ((FloodTrap)trap).getWaterLevel() / 4f);
+			} else if (trap instanceof BloodTrap) {
+				splitYHalf = (52f / 32f) * (1 - ((BloodTrap)trap).getBloodLevel() / 4f);
+			} else if (trap instanceof GasTrap || trap instanceof FreezeTrap) {
+				splitYHalf = 0f;
+			}
+		}
+
+		// Player should only be rendered if he is inside the room that is
+		// currently displayed
+		if (world.getCurrentRoom().equals(world.getPlayer().getMyRoom())) {
+			drawPlayer(false);
+		}
+
 		// FIXME Draw some traps over walkBehind, some under player
 		if (world.getCurrentRoom().hasTraps())
 			drawTrap();
 
 		// Player should only be rendered if he is inside the room that is
 		// currently displayed
-		if (world.getCurrentRoom().equals(world.getPlayer().getMyRoom()))
-			drawPlayer();
+		if (world.getCurrentRoom().equals(world.getPlayer().getMyRoom())) {
+			drawPlayer(true);
+		}
+
 		spriteBatch.end();
 
 		// False because layers over player
@@ -442,13 +498,14 @@ public class WorldRenderer {
 								.getBoundingBox().y, trap.getMyRoom()
 								.getBoundingBox().width, trap.getMyRoom()
 								.getBoundingBox().height);
-				
-				trapFrame = bloodRainAnimation.getKeyFrame(trap.getStateTime(), true);
+
+				trapFrame = bloodRainAnimation.getKeyFrame(trap.getStateTime(),
+						true);
 				spriteBatch.draw(trapFrame,
 						trap.getMyRoom().getBoundingBox().x, trap.getMyRoom()
-						.getBoundingBox().y, trap.getMyRoom()
-						.getBoundingBox().width, trap.getMyRoom()
-						.getBoundingBox().height);
+								.getBoundingBox().y, trap.getMyRoom()
+								.getBoundingBox().width, trap.getMyRoom()
+								.getBoundingBox().height);
 			}
 		} else if (trap instanceof GasTrap) {
 			if (trap.isActive()) {
@@ -478,10 +535,40 @@ public class WorldRenderer {
 								.getBoundingBox().height);
 				spriteBatch.setColor(tmp);
 			}
+		} else if (trap instanceof ElectroTrap) {
+			trapFrame = new TextureRegion(electroTrapBase);
+			spriteBatch.draw(trapFrame, trap.getMyRoom().getBoundingBox().x,
+					trap.getMyRoom().getBoundingBox().y, trap.getMyRoom()
+							.getBoundingBox().width, trap.getMyRoom()
+							.getBoundingBox().height);
+
+			if (trap.isActive()) {
+				trapFrame = electroFieldAnimation.getKeyFrame(
+						trap.getStateTime(), true);
+
+				for (Vector2 v : ((ElectroTrap) trap).getElectroFields()) {
+					spriteBatch.draw(trapFrame, v.x, v.y, 1f, 1f);
+				}
+			}
+		} else if (trap instanceof SpikeTrap) {
+
+			trapFrame = spikeTrapFrames[0];
+
+			for (Vector2 v : ((SpikeTrap) trap).getSpikeFields()) {
+				spriteBatch.draw(trapFrame, v.x, v.y + 0.125f, 1f, 1f);
+			}
+
+			if (trap.isActive()) {
+				trapFrame = spikeTrapFrames[1];
+
+				for (Vector2 v : ((SpikeTrap) trap).getSpikeFields()) {
+					spriteBatch.draw(trapFrame, v.x, v.y + 0.125f, 1f, 1f);
+				}
+			}
 		}
 	}
 
-	private void drawPlayer() {
+	private void drawPlayer(boolean topHalf) {
 		Player player = world.getPlayer();
 
 		// Idle Animation
@@ -521,23 +608,23 @@ public class WorldRenderer {
 		}
 		// Normal Death Animation
 		if (player.getState().equals(State.DEAD)) {
-			if (player.isFacingLeft()) {
-				if (player.isFacingDown()) {
-					playerFrame = deathLeftDownAnimation.getKeyFrame(
-							player.getStateTime(), false);
-				} else {
-					playerFrame = deathLeftUpAnimation.getKeyFrame(
-							player.getStateTime(), false);
-				}
-			} else {
-				if (player.isFacingDown()) {
-					playerFrame = deathRightDownAnimation.getKeyFrame(
-							player.getStateTime(), false);
-				} else {
-					playerFrame = deathRightUpAnimation.getKeyFrame(
-							player.getStateTime(), false);
-				}
-			}
+//			if (player.isFacingLeft()) {
+//				if (player.isFacingDown()) {
+//					playerFrame = deathLeftDownAnimation.getKeyFrame(
+//							player.getStateTime(), false);
+//				} else {
+//					playerFrame = deathLeftUpAnimation.getKeyFrame(
+//							player.getStateTime(), false);
+//				}
+//			} else {
+//				if (player.isFacingDown()) {
+//					playerFrame = deathRightDownAnimation.getKeyFrame(
+//							player.getStateTime(), false);
+//				} else {
+//					playerFrame = deathRightUpAnimation.getKeyFrame(
+//							player.getStateTime(), false);
+//				}
+//			}
 		}
 		// Trapdoor Death Animation
 		if (player.getState().equals(State.DEAD_TRAPDOOR)) {
@@ -588,9 +675,31 @@ public class WorldRenderer {
 			}
 		}
 
-		spriteBatch.draw(playerFrame, player.getPosition().x + PLAYER_OFFSET_X,
-				player.getPosition().y + PLAYER_OFFSET_Y, Player.SIZE_X,
-				Player.SIZE_Y);
+		if (topHalf) {
+			playerFrameTop = new TextureRegion(playerFrame, 0, 0,
+					(int) (Player.SIZE_X * 64f), (int) (splitYHalf * 32f));
+
+			spriteBatch.draw(playerFrameTop, player.getPosition().x
+					+ PLAYER_OFFSET_X, player.getPosition().y + PLAYER_OFFSET_Y
+					+ (Player.SIZE_Y - splitYHalf),
+					playerFrameTop.getRegionWidth() / 64f,
+					playerFrameTop.getRegionHeight() / 32f);
+			System.out.println("1:" + playerFrameTop.getRegionWidth() + ", "
+					+ playerFrameTop.getRegionHeight());
+		} else {
+			playerFrameBottom = new TextureRegion(playerFrame, 0,
+					(int) (splitYHalf * 32f), (int) (Player.SIZE_X * 64),
+					(int) (Player.SIZE_Y * 32f - splitYHalf * 32f));
+
+			System.out.println("2:" + playerFrameBottom.getRegionWidth() + ", "
+					+ playerFrameBottom.getRegionHeight());
+			spriteBatch.draw(playerFrameBottom, player.getPosition().x
+					+ PLAYER_OFFSET_X,
+					player.getPosition().y + PLAYER_OFFSET_Y,
+					playerFrameBottom.getRegionWidth() / 64f,
+					playerFrameBottom.getRegionHeight() / 32f);
+		}
+
 	}
 
 	private void drawDebug() {

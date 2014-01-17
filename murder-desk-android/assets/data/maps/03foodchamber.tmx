@@ -13,12 +13,12 @@
  </layer>
  <layer name="Collision" width="15" height="15">
   <data encoding="base64" compression="zlib">
-   eJxjYKAOMEajSdVLCBsisdHtJAcg603FgwnpJcfeFChbggj1yGqQ9VJiLzl6sQFi3E+tOCIVGA6QveToBQA2Swli
+   eJxjYKAOMEajSdVLCBsisdHtBIFUHJiQe8kBlOpNgbIliFCPrAZZLyX2kqMXGyDG/QMVzoYDZC85egHRPAj9
   </data>
  </layer>
  <layer name="Collison" width="15" height="15">
   <data encoding="base64" compression="zlib">
-   eJxjYKAMHIbiY3jYR4D4IJIYsl5ywTEK9FJiL0jvFzL1HqNALyX2DsVw3k+B3iMU6KXEzeQCAHarFfY=
+   eJxjYKAMHIbiY3jYR4D4IJIYsl4YiAHiWCw0LnCMQjdTovcLmXqPUaCXEnsp8e9AhfN+CvQeoUAvJW4mFwAA2aUYIQ==
   </data>
  </layer>
  <layer name="Collision" width="15" height="15">
@@ -28,7 +28,7 @@
  </layer>
  <layer name="WalkBehind" width="15" height="15">
   <data encoding="base64" compression="zlib">
-   eJxjYBh48AYPJgZ8xYNpCVZQSc1AgcHstpEEABh3DyA=
+   eJxjYKAOCMGBhzNYQSU1AwUGs9tGEgAANqoD8Q==
   </data>
  </layer>
  <layer name="rain" width="15" height="15" visible="0">

@@ -91,11 +91,13 @@ public class World {
 		setCurrentRoom(0);
 		
 		// ** Player Spawn ******************* //
-		Vector2 spawn = new Vector2(14, 3); // This is the spawn point.
+		Vector2 spawn = new Vector2(3, 12); // This is the spawn point.
 										   // Coordinates correspond to
 										   // coordinates in Tiled Map Editor.
 
 		player = new Player(getCurrentRoom(), spawn);
+		player.setFacingDown(true);
+		player.setFacingLeft(false);
 		
 		// ** Trap Creation ******************* //
 		
@@ -104,7 +106,8 @@ public class World {
 		basement.addTrap(new GasTrap(player, basement));
 		basement.addTrap(new ElectroTrap(player, basement));
 		
-		corridor.addTrap(new TrapdoorTrap(player, basement, new Vector2(11, 12)));
+		corridor.addTrap(new TrapdoorTrap(player, corridor, new Vector2(11, 12)));
+		corridor.addTrap(new SpikeTrap(player, corridor));
 		
 		foodchamber.addTrap(new FreezeTrap(player, foodchamber));
 		foodchamber.addTrap(new BloodTrap(player, foodchamber));

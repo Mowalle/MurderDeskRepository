@@ -5,7 +5,7 @@
  </tileset>
  <layer name="Base" width="15" height="15">
   <data encoding="base64" compression="zlib">
-   eJxjYBhYwEgGRtYrgSTOjKYOxufHoZcJh/ncRNiLC6O7AYR5qOhfYt2KTS8/mhy6W3nQwoRabsYVzuT4F9nf6P7BlTbQ/UXNOILZQUgvvngCAB56AXs=
+   eJxjYBjaQAKIGaGYGYmNzOdHEkMGTGjqYZgbhzgywCaPzQ0gzEOkXlwYn15cbsWml58Bv1t50MKEWm7GFc7k+BfZ3+j+QdcLSxvo/qJmHMHsQAbY4gRfPAEA6GcBbA==
   </data>
  </layer>
  <layer name="Collision" width="15" height="15">
@@ -15,7 +15,7 @@
  </layer>
  <layer name="Collision" width="15" height="15">
   <data encoding="base64" compression="zlib">
-   eJxjYKAMaCBhXSRaE4mvDcRqSHxkvZTYSy7QHYL2atLZXiYoPVD+FaKDvcJYxCjxLwxwE6GGGYkNACSuBCY=
+   eJxjYKAMaCBhXSRaE4mvDcRqSHxkvZTYSy7QHYL2ag6QvQPlX6EBspcS/5ILABWKBAM=
   </data>
  </layer>
  <layer name="Collision" width="15" height="15">
@@ -23,7 +23,7 @@
    eJyTZ2BgkCcCyyKxYQCZTSoY1Tu89XIOkL2U6B0oAAArmALw
   </data>
  </layer>
- <layer name="WalkBehind" width="15" height="15">
+ <layer name="WalkBehind" width="15" height="15" visible="0">
   <data encoding="base64" compression="zlib">
    eJxjYBgFo2AUDCQAAAOEAAE=
   </data>

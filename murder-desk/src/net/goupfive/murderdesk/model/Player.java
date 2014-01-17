@@ -14,7 +14,6 @@ public class Player {
 	}
 
 	public static final float SIZE_X = 31f / 64f; // Frame Width of Sprite /Tile
-												  // Width of Map
 	public static final float SIZE_Y = 52f / 32f; // two units high
 
 	public static final int PULSE_DEFAULT = 80;
