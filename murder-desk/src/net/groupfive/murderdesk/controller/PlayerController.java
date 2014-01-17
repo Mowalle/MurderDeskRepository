@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import net.goupfive.murderdesk.model.Door;
-import net.goupfive.murderdesk.model.Player;
-import net.goupfive.murderdesk.model.Player.Condition;
-import net.goupfive.murderdesk.model.Player.State;
-import net.goupfive.murderdesk.model.Room;
-import net.goupfive.murderdesk.model.World;
+import net.groupfive.murderdesk.model.Door;
+import net.groupfive.murderdesk.model.Player;
+import net.groupfive.murderdesk.model.Room;
+import net.groupfive.murderdesk.model.World;
+import net.groupfive.murderdesk.model.Player.Condition;
+import net.groupfive.murderdesk.model.Player.State;
 
 import com.badlogic.gdx.math.Vector2;
 

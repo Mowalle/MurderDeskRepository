@@ -1,4 +1,4 @@
-package net.groupfive.murderdesk;
+package net.groupfive.murderdesk.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -25,16 +25,21 @@ import java.util.Observer;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.TabSet;
 import javax.swing.text.TabStop;
 
-import net.groupfive.murderdesk.data.Objective;
-import net.groupfive.murderdesk.data.Subject;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
+
+import net.groupfive.murderdesk.Main;
 import net.groupfive.murderdesk.gui.CharacterPanel;
 import net.groupfive.murderdesk.gui.ContentPanel;
 import net.groupfive.murderdesk.gui.ECDPanel;
@@ -42,10 +47,14 @@ import net.groupfive.murderdesk.gui.GamePanel;
 import net.groupfive.murderdesk.gui.MurderDeskScreen;
 import net.groupfive.murderdesk.gui.NormalText;
 import net.groupfive.murderdesk.gui.NormalTextScroll;
+import net.groupfive.murderdesk.model.Trap;
+import net.groupfive.murderdesk.model.World;
+import net.groupfive.murderdesk.screens.*;
 
-public class GUI implements Observer {
+@SuppressWarnings("unused")
+public class GUI {
 	
-	public static Font ftCamcorder, ftMinecraftia, ftDSTerminal, ftTitle1, ftTitle2, ftRegular, ftSmall;
+	public static Font ftCamcorder, ftMinecraftia, ftDSTerminal, ftTitle1, ftTitle2, ftRegular, ftSmall, ftCamcorderInv;
 
 	private NormalText txtObjectives, txtSubject_general, txtSubject_status, txtSubject_detail, txtBalance, txtTraps, txtConsole, pSubject_bpmTxt;
 	private ECDPanel pSubject_bpm;
@@ -55,13 +64,17 @@ public class GUI implements Observer {
 	private GamePanel game;
 	private MurderDeskScreen screen2, screen3;
 	
+	private ArrayList<Objective> objectives;
+	
 	public void init(){
 		// add fonts globally
 		try {
 			InputStream s1 = Main.class.getResourceAsStream("/fonts/CAMCORDER_REG.otf");
 			InputStream s2 = Main.class.getResourceAsStream("/fonts/Minecraftia.ttf");
 			InputStream s3 = Main.class.getResourceAsStream("/fonts/DS-TERM.TTF");
+			InputStream s4 = Main.class.getResourceAsStream("/fonts/CAMCORDER_INV.otf");
 			ftCamcorder = Font.createFont(Font.TRUETYPE_FONT, s1);
+			ftCamcorderInv = Font.createFont(Font.TRUETYPE_FONT, s4);
 			ftMinecraftia = Font.createFont(Font.TRUETYPE_FONT,  s2);
 			ftDSTerminal = Font.createFont(Font.TRUETYPE_FONT, s3);
 			ftTitle1 = ftCamcorder.deriveFont(Font.PLAIN, 24);
@@ -76,6 +89,7 @@ public class GUI implements Observer {
 		screen2 = new MurderDeskScreen("Active View");
 		screen3 = new MurderDeskScreen("Main");
 		game = new GamePanel();
+		game.run();
 		
 		GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		
@@ -136,17 +150,18 @@ public class GUI implements Observer {
 			screen2.addComponentListener(new ComponentAdapter() {
 			    public void componentMoved(ComponentEvent e) {
 			        game.setLocation(screen2.getX()+15, screen2.getY()+63);
+			        game.toFront();
 			    }
 			});
 		} else{
 			game.setLocation(screen2.getX()+15, screen2.getY()+41);
+			game.toFront();
 		}		
-	}
-	
-	public void show(){
+		
 		// pack
 		screen2.pack();
 		screen3.pack();
+		game.pack();
 				
 		// show
        	screen2.setVisible(true);
@@ -162,6 +177,7 @@ public class GUI implements Observer {
        	
        	Timer init = new Timer(1000, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+            	System.out.println("[init] timer ran");
             	screen2.load();
             	screen3.load();
             	
@@ -173,8 +189,8 @@ public class GUI implements Observer {
 				populate();
 				
 				// show camera view
-				game.pack();
 				game.setVisible(true);
+				game.label.setVisible(true);
             }
 		});
        	if(bootscreen){
@@ -184,6 +200,18 @@ public class GUI implements Observer {
        	}
        	init.setRepeats(false);
 		init.start();
+	}
+	
+	public void shutDown(){
+		// does not work properly
+		// TODO: make a proper shutdown
+		System.out.println("Manual shutdown initialized");
+		screen2.setVisible(false);
+		screen3.setVisible(false);
+		game.label.setVisible(false);
+		game.setVisible(false);
+		game.getGame().dispose();
+		Runtime.getRuntime().exit(0);
 	}
 	
 	private void initScreen2(final MurderDeskScreen s){
@@ -196,7 +224,6 @@ public class GUI implements Observer {
 		pSound.setBounds(640, 0, 140, 400);
 		pTraps.setBounds(0, 400, 300, 156);
 		pConsole.setBounds(300, 400, 480, 156);
-		
 				
 		//initialize & add the individual components
 		txtConsole = new NormalText();
@@ -208,6 +235,15 @@ public class GUI implements Observer {
 		style.addAttribute(StyleConstants.LineSpacing, 1.0f);
 		txtTraps.setStyle(style);
 		pTraps.add(txtTraps, BorderLayout.CENTER);
+		NormalText txtSound = new NormalText();
+		style = txtSound.getStyle();
+		style.addAttribute(StyleConstants.Alignment, StyleConstants.ALIGN_CENTER);
+		style.addAttribute(StyleConstants.FontFamily, ftCamcorderInv.getFamily());
+		style.addAttribute(StyleConstants.Foreground, Color.RED);
+		txtSound.setStyle(style);
+		txtSound.setBorder(new EmptyBorder(175,0,0,0));
+		txtSound.setText("MODULE\nUNAVAILABLE");
+		pSound.add(txtSound, BorderLayout.CENTER);
 
 		s.content.add(pCamera);
 		s.content.add(pSound);
@@ -218,6 +254,7 @@ public class GUI implements Observer {
 	}
 
 	private void initScreen3(MurderDeskScreen s){
+		System.out.println("[init] Screen 3");
 		ContentPanel pSubject = new ContentPanel("Subject");
 		ContentPanel pObjectives = new ContentPanel("Objectives");
 		ContentPanel pBalance = new ContentPanel("Balance");
@@ -269,10 +306,10 @@ public class GUI implements Observer {
 		
 		//initialize & add the individual components
 		txtObjectives = new NormalText();
-		pObjectives.add(new NormalTextScroll(txtObjectives), BorderLayout.CENTER);
+		pObjectives.add(txtObjectives, BorderLayout.CENTER);
 		txtObjectives.setSpacing(0.5f);
 		SimpleAttributeSet sas = new SimpleAttributeSet();
-		StyleConstants.setSpaceBelow(sas, 24);
+		StyleConstants.setSpaceBelow(sas, 12);
 		txtObjectives.getStyledDocument().setParagraphAttributes(0, txtObjectives.getStyledDocument().getLength(), sas, false);
 		txtBalance = new NormalText();
 		Style style = txtBalance.getStyle();
@@ -305,15 +342,20 @@ public class GUI implements Observer {
 	}
 	
 	private void populate(){
-		// objectives
-		ArrayList<Objective> objectives = Main.d.getObjectives();
-		for(int i=0; i<objectives.size(); i++){
-			Objective o = objectives.get(i);
-			txtObjectives.append("* " + o.getDescription() + " (+$" + o.getValue() + ")\n");
-		}
+		GameScreen screen = ((GameScreen) Main.murderDesk.getScreen());
+		
+		Objective o1 = new Objective("Why is it never mermaids?", "Drown the subject. Raise it's heartbeat to 180.", 500);
+		Objective o2 = new Objective("Blood for the blood god", "Make it rain blood. Don't kill the subject.", 666);
+		Objective o3 = new Objective("Shocking, isn't it?", "Activate an eletric trap.", 1200);
+		
+		objectives = new ArrayList<Objective>();
+		objectives.add(o1);
+		objectives.add(o2);
+		objectives.add(o3);
+		
+		printObjectives();
 		
 		// subject_general
-		Subject s = Main.d.getSubject(Main.d.CURRENT_SUBJECT);
 		TabStop[] tabs = new TabStop[1];
 	    tabs[0] = new TabStop(125, TabStop.ALIGN_LEFT, TabStop.LEAD_NONE);
 	    TabSet tabset = new TabSet(tabs);
@@ -322,11 +364,11 @@ public class GUI implements Observer {
 		style.addAttribute(StyleConstants.TabSet, tabset);
 		style.addAttribute(StyleConstants.LineSpacing, 0.5f);
 		txtSubject_general.setStyle(style);
-		txtSubject_general.append("ID:\t" + s.getId() + "\n");
-		txtSubject_general.append("First Name:\t" + s.getFirstName() + "\n");
-		txtSubject_general.append("Last Name:\t" + s.getName() + "\n");
-		txtSubject_general.append("Obtained:\t" + s.getDObtained() + "\n");
-		txtSubject_general.append("Termination:\t" + s.getDTermination() + "\n");
+		txtSubject_general.append("ID:\t666-kanel\n");
+		txtSubject_general.append("First Name:\tSamson\n");
+		txtSubject_general.append("Last Name:\tNiederland\n");
+		txtSubject_general.append("Obtained:\t15 October 2013\n");
+		txtSubject_general.append("Termination:\t17 January 2014\n");
 		
 		// subject_status
 		txtSubject_status.setOpaque(true);
@@ -335,10 +377,12 @@ public class GUI implements Observer {
 		
 		// bpm
 		pSubject_bpm.enableSound(true);
+		pSubject_bpm.setBeat(screen.getWorld().getPlayer().getPulse());
+		pSubject_bpmTxt.setText(screen.getWorld().getPlayer().getPulse() + "BPM");
 		
 		// image
-		pSubject_img.load(Main.class.getResourceAsStream("/textures/CharacterOskar.png"), 5, 3);
-		pSubject_img.setPreferredSprite(11);
+		pSubject_img.load(Main.class.getResourceAsStream("/textures/SimonHead.png"), 1, 5);
+		pSubject_img.setSprite(0);
 		
 		story = 0;
 		
@@ -346,43 +390,115 @@ public class GUI implements Observer {
 		txtBalance.append("$ 0");
 		
 		// traps
-		String[] traps = Main.d.getRooms().get(Main.d.CURRENT_ROOM).getTraps();
-		txtTraps.append("[1]  " + traps[0]+"\n");
-		txtTraps.append("[2]  " + traps[1]+"\n");
-		txtTraps.append("[3]  " + traps[2]);
+		Array<Trap> traps = ((GameScreen)Main.murderDesk.getScreen()).getWorld().getCurrentRoom().getTraps();
+		for(int i = 0; i < traps.size; i++){
+			txtTraps.append("[" + (i+1) + "] " + traps.get(i).getName() + "\n");
+		}
 		
 		// console
 		DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 		Date date = new Date();
 		System.out.println(dateFormat.format(date));
-		txtConsole.append("["+dateFormat.format(date)+"] Application initialized");
+		txtConsole.append("["+dateFormat.format(date)+"] Application initialized\n");
+		
+		// room name
+		String name = screen.getWorld().getCurrentRoom().getName();
+		game.setRoom(1, name);
 	}
 	
-	@Override
-	public void update(Observable o, Object arg) {
+	public void printObjectives(){
+		Style style = txtObjectives.getStyle();
 		
-		Message m = (Message) arg;
-		
-		try{
-			if(m.getKey() == "pulse"){
-				pSubject_bpm.setBeat(m.getInt());
-				pSubject_bpmTxt.setText(m.getInt() + " BPM");
-			} else if(m.getKey() == "dead"){
-				txtSubject_status.setBackground(Color.RED);
-				txtSubject_status.setText("DEAD");
-				pSubject_bpm.kill();
-				pSubject_bpmTxt.setText(0 + " BPM");
-			} else if (m.getKey() == "highscore"){
-				txtBalance.setText("$" + m.getInt());
-				if(story < Main.d.getSubject(Main.d.CURRENT_SUBJECT).getFullStory().size() && Math.random() < 0.3){
-					txtSubject_detail.append(Main.d.getSubject(Main.d.CURRENT_SUBJECT).getStory(story) + "\n");
-					story ++;
+		for(int i = 0; i < objectives.size(); i++){
+			style.addAttribute(StyleConstants.Alignment, StyleConstants.ALIGN_CENTER);
+			if(objectives.get(i).getCompleted()){
+				style.addAttribute(StyleConstants.Foreground, Color.GREEN);
+			} else{
+				style.addAttribute(StyleConstants.Foreground, Color.WHITE);
+			}
+			txtObjectives.setStyle(style);
+			txtObjectives.append("-- " + objectives.get(i).getTitle() + " --\n");
+			style.addAttribute(StyleConstants.Alignment, StyleConstants.ALIGN_LEFT);
+			txtObjectives.setStyle(style);
+			txtObjectives.append(objectives.get(i).getDescription() +" (+$" + objectives.get(i).getValue() + ")\n\n");
+		}
+	}
+	
+	public void boom(){
+		World world = ((GameScreen) Main.murderDesk.getScreen()).getWorld();
+		world.getPlayer().setPosition(new Vector2(-999.0f, -999.0f));
+		kill();
+	}
+	
+	public void changeRoom(final int id){
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run () {
+				GameScreen screen = ((GameScreen) Main.murderDesk.getScreen());
+				String name = screen.getWorld().getRooms().get(id).getName();
+				game.setRoom(id+1, name);
+			}
+		});
+	}
+	
+	public void kill(){
+		txtSubject_status.setBackground(Color.RED);
+		txtSubject_status.setText("DEAD");
+		pSubject_bpm.kill();
+		setHealth(4);
+	}
+	
+	public void setBalance(final int i){
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run () {
+				if(txtBalance != null){
+					txtBalance.setText("$ " + i);
 				}
 			}
-		} catch(Exception e){
-			e.printStackTrace();
+		});
+	}
+	
+	public void setHealth(final int i){
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run () {
+				if(pSubject_img != null){
+					pSubject_img.setSprite(i);
+				}
+			}
+		});
+	}
+	
+	public void setHeartRate(int bpm){
+		pSubject_bpm.setBeat(bpm);
+		pSubject_bpmTxt.setText(bpm + "BPM");
+		// dirty code for objectives
+		World world = ((GameScreen) Main.murderDesk.getScreen()).getWorld();
+		if(!objectives.get(0).getCompleted() && world.getCurrentRoom().getCurrentTrap().getName().equals("flood") && world.getPlayer().getMyRoom().getName().equals("basement")){
+			if(world.getCurrentRoom().getCurrentTrap().isActive() && bpm > 500){
+				GameScreen s = ((GameScreen) Main.murderDesk.getScreen());
+				s.setHighscore(s.getHighscore() + 1200);
+				objectives.get(0).setCompleted(true);
+				printObjectives();
+			}
 		}
-		
+		if(!objectives.get(1).getCompleted() && world.getCurrentRoom().getCurrentTrap().getName().equals("bloodrain") && world.getPlayer().getMyRoom().getName().equals("foodchamber")){
+			if(world.getCurrentRoom().getCurrentTrap().isActive()){
+				GameScreen s = ((GameScreen) Main.murderDesk.getScreen());
+				s.setHighscore(s.getHighscore() + 666);
+				objectives.get(1).setCompleted(true);
+				printObjectives();
+			}
+		}
+		if(!objectives.get(2).getCompleted() && world.getCurrentRoom().getCurrentTrap().getName().equals("electric") && world.getPlayer().getMyRoom().getName().equals("basement")){
+			if(world.getCurrentRoom().getCurrentTrap().isActive()){
+				GameScreen s = ((GameScreen) Main.murderDesk.getScreen());
+				s.setHighscore(s.getHighscore() + 1200);
+				objectives.get(2).setCompleted(true);
+				printObjectives();
+			}
+		}
 	}
 	
 	public void logToConsole(String s){

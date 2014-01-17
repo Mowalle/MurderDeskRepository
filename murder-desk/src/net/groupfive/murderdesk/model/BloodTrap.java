@@ -1,4 +1,4 @@
-package net.goupfive.murderdesk.model;
+package net.groupfive.murderdesk.model;
 
 public class BloodTrap extends Trap {
 

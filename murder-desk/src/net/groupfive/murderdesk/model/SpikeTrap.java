@@ -1,33 +1,29 @@
-package net.goupfive.murderdesk.model;
+package net.groupfive.murderdesk.model;
 
 import java.util.Random;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
-public class ElectroTrap extends Trap {
+public class SpikeTrap extends Trap {
 
-	Array<Vector2> electroFields = new Array<Vector2>();
+	Array<Vector2> spikeFields = new Array<Vector2>();
 	private Random randGenerator = new Random();
 
 	private int intensitySummand = 0;
 
-	public ElectroTrap(String name, String description, Player target, Room room) {
+	public SpikeTrap(String name, String description, Player target, Room room) {
 		super(name, description, target, room);
 
 		createNewField();
 	}
 
-	public ElectroTrap(Player target, Room room) {
-		this("electrotrap", "A simple electrotrap.", target, room);
+	public SpikeTrap(Player target, Room room) {
+		this("spiketrap", "A simple spiketrap.", target, room);
 	}
-
-	public Array<Vector2> getElectroFields() {
-		return electroFields;
-	}
-
+	
 	public void increase() {
-		if (intensitySummand < 20)
+		if (intensitySummand < 10)
 			intensitySummand++;
 
 		createNewField();
@@ -41,8 +37,8 @@ public class ElectroTrap extends Trap {
 	}
 
 	private void createNewField() {
-		electroFields = new Array<Vector2>();
-
+		spikeFields = new Array<Vector2>();
+		
 		int randChance = 0;
 
 		for (int i = 0; i < myRoom.getWidth(); i++) {
@@ -51,8 +47,8 @@ public class ElectroTrap extends Trap {
 				if (myRoom.getTileId(0, i, j) != -1) {
 					randChance = randGenerator.nextInt(99) + 1;
 
-					if (randChance <= 5 + intensitySummand) {
-						electroFields.add(myRoom
+					if (randChance <= 2 + intensitySummand) {
+						spikeFields.add(myRoom
 								.convertToScreenCoordinates(new Vector2(
 										(float) i, (float) j)));
 					}
@@ -63,10 +59,10 @@ public class ElectroTrap extends Trap {
 
 	@Override
 	protected void applyTrapOnActivation() {
-		for (Vector2 electroField : electroFields) {
+		for (Vector2 v : spikeFields) {
 			if (target.getState().equals(Player.State.IDLE)
-					&& target.getPosition().x == electroField.x
-					&& target.getPosition().y == electroField.y) {
+					&& target.getPosition().x == v.x
+					&& target.getPosition().y == v.y) {
 				target.setPulse(target.getPulse() + 30);
 				target.setHealth(target.getHealth() - 30);
 			}
@@ -76,21 +72,25 @@ public class ElectroTrap extends Trap {
 	@Override
 	protected void applyTrapOnDeactivation() {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	protected void applyTrapOverTime() {
 		if (stateTime >= 3) {
 			stateTime = 0;
-			for (Vector2 electroField : electroFields) {
+			for (Vector2 v : spikeFields) {
 				if (target.getState().equals(Player.State.IDLE)
-						&& target.getPosition().x == electroField.x
-						&& target.getPosition().y == electroField.y) {
+						&& target.getPosition().x == v.x
+						&& target.getPosition().y == v.y) {
 					target.setPulse(target.getPulse() + 10);
 					target.setHealth(target.getHealth() - 10);
 				}
 			}
 		}
 	}
+	
+	public Array<Vector2> getSpikeFields() {
+		return spikeFields;
+	}
+
 }

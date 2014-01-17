@@ -3,14 +3,14 @@ package net.groupfive.murderdesk.controller;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.goupfive.murderdesk.model.BloodTrap;
-import net.goupfive.murderdesk.model.ElectroTrap;
-import net.goupfive.murderdesk.model.FloodTrap;
-import net.goupfive.murderdesk.model.FreezeTrap;
-import net.goupfive.murderdesk.model.GasTrap;
-import net.goupfive.murderdesk.model.SpikeTrap;
-import net.goupfive.murderdesk.model.Trap;
-import net.goupfive.murderdesk.model.World;
+import net.groupfive.murderdesk.model.BloodTrap;
+import net.groupfive.murderdesk.model.ElectroTrap;
+import net.groupfive.murderdesk.model.FloodTrap;
+import net.groupfive.murderdesk.model.FreezeTrap;
+import net.groupfive.murderdesk.model.GasTrap;
+import net.groupfive.murderdesk.model.SpikeTrap;
+import net.groupfive.murderdesk.model.Trap;
+import net.groupfive.murderdesk.model.World;
 
 public class RoomController {
 

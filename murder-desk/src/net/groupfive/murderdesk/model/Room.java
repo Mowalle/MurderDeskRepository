@@ -1,4 +1,4 @@
-package net.goupfive.murderdesk.model;
+package net.groupfive.murderdesk.model;
 
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;

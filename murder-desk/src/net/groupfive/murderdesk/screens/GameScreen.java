@@ -1,10 +1,11 @@
 package net.groupfive.murderdesk.screens;
 
-import net.goupfive.murderdesk.model.Player;
-import net.goupfive.murderdesk.model.World;
+import net.groupfive.murderdesk.Main;
 import net.groupfive.murderdesk.controller.CameraController;
 import net.groupfive.murderdesk.controller.PlayerController;
 import net.groupfive.murderdesk.controller.RoomController;
+import net.groupfive.murderdesk.model.Player;
+import net.groupfive.murderdesk.model.World;
 import net.groupfive.murderdesk.view.WorldRenderer;
 
 import com.badlogic.gdx.Gdx;
@@ -57,6 +58,9 @@ public class GameScreen implements Screen, InputProcessor {
 				highscoreTimer = 0f;
 				highscore += Math.abs(Player.PULSE_DEFAULT
 						- world.getPlayer().getPulse());
+				if(Main.gui != null){
+					Main.gui.setBalance(highscore);
+				}
 			}
 		}
 
@@ -93,6 +97,10 @@ public class GameScreen implements Screen, InputProcessor {
 
 	public int getHighscore() {
 		return highscore;
+	}
+	
+	public void setHighscore(int highscore){
+		this.highscore = highscore;
 	}
 
 	// * InputProcessor methods ***************************//
@@ -244,6 +252,14 @@ public class GameScreen implements Screen, InputProcessor {
 	public boolean scrolled(int amount) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	public World getWorld(){
+		return world;
+	}
+	
+	public WorldRenderer getWorldRenderer(){
+		return renderer;
 	}
 
 }

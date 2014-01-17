@@ -1,21 +1,22 @@
 package net.groupfive.murderdesk.view;
 
-import net.goupfive.murderdesk.model.BloodTrap;
-import net.goupfive.murderdesk.model.Door;
-import net.goupfive.murderdesk.model.ElectroTrap;
-import net.goupfive.murderdesk.model.FloodTrap;
-import net.goupfive.murderdesk.model.FreezeTrap;
-import net.goupfive.murderdesk.model.GasTrap;
-import net.goupfive.murderdesk.model.Player;
-import net.goupfive.murderdesk.model.Player.State;
-import net.goupfive.murderdesk.model.Room;
-import net.goupfive.murderdesk.model.SpikeTrap;
-import net.goupfive.murderdesk.model.Trap;
-import net.goupfive.murderdesk.model.TrapdoorTrap;
-import net.goupfive.murderdesk.model.World;
+import net.groupfive.murderdesk.model.BloodTrap;
+import net.groupfive.murderdesk.model.Door;
+import net.groupfive.murderdesk.model.ElectroTrap;
+import net.groupfive.murderdesk.model.FloodTrap;
+import net.groupfive.murderdesk.model.FreezeTrap;
+import net.groupfive.murderdesk.model.GasTrap;
+import net.groupfive.murderdesk.model.Player;
+import net.groupfive.murderdesk.model.Room;
+import net.groupfive.murderdesk.model.SpikeTrap;
+import net.groupfive.murderdesk.model.Trap;
+import net.groupfive.murderdesk.model.TrapdoorTrap;
+import net.groupfive.murderdesk.model.World;
+import net.groupfive.murderdesk.model.Player.State;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -120,6 +121,11 @@ public class WorldRenderer {
 	private Animation bloodRainAnimation;
 	private Animation electroFieldAnimation;
 
+	
+	/** Overlay **/
+	private ShapeRenderer light;
+	private float lightIntensity = 1.0f;
+	
 	private SpriteBatch spriteBatch;
 	private boolean debug = false;
 
@@ -282,6 +288,10 @@ public class WorldRenderer {
 		doorExit = new TextureRegion(doorSprite, 0, 0, 108, 73);
 		doorDefault = new TextureRegion(doorSprite, 108, 0, 108, 73);
 		doorMetal = new TextureRegion(doorSprite, 216, 0, 108, 73);
+		trapdoorOpened = new TextureRegion(trapdoorTrapSprite, 0, 64, 128, 64);
+		
+		// Light //
+		light = new ShapeRenderer();
 	}
 
 	public void render() {
@@ -332,7 +342,15 @@ public class WorldRenderer {
 
 		// False because layers over player
 		drawRoom(false);
-
+		
+		Gdx.gl.glEnable(GL10.GL_BLEND);
+	    Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		light.begin(ShapeType.Filled);
+		light.setColor(0,0,0,1-lightIntensity);
+		light.rect(0, 0, width, height);
+		light.end();
+		Gdx.gl.glDisable(GL10.GL_BLEND);
+		
 		if (debug) {
 			drawDebug();
 		}
@@ -736,6 +754,10 @@ public class WorldRenderer {
 
 	public OrthographicCamera getCamera() {
 		return cam;
+	}
+	
+	public void setLight(float intensity){
+		this.lightIntensity = intensity;
 	}
 
 }
