@@ -116,15 +116,11 @@ public class InterfaceLink implements SerialPortEventListener{
 		
 		if(on){
 			if(split[0].equals("intensity")){
-				if(screen.getWorld().getCurrentRoom().getName().toLowerCase().equals("basement")){
-				} else if(screen.getWorld().getCurrentRoom().getName().toLowerCase().equals("corridor")){
-					
-				} else if(screen.getWorld().getCurrentRoom().getName().toLowerCase().equals("foodchamber")){
-					
-				}
-				// or
-				if(screen.getWorld().getCurrentRoom().getCurrentTrap().getName().equals("test")){
-					
+				
+				int intensity = Integer.parseInt(split[1])/10;
+				System.out.println(intensity);
+				if(screen.getWorld().getCurrentRoom().getCurrentTrap().isActive()){
+					screen.getWorld().getCurrentRoom().getCurrentTrap().setIntensity(intensity);
 				}
 			} else if(split[0].equals("light")){
 				screen.getWorldRenderer().setLight(Float.parseFloat(split[1])/100);
@@ -196,7 +192,13 @@ public class InterfaceLink implements SerialPortEventListener{
 					screen.keyUp(Keys.RIGHT);
 					break;
 				case "boom":
-					// TODO
+					screen.keyDown(Keys.END);
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run () {
+							Main.gui.kill();
+						}
+					});
 					break;
 				case "shutdown":
 					SwingUtilities.invokeLater(new Runnable() {

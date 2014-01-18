@@ -62,6 +62,12 @@ public class ElectroTrap extends Trap {
 			}
 		}
 	}
+	
+	@Override
+	public void setIntensity(int intensity){
+		this.intensitySummand = intensity*2;
+		createNewField();
+	}
 
 	@Override
 	protected void applyTrapOnActivation() {

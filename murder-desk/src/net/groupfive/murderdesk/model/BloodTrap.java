@@ -23,6 +23,9 @@ public class BloodTrap extends Trap {
 	}
 
 	public int getBloodLevel() {
+		if(bloodLevel > 4){
+			return 4;
+		}
 		return bloodLevel;
 	}
 
@@ -35,6 +38,11 @@ public class BloodTrap extends Trap {
 	protected void applyTrapOnDeactivation() {
 		// TODO Auto-generated method stub
 
+	}
+	
+	@Override
+	public void setIntensity(int intensity){
+		bloodLevel = intensity/2;
 	}
 
 	@Override

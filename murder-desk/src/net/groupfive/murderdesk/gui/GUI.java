@@ -437,6 +437,11 @@ public class GUI {
 				GameScreen screen = ((GameScreen) Main.murderDesk.getScreen());
 				String name = screen.getWorld().getRooms().get(id).getName();
 				game.setRoom(id+1, name);
+				Array<Trap> traps = screen.getWorld().getCurrentRoom().getTraps();
+				txtTraps.setText("");
+				for(int i = 0; i < traps.size; i++){
+					txtTraps.append("[" + (i+1) + "] " + traps.get(i).getName() + "\n");
+				}
 			}
 		});
 	}

@@ -18,6 +18,8 @@ public abstract class Trap {
 
 	protected float stateTime = 0f;
 
+	private int intensity;
+
 	public Trap(String name, String description, Player target, Room room) {
 		this.target = target;
 		this.myRoom = room;
@@ -67,6 +69,14 @@ public abstract class Trap {
 		return stateTime;
 	}
 
+	public void setIntensity(int intensity){
+		this.intensity = intensity;
+	}
+	
+	public int getIntensity(){
+		return intensity;
+	}
+	
 	protected abstract void applyTrapOnActivation();
 
 	protected abstract void applyTrapOnDeactivation();

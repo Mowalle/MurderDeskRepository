@@ -1,5 +1,6 @@
 package net.groupfive.murderdesk.model;
 
+import net.groupfive.murderdesk.Main;
 import net.groupfive.murderdesk.model.Player.DeathType;
 
 import com.badlogic.gdx.math.Rectangle;
@@ -17,6 +18,10 @@ public class Player {
 	
 	public enum DeathType {
 		NORMAL, BLOODY, TRAPDOOR, ELECTROCUTION
+	}
+	
+	public enum HealthState {
+		NORMAL, HURT1, HURT2, HURT3, DEAD
 	}
 
 	public static final float SIZE_X = 31f / 64f; // Frame Width of Sprite /Tile
@@ -40,6 +45,10 @@ public class Player {
 	boolean facingLeft = true;
 	boolean facingDown = true;
 	float stateTime = 0f;
+	HealthState healthState = HealthState.HURT1;
+	HealthState previousHealthState = healthState;
+	private int previousPulse = pulse;
+
 
 	/**
 	 * Reference to the room the player currently is in. Might be different then
@@ -77,6 +86,19 @@ public class Player {
 		} else {
 			condition = Condition.NORMAL;
 		}
+		
+		// keep the hurt state stored, independent of the state
+		if(health > 75){
+			healthState = HealthState.NORMAL;
+		} else if(health > 50 && health <= 75){
+			healthState = HealthState.HURT1;
+		} else if(health > 25 && health <= 50){
+			healthState = HealthState.HURT2;
+		} else if(health > 0 && health <= 25){
+			healthState = HealthState.HURT3;
+		} else{
+			healthState = HealthState.DEAD;
+		}
 
 		// Apply Condition effects
 		switch (condition) {
@@ -113,10 +135,25 @@ public class Player {
 
 				regenerationTimer = 0f;
 			}
+			
+			/* update the gui */
+			if(Main.gui != null){
+				if(healthState != previousHealthState){
+					Main.gui.setHealth(healthState.ordinal());
+					previousHealthState = healthState;
+				}
+				if(pulse != previousPulse){
+					Main.gui.setHeartRate(pulse);
+					previousPulse = pulse;
+				}
+			}
 		} else {
 			System.out.println("Health:\t" + health + "\t||\tPulse:\t" + pulse
 					+ "\t||\tState:\t" + state + "\t||\tCondition:\t"
 					+ condition);
+			if(Main.gui != null){
+				Main.gui.kill();
+			}
 		}
 	}
 

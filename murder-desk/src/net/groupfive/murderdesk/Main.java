@@ -28,9 +28,9 @@ public class Main {
 	 * Some booleans to change the behavior
 	 */
 	public final static boolean GUI = true;
-	public final static boolean INTERFACE = false;
-	public final static boolean FULLSCREEN = false;
-	public final static boolean BOOTSCREEN = false;
+	public final static boolean INTERFACE = true;
+	public final static boolean FULLSCREEN = true;
+	public final static boolean BOOTSCREEN = true;
 		
 	public static void main (String[] args) {
 		System.setProperty("awt.useSystemAAFontSettings","lcd");

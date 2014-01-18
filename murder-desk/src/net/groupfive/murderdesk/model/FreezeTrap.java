@@ -39,6 +39,11 @@ public class FreezeTrap extends Trap {
 	}
 
 	@Override
+	public void setIntensity(int intensity){
+		this.freezeLevel = intensity;
+	}
+	
+	@Override
 	protected void applyTrapOverTime() {
 		if (stateTime > 3) {
 			stateTime = 0;

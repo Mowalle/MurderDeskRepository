@@ -38,6 +38,11 @@ public class GasTrap extends Trap{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public void setIntensity(int intensity){
+		this.gasLevel = intensity;
+	}
 
 	@Override
 	protected void applyTrapOverTime() {

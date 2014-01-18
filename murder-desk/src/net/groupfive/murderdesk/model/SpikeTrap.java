@@ -73,6 +73,12 @@ public class SpikeTrap extends Trap {
 	protected void applyTrapOnDeactivation() {
 		// TODO Auto-generated method stub
 	}
+	
+	@Override
+	public void setIntensity(int intensity){
+		this.intensitySummand = intensity*2;
+		createNewField();
+	}
 
 	@Override
 	protected void applyTrapOverTime() {

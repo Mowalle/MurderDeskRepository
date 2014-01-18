@@ -23,6 +23,9 @@ public class FloodTrap extends Trap {
 	}
 	
 	public int getWaterLevel() {
+		if(waterLevel > 4){
+			return 4;
+		}
 		return waterLevel;
 	}
 
@@ -35,6 +38,11 @@ public class FloodTrap extends Trap {
 	protected void applyTrapOnDeactivation() {
 		// TODO Auto-generated method stub
 
+	}
+	
+	@Override
+	public void setIntensity(int intensity){
+		waterLevel = intensity/2;
 	}
 
 	@Override
